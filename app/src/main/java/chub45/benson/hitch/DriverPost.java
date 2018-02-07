@@ -133,4 +133,24 @@ public class DriverPost implements Post
     {
         return description;
     }
+
+    public void set_departing_area(String departing_area) {
+        this.departing_area = departing_area;
+    }
+
+    public void set_destination(String destination) {
+        this.destination = destination;
+    }
+
+    public void set_departure_time(Date time) {
+        this.departure_time = time;
+    }
+
+    public void set_ride_size_restriction(int size) {
+        this.available_spots = size;
+    }
+
+    public void set_description(String description) {
+        this.description = description;
+    }
 }

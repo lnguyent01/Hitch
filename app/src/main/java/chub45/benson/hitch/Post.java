@@ -14,4 +14,9 @@ public interface Post
     public int get_ride_size_restriction();
     public User get_author();
     public String get_description();
+    public void set_departing_area(String departing_area);
+    public void set_destination(String destination);
+    public void set_departure_time(Date time);
+    public void set_ride_size_restriction(int size);
+    public void set_description(String description);
 }
