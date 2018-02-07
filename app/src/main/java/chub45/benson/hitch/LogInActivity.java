@@ -25,8 +25,6 @@ public class LogInActivity extends AppCompatActivity {
                     Intent navigationIntent = new Intent(getApplicationContext(), NavigationActivity.class);
                     startActivity(navigationIntent);
                 }
-
-
             }
         });
 
