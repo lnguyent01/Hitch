@@ -1,44 +1,98 @@
 package chub45.benson.hitch;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.util.Patterns;
+import android.widget.Toast;
 
-public class LogInActivity extends AppCompatActivity {
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
+public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
+
+    FirebaseAuth mAuth;
+    EditText emailText, passText;
+    ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
 
-        //Create log in button and wait until user clicks button with entered information
-        Button signInButton = (Button) findViewById(R.id.signInButton);
-        signInButton.setOnClickListener(new View.OnClickListener() {
+        emailText = (EditText) findViewById(R.id.emailText);
+        passText = (EditText) findViewById(R.id.passText);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        findViewById(R.id.signupTextView).setOnClickListener(this);
+        findViewById(R.id.signInButton).setOnClickListener(this);
+    }
+
+    private void userLogin() {
+
+        String email = emailText.getText().toString().trim();
+        String password = passText.getText().toString().trim();
+
+        if (email.isEmpty()) {
+            emailText.setError("Email is required.");
+            emailText.requestFocus();
+            return;
+        }
+        //if email entered is not valid
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailText.setError("Please enter a valid email.");
+            emailText.requestFocus();
+            return;
+        }
+
+        if (password.isEmpty()) {
+            passText.setError("Password is required.");
+            passText.requestFocus();
+            return;
+        }
+        //min password length for firebase auth = 6
+        if (password.length() < 6) {
+            passText.setError("Minimum length if password is 6.");
+            passText.requestFocus();
+            return;
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onClick(View view) {
-                //Sends information to server and saves info, as long as username
-                EditText userNameText = (EditText) findViewById(R.id.usernameText);
-                EditText passwordText = (EditText) findViewById(R.id.passwordText);
-                if(true){ //if user is identified from database, sends user to navigation activity
-                    Intent navigationIntent = new Intent(getApplicationContext(), NavigationActivity.class);
-                    startActivity(navigationIntent);
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    //if user successfully logs in, send to postings activity page (?)
+                    //Intent intent = new Intent(LogInActivity.this, **new.class**);
+
+                    // Closes all other activities once log in(aka signup and login activities)
+                    //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 }
-
-
+                else {
+                    Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
 
-        //Create sign up button and wait until user clicks this button
-        Button signUpButton = (Button) findViewById(R.id.signUpButton);
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Opens sign up activity for users to sign up by entering information
-                Intent signUpIntent = new Intent(getApplicationContext(), SignUpActivity.class);
-                startActivity(signUpIntent);
-            }
-        });
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()) {
+            case R.id.signupTextView:
+                startActivity(new Intent(this, SignUpActivity.class));
+                break;
+            case R.id.signInButton:
+                userLogin();
+                break;
+        }
     }
 }
