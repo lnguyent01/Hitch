@@ -19,7 +19,10 @@
         <activity android:name=".SignUpActivity" />
         <activity
             android:name=".NavigationActivity"
-            android:label="@string/title_activity_navigation"></activity>
+            android:label="@string/title_activity_navigation" />
+        <activity
+            android:name=".CreatePostActivity"
+            android:label="CreatePostActivity" />
     </application>
 
 </manifest>
