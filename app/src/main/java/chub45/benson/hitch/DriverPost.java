@@ -4,6 +4,8 @@ package chub45.benson.hitch;
  * Created by kailash on 2/4/18.
  */
 
+import android.net.Uri;
+
 import java.util.Date;
 
 public class DriverPost implements Post
@@ -29,9 +31,14 @@ public class DriverPost implements Post
     private int available_spots;
 
     /**
-     * The driver's account
+     * The driver's account email
      */
-    private User author;
+    private String author_email;
+
+    /**
+     * The driver's profile picture
+     */
+    private Uri profile_pic;
 
     /**
      * An optional description for any other information the driver
@@ -45,16 +52,19 @@ public class DriverPost implements Post
      * @param destination the trip's destination
      * @param departure_time the time the driver is leaving
      * @param available_spots the number of available spots for passengers
-     * @param author the author of the post
+     * @param author_email the account email of the post's author
+     * @param profile_pic the author's profile picture
      */
     public DriverPost(String departing_area, String destination,
-                Date departure_time, int available_spots, User author)
+                Date departure_time, int available_spots, String author_email,
+                Uri profile_pic)
     {
         this.departing_area = departing_area;
         this.destination = destination;
         this.departure_time = departure_time;
         this.available_spots = available_spots;
-        this.author = author;
+        this.author_email = author_email;
+        this.profile_pic = profile_pic;
         this.description = "";
     }
 
@@ -64,18 +74,19 @@ public class DriverPost implements Post
      * @param destination the trip's destination
      * @param departure_time the time the driver is leaving
      * @param available_spots the number of available spots for passengers
-     * @param author the author of the post
+     * @param author_email the author of the post
      * @param description the post's description
      */
     public DriverPost(String departing_area, String destination,
-                Date departure_time, int available_spots, User author,
-                String description)
+                Date departure_time, int available_spots, String author_email,
+                Uri profile_pic, String description)
     {
         this.departing_area = departing_area;
         this.destination = destination;
         this.departure_time = departure_time;
         this.available_spots = available_spots;
-        this.author = author;
+        this.author_email = author_email;
+        this.profile_pic = profile_pic;
         this.description = description;
     }
 
@@ -119,10 +130,16 @@ public class DriverPost implements Post
      * Gets the post's author
      * @return the post's author
      */
-    public User get_author()
+    public String get_author()
     {
-        return author;
+        return author_email;
     }
+
+    /**
+     * Gets the author's profile picture
+     * @return the url to the author's profile picture
+     */
+    public Uri get_profile_pic() { return profile_pic; }
 
     /**
      * Gets the post's optional description
