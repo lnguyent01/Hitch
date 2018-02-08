@@ -59,6 +59,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "654638415288-s3bdvo6e6d6o2c9tngub4vvvgr4ghv02.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "chub45.benson.hitch",
+            "certificate_hash": "092d8eb2a36ebbbd2a3d53518cfc15a4e7d993ab"
+          }
+        },
+        {
+          "client_id": "654638415288-s9hq2gcd9p3hs1df8ilkhn85gf9m4g1i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "chub45.benson.hitch",
+            "certificate_hash": "afdfad96ebee0c9c4ea04a9654aa3719b432493f"
+          }
+        },
+        {
           "client_id": "654638415288-uus6jl6hg0mkd4cnh4978eh6i5damb12.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
