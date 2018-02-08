@@ -121,7 +121,7 @@ public class DriverPost implements Post
      * Gets the number of spots left in the driver's vehicle
      * @return number of available spots in the driver's vehicle
      */
-    public int get_ride_size_restriction()
+    public Integer get_ride_size_restriction()
     {
         return available_spots;
     }

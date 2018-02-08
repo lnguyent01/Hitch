@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#ffffff"
-    tools:context="chub45.benson.demohitch.MainActivity">
+    tools:context="chub45.benson.hitch.LogInActivity">
 
     <EditText
         android:id="@+id/usernameText"
@@ -75,10 +75,16 @@
 
     <ProgressBar
         android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:visibility="gone" />
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="33dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/passwordText" />
 
 </android.support.constraint.ConstraintLayout>

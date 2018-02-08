@@ -13,7 +13,7 @@ public interface Post
     public String get_departing_area();
     public String get_destination();
     public Date get_departure_time();
-    public int get_ride_size_restriction();
+    public Integer get_ride_size_restriction();
     public String get_author();
     public Uri get_profile_pic();
     public String get_description();
