@@ -1,5 +1,7 @@
 package chub45.benson.hitch;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.Date;
 
 /**
@@ -7,5 +9,5 @@ import java.util.Date;
  */
 
 public interface PostFactory {
-    public Post createPost(String departure_area, String destination, Date departure_time, int available_spots, User author, String description);
+    public Post createPost(String departure_area, String destination, Date departure_time, int available_spots, FirebaseUser user, String description);
 }

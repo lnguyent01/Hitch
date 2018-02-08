@@ -63,7 +63,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         }
         //min password length for firebase auth = 6
         if (password.length() < 6) {
-            passText.setError("Minimum length if password is 6.");
+            passText.setError("Minimum length of password is 6.");
             passText.requestFocus();
             return;
         }

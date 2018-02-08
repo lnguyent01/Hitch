@@ -4,6 +4,8 @@ package chub45.benson.hitch;
  * Created by kailash on 2/4/18.
  */
 
+import android.net.Uri;
+
 import java.util.Date;
 
 public interface Post
@@ -13,6 +15,7 @@ public interface Post
     public Date get_departure_time();
     public Integer get_ride_size_restriction();
     public User get_author();
+    public Uri get_profile_pic();
     public String get_description();
     public void set_departing_area(String departing_area);
     public void set_destination(String destination);
