@@ -29,8 +29,9 @@ public class HitchPost implements Post {
     public String get_destination()  { return destination; }
     public Date get_departure_time()  { return departureTime; }
     public Integer get_ride_size_restriction()  { return rideSize; }
-    public User get_author()  { return author; }
+    public String get_author()  { return author.toString(); }
     public String get_description()  { return description; }
+    public User getAuthor() { return author; }
 
     public void set_departing_area(String departing_area) {
         this.departingArea = departing_area;
