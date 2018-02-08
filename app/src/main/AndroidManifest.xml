@@ -21,8 +21,8 @@
             android:name=".NavigationActivity"
             android:label="@string/title_activity_navigation" />
         <activity
-            android:name=".CreatePostActivity"
-            android:label="CreatePostActivity" />
+            android:name=".AddPostActivity"
+            android:label="AddPostActivity" />
     </application>
 
 </manifest>

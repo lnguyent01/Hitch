@@ -13,16 +13,19 @@ import com.google.firebase.auth.FirebaseUser;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class AddPostActivity extends AppCompatActivity {
 
-    private PostFactory postFactory = new DefaultPostFactory();
+    private static PostFactory postFactory = new DefaultPostFactory();
+    private static HitchDatabase db = new HitchDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DateFormat formatter = new SimpleDateFormat("hh:mm");
 
         final EditText departingAreaText = (EditText) findViewById(R.id.departingAreaText);
         final EditText destinationText = (EditText) findViewById(R.id.destinationText);
@@ -31,21 +34,29 @@ public class AddPostActivity extends AppCompatActivity {
         final EditText descriptionText = (EditText) findViewById(R.id.descriptionText);
 
         Button createPostButton = (Button) findViewById(R.id.createPostButton);
-        //createPostButton.setOnClickListener(postButtonListener);
         createPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DateFormat formatter = new SimpleDateFormat("hh:mm:ss a");
+                DateFormat formatter = new SimpleDateFormat("hh:mm");
                 try {
+                    Date date = new Date();
+                    date.setTime(formatter.parse(departureTimeText.getText().toString()).getTime());
                     Post post = postFactory.createPost(departingAreaText.getText().toString(),
                             destinationText.getText().toString(),
-                            formatter.parse(departureTimeText.getText().toString()), Integer.parseInt(availableSpotsText.getText().toString()),
+                            date, Integer.parseInt(availableSpotsText.getText().toString()),
                             user, descriptionText.getText().toString());
-                    //HitchDatabase.addPost(post);
-                    Intent navigationIntent = new Intent(getApplicationContext(), NavigationActivity.class);
-                    startActivity(navigationIntent);
+                    db.addPost(post);
+                    //Intent navigationIntent = new Intent(getApplicationContext(), NavigationActivity.class);
+                    //startActivity(navigationIntent);
+                    finish();
                 } catch (ParseException e) {
-                    // eventually handle it
+                    /*Date d = new Date();
+                    Post post = postFactory.createPost(departingAreaText.getText().toString(),
+                            destinationText.getText().toString(),
+                            d, Integer.parseInt(availableSpotsText.getText().toString()),
+                            user, descriptionText.getText().toString());
+                    db.addPost(post);*/
+                    finish();
                 }
             }
         });

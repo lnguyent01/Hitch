@@ -170,4 +170,9 @@ public class DriverPost implements Post
     public void set_description(String description) {
         this.description = description;
     }
+
+    @Override
+    public String toString() {
+        return this.get_departing_area();
+    }
 }

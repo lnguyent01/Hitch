@@ -62,7 +62,7 @@ public class HitchDatabase
     // the firebase database under the posts collection
     // Can possibly change the function to return true if successful
 
-    public void addPost(HitchPost post)
+    public void addPost(Post post)
     {
         HashMap<String, String> postMap = new HashMap<>();
 
