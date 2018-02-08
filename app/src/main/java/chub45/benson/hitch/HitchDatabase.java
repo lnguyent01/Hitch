@@ -16,7 +16,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 
-public class HitchDatabase<T>
+public class HitchDatabase
 {
     private DatabaseReference rootRef;
     private DatabaseReference usersRef;
@@ -33,12 +33,12 @@ public class HitchDatabase<T>
     // the firebase database under the users collection
     // Can possibly change the function to return true if successful
 
-    public void addUser(T user)
+    public void addUser(User user)
     {
         HashMap<String, String> userMap = new HashMap<String, String>();                // hashmap that contains the key for
                                                                            // each piece of data as well as the data <K,D>
-        userMap.put("Name", user.toString());                              // Just a default name field (to be updated)
-        userMap.put("Password", "12345");                                  // Just a default password field (to be updated)
+        userMap.put("Username", user.toString());                              // Just a default name field (to be updated)
+        userMap.put("Email", user.getEmail());                                  // Just a default password field (to be updated)
 
         DatabaseReference currentChild = usersRef.child(user.toString());   // creates a child of "users" that has the
                                                                             // username (should be returned by toString())
@@ -62,14 +62,18 @@ public class HitchDatabase<T>
     // the firebase database under the posts collection
     // Can possibly change the function to return true if successful
 
-    public void addPost(T post)
+    public void addPost(Post post)
     {
         HashMap<String, String> postMap = new HashMap<>();
 
-        postMap.put("first data", post.toString() /* maybe post.getTitle()*/);
-        /* ...add all other data members of post class...*/
+        postMap.put("Departing Area", post.get_departing_area());
+        postMap.put("Destination", post.get_destination());
+        postMap.put("DepartureTime", post.get_departure_time().toString());
+        postMap.put("Ride Capacity", post.get_ride_size_restriction().toString());
+        postMap.put("Description", post.get_description());
 
         DatabaseReference currentChild = postsRef.child(post.toString());
+
         currentChild.setValue(postMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
