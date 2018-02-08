@@ -16,11 +16,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Date;
+
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
 
     FirebaseAuth mAuth;
     EditText emailText, passText;
     ProgressBar progressBar;
+    HitchDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,16 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
 
         findViewById(R.id.signupTextView).setOnClickListener(this);
         findViewById(R.id.signInButton).setOnClickListener(this);
+
+        db = new HitchDatabase();
+        Date date = new Date();
+        User u = new User("matt@yahoo.com", "mattmitch");
+        HitchPost p = new HitchPost("Goleta", "Albertsons",
+                date, 3, u, "Insert description");
+        db.addUser(u);
+        db.addPost(p);
+
+
     }
 
     private void userLogin() {
