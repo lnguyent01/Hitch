@@ -1,45 +1,103 @@
 package chub45.benson.hitch;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class SignUpActivity extends AppCompatActivity {
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+
+public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
+
+    ProgressBar progressBar;
+    EditText emailText, passText;
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
-        //Sign up button created
-        Button signUpButton = (Button) findViewById(R.id.signUpButton);
-        signUpButton.setOnClickListener(new View.OnClickListener() {
+
+        emailText = (EditText) findViewById(R.id.emailText);
+        passText = (EditText) findViewById(R.id.passText);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        mAuth = FirebaseAuth.getInstance();
+
+        findViewById(R.id.signUpButton).setOnClickListener(this);
+        findViewById(R.id.signinText).setOnClickListener(this);
+    }
+
+    private void registerUser() {
+        String email = emailText.getText().toString().trim();
+        String password = passText.getText().toString().trim();
+
+        if (email.isEmpty()) {
+            emailText.setError("Email is required.");
+            emailText.requestFocus();
+            return;
+        }
+        //if email entered is not valid
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailText.setError("Please enter a valid email.");
+            emailText.requestFocus();
+            return;
+        }
+
+        if (password.isEmpty()) {
+            passText.setError("Password is required.");
+            passText.requestFocus();
+            return;
+        }
+        //min password length for firebase auth = 6
+        if (password.length() < 6) {
+            passText.setError("Minimum length if password is 6.");
+            passText.requestFocus();
+            return;
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onClick(View view) {
-                EditText userText = (EditText) findViewById(R.id.userText);
-                EditText passText = (EditText) findViewById(R.id.passText);
-                EditText emailText = (EditText) findViewById(R.id.emailText);
-                EditText countryText = (EditText) findViewById(R.id.countryText);
-                EditText stateText = (EditText) findViewById(R.id.stateText);
-                EditText cityText = (EditText) findViewById(R.id.cityText);
-                //user input taken and sent to database via getText()
-            }
-
-        });
-
-        //Cancel button created
-        TextView cancelTView = (TextView) findViewById(R.id.cancelTView);
-        cancelTView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) { //if user clicks cancel, sends them to log in activity
-                Intent sendBackIntent = new Intent(getApplicationContext(), LogInActivity.class);
-                startActivity(sendBackIntent);
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                progressBar.setVisibility(View.GONE);
+                if (task.isSuccessful()) {
+                    Toast.makeText(getApplicationContext(), "User Registered Successfull", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    if (task.getException() instanceof FirebaseAuthUserCollisionException) {
+                        Toast.makeText(getApplicationContext(), "This email is already registered", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
+    }
 
-
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()) {
+            case R.id.signUpButton:
+                registerUser();
+                break;
+            case R.id.signinText:
+                startActivity(new Intent(this, LogInActivity.class));
+                break;
+        }
     }
 }
