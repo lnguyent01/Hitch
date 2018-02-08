@@ -15,7 +15,7 @@ public interface Post
     public Date get_departure_time();
     public Integer get_ride_size_restriction();
     public String get_author();
-    public Uri get_profile_pic();
+    //public Uri get_profile_pic();
     public String get_description();
     public void set_departing_area(String departing_area);
     public void set_destination(String destination);
