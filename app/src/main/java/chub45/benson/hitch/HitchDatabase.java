@@ -10,8 +10,12 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 
@@ -21,12 +25,14 @@ public class HitchDatabase
     private DatabaseReference rootRef;
     private DatabaseReference usersRef;
     private DatabaseReference postsRef;
+   // HashMap<String, String> returnedUserMap;
 
 
     public HitchDatabase() {
         rootRef = FirebaseDatabase.getInstance().getReference();
         usersRef = rootRef.child("users");
         postsRef = rootRef.child("posts");
+    //    returnedUserMap = new HashMap<>();
     }
 
     // This function takes a user object as an argument and add this user object to
@@ -35,15 +41,10 @@ public class HitchDatabase
 
     public void addUser(User user)
     {
-        HashMap<String, String> userMap = new HashMap<String, String>();                // hashmap that contains the key for
-                                                                           // each piece of data as well as the data <K,D>
-        userMap.put("Username", user.toString());                              // Just a default name field (to be updated)
-        userMap.put("Email", user.getEmail());                                  // Just a default password field (to be updated)
+        HashMap<String, String> userMap = makeUserMap(user);
 
-        DatabaseReference currentChild = usersRef.child(user.toString());   // creates a child of "users" that has the
-                                                                            // username (should be returned by toString())
+        DatabaseReference currentChild = usersRef.child(user.toString());
 
-        // the following code adds the hashmap before the node previously created with username
         currentChild.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -66,13 +67,16 @@ public class HitchDatabase
     {
         HashMap<String, String> postMap = new HashMap<>();
 
-        postMap.put("Departing Area", post.get_departing_area());
-        postMap.put("Destination", post.get_destination());
-        postMap.put("DepartureTime", post.get_departure_time().toString());
-        postMap.put("Ride Capacity", post.get_ride_size_restriction().toString());
-        postMap.put("Description", post.get_description());
+        postMap.put("departingArea", post.get_departing_area());
+        postMap.put("destination", post.get_destination());
+        postMap.put("departureTime", post.get_departure_time().toString());
+        postMap.put("rideSize", post.get_ride_size_restriction().toString());
+        postMap.put("description", post.get_description());
 
         DatabaseReference currentChild = postsRef.child(post.toString());
+        DatabaseReference postsAuthor = currentChild.child(post.toString());
+
+        HashMap<String, String> userMap = makeUserMap(post.getAuthor());
 
         currentChild.setValue(postMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -84,15 +88,42 @@ public class HitchDatabase
                 }
             }
         });
+        postsAuthor.setValue(userMap);
     }
 
-    public void getUser(String username) { // return type will be a user
-        /* query the database to find the username and return the user object */
+    private HashMap<String,String> makeUserMap(User user){
+        HashMap<String, String> userMap = new HashMap<String, String>();
+        userMap.put("username", user.toString());
+        userMap.put("email", user.getEmail());
+        userMap.put("fullName", user.getFullName());
+        return userMap;
     }
 
-    public void getPost(String postTitle) { // return type will be a post
-        /* query the database to find the postTitle and return the post object */
-    }
+//    public User getUser(String username) {
+//        returnedUserMap.clear();
+//        Query query = usersRef.orderByChild("username").equalTo(username);
+//        query.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if(dataSnapshot.exists()) {
+//                    for (DataSnapshot node : dataSnapshot.getChildren()) {
+//                        String value = (String) node.getValue();
+//                        String key = (String) node.getKey();
+//                        returnedUserMap.put(key, value);
+//                    }
+//                }
+//            }
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//        return new User(returnedUserMap.get("email"), returnedUserMap.get("username"), returnedUserMap.get("fullName"));
+//    }
+
+//    public HitchPost getPost(String username) { // return type will be a post
+//        /* query the database to find the postTitle and return the post object */
+//    }
 
     public void removeUser(String username) {
         usersRef.child(username).removeValue();
