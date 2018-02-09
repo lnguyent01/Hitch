@@ -85,6 +85,7 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                 }
                 else {
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.INVISIBLE);
                 }
             }
         });
