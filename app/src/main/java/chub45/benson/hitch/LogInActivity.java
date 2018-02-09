@@ -17,34 +17,27 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Date;
+import javax.security.auth.login.LoginException;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
 
     FirebaseAuth mAuth;
     EditText emailText, passText;
     ProgressBar progressBar;
-    HitchDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
 
-        emailText = (EditText) findViewById(R.id.emailText);
-        passText = (EditText) findViewById(R.id.passText);
+        emailText = (EditText) findViewById(R.id.usernameText);
+        passText = (EditText) findViewById(R.id.passwordText);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         mAuth = FirebaseAuth.getInstance();
 
         findViewById(R.id.signupTextView).setOnClickListener(this);
         findViewById(R.id.signInButton).setOnClickListener(this);
-
-        db = new HitchDatabase();
-        Date d = new Date();
-        User u = new User("blah@umail.com", "blahblah", "UCSB Kid");
-        HitchPost p = new HitchPost("UCSB", "UCLA", d, 4, u, "show up");
-        db.addUser(u);
-        db.addPost(p);
     }
 
     private void userLogin() {
@@ -80,12 +73,16 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                progressBar.setVisibility(View.VISIBLE);
                 if (task.isSuccessful()) {
                     //if user successfully logs in, send to postings activity page (?)
                     //Intent intent = new Intent(LogInActivity.this, **new.class**);
 
                     // Closes all other activities once log in(aka signup and login activities)
                     //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    Intent navigationIntent = new Intent(getApplicationContext(), NavigationActivity.class );
+                    navigationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(navigationIntent);
                 }
                 else {
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();

@@ -6,10 +6,13 @@ package chub45.benson.hitch;
 
 import android.net.Uri;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.Date;
 
 public class DriverPost implements Post
 {
+    private static int post_counter = 0;
     /**
      * The area the driver is leaving from
      */
@@ -31,14 +34,9 @@ public class DriverPost implements Post
     private int available_spots;
 
     /**
-     * The driver's account email
+     * The post's author
      */
-    private String author_email;
-
-    /**
-     * The driver's profile picture
-     */
-    private Uri profile_pic;
+    private FirebaseUser author;
 
     /**
      * An optional description for any other information the driver
@@ -47,25 +45,29 @@ public class DriverPost implements Post
     private String description;
 
     /**
+     * The post's id
+     */
+    private int post_id;
+
+    /**
      * Creates a post with an empty description
      * @param departing_area the departing_area
      * @param destination the trip's destination
      * @param departure_time the time the driver is leaving
      * @param available_spots the number of available spots for passengers
-     * @param author_email the account email of the post's author
-     * @param profile_pic the author's profile picture
+     * @param author the post's author
      */
     public DriverPost(String departing_area, String destination,
-                Date departure_time, int available_spots, String author_email,
-                Uri profile_pic)
+                Date departure_time, int available_spots, FirebaseUser author)
     {
         this.departing_area = departing_area;
         this.destination = destination;
         this.departure_time = departure_time;
         this.available_spots = available_spots;
-        this.author_email = author_email;
-        this.profile_pic = profile_pic;
+        this.author = author;
         this.description = "";
+        this.post_id = this.post_counter;
+        this.post_counter++;
     }
 
     /**
@@ -74,20 +76,20 @@ public class DriverPost implements Post
      * @param destination the trip's destination
      * @param departure_time the time the driver is leaving
      * @param available_spots the number of available spots for passengers
-     * @param author_email the author of the post
+     * @param author the post's author
      * @param description the post's description
      */
     public DriverPost(String departing_area, String destination,
-                Date departure_time, int available_spots, String author_email,
-                Uri profile_pic, String description)
+                Date departure_time, int available_spots, FirebaseUser author, String description)
     {
         this.departing_area = departing_area;
         this.destination = destination;
         this.departure_time = departure_time;
         this.available_spots = available_spots;
-        this.author_email = author_email;
-        this.profile_pic = profile_pic;
+        this.author = author;
         this.description = description;
+        this.post_id = this.post_counter;
+        this.post_counter++;
     }
 
     /**
@@ -130,16 +132,16 @@ public class DriverPost implements Post
      * Gets the post's author
      * @return the post's author
      */
-    public String get_author()
+    public FirebaseUser get_author()
     {
-        return author_email;
+        return author;
     }
 
     /**
      * Gets the author's profile picture
      * @return the url to the author's profile picture
      */
-    public Uri get_profile_pic() { return profile_pic; }
+    public Uri get_profile_pic() { return author.getPhotoUrl(); }
 
     /**
      * Gets the post's optional description
@@ -150,6 +152,12 @@ public class DriverPost implements Post
     {
         return description;
     }
+
+    /**
+     * Gets the post's id
+     * @return the post's id
+     */
+    public int get_post_id() { return this.post_id; }
 
     public void set_departing_area(String departing_area) {
         this.departing_area = departing_area;
@@ -169,5 +177,10 @@ public class DriverPost implements Post
 
     public void set_description(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return Integer.toString(this.get_post_id());
     }
 }

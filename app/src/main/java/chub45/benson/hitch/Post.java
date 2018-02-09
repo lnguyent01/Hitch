@@ -6,6 +6,8 @@ package chub45.benson.hitch;
 
 import android.net.Uri;
 
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.Date;
 
 public interface Post
@@ -14,7 +16,7 @@ public interface Post
     public String get_destination();
     public Date get_departure_time();
     public Integer get_ride_size_restriction();
-    public String get_author();
+    public FirebaseUser get_author();
     //public Uri get_profile_pic();
     public String get_description();
     public void set_departing_area(String departing_area);
