@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/profile"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/seats_left_num"
+        android:layout_marginLeft="12dp"
+        android:layout_marginStart="12dp"
+        android:contentDescription="image"
+        app:srcCompat="@drawable/default_pic" />
+
+    <TextView
+        android:id="@+id/from"
+        android:layout_width="170dp"
+        android:layout_height="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp"
+        android:layout_toEndOf="@+id/profile"
+        android:layout_toRightOf="@+id/profile"
+        android:fontFamily="sans-serif"
+        android:text="The Kingdom of Naples"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/to"
+        android:layout_width="170dp"
+        android:layout_height="20dp"
+        android:layout_alignBaseline="@+id/seats_left_text"
+        android:layout_alignBottom="@+id/seats_left_text"
+        android:layout_toLeftOf="@+id/abso"
+        android:layout_toStartOf="@+id/abso"
+        android:fontFamily="sans-serif"
+        android:text="The Kingdom of Naples"
+        android:textColor="@android:color/black" />
+
+    <TextView
+        android:id="@+id/abso"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/from"
+        android:layout_alignRight="@+id/from"
+        android:layout_below="@+id/from"
+        android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="242dp"
+        android:layout_height="20dp"
+        android:layout_alignLeft="@+id/to"
+        android:layout_alignStart="@+id/to"
+        android:layout_below="@+id/to"
+        android:layout_marginTop="7dp"
+        android:fontFamily="sans-serif"
+        android:text="Departs at 3:30 AM, February 18"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/bridge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/seats_left_num"
+        android:layout_alignBottom="@+id/seats_left_num"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="sans-serif"
+        android:text="to"
+        android:textColor="#959595"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/seats_left_num"
+        android:layout_width="20dp"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/abso"
+        android:layout_alignEnd="@+id/seats_left_text"
+        android:layout_alignRight="@+id/seats_left_text"
+        android:layout_marginEnd="26dp"
+        android:layout_marginRight="26dp"
+        android:fontFamily="sans-serif"
+        android:text="4"
+        android:textColor="@android:color/black"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/seats_left_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/from"
+        android:layout_toEndOf="@+id/from"
+        android:layout_toRightOf="@+id/from"
+        android:background="@drawable/seats_open_layout"
+        android:fontFamily="sans-serif"
+        android:paddingBottom="5dp"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:paddingTop="33dp"
+        android:text="seats left"
+        android:textColor="#5C5C5C" />
+
+</RelativeLayout>
