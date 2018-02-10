@@ -66,11 +66,11 @@ public class HitchDatabase
     {
         HashMap<String, String> postMap = new HashMap<>();
 
-        postMap.put("Departing Area", post.get_departing_area());
-        postMap.put("Destination", post.get_destination());
-        postMap.put("DepartureTime", post.get_departure_time().toString());
-        postMap.put("Ride Capacity", post.get_ride_size_restriction().toString());
-        postMap.put("Description", post.get_description());
+        postMap.put("departing_area", post.getdeparting_area());
+        postMap.put("destination", post.getdestination());
+        postMap.put("departure_time", post.getdeparture_time().toString());
+        postMap.put("available_spots", post.getavailable_spots().toString());
+        postMap.put("description", post.get_description());
 
         DatabaseReference currentChild = postsRef.child(post.toString());
 

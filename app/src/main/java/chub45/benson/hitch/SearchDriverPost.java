@@ -1,15 +1,14 @@
 package chub45.benson.hitch;
 
 /**
- * Created by kailash on 2/4/18.
+ * Using Date for the date makes this class necessary
  */
 
 import android.net.Uri;
 
-import java.sql.Driver;
 import java.util.Date;
 
-public class DriverPost implements Post
+public class SearchDriverPost
 {
     /**
      * The area the driver is leaving from
@@ -24,7 +23,7 @@ public class DriverPost implements Post
     /**
      * The time the driver is leaving
      */
-    private Date departure_time;
+    private String departure_time;
 
     /**
      * The number of spots left in the driver's vehicle
@@ -56,11 +55,11 @@ public class DriverPost implements Post
      * @param author_email the account email of the post's author
      * @param profile_pic the author's profile picture
      */
-    public DriverPost() {}
+    public SearchDriverPost() {}
 
-    public DriverPost(String departing_area, String destination,
-                Date departure_time, int available_spots, String author_email,
-                Uri profile_pic)
+    public SearchDriverPost(String departing_area, String destination,
+                            String departure_time, int available_spots, String author_email,
+                            Uri profile_pic)
     {
         this.departing_area = departing_area;
         this.destination = destination;
@@ -80,9 +79,9 @@ public class DriverPost implements Post
      * @param author_email the author of the post
      * @param description the post's description
      */
-    public DriverPost(String departing_area, String destination,
-                Date departure_time, int available_spots, String author_email,
-                Uri profile_pic, String description)
+    public SearchDriverPost(String departing_area, String destination,
+                            String departure_time, int available_spots, String author_email,
+                            Uri profile_pic, String description)
     {
         this.departing_area = departing_area;
         this.destination = destination;
@@ -115,7 +114,7 @@ public class DriverPost implements Post
      * Gets the time the driver is leaving
      * @return the trip's departure time
      */
-    public Date getdeparture_time()
+    public String getdeparture_time()
     {
         return departure_time;
     }
@@ -162,7 +161,7 @@ public class DriverPost implements Post
         this.destination = destination;
     }
 
-    public void set_departure_time(Date time) {
+    public void set_departure_time(String time) {
         this.departure_time = time;
     }
 
