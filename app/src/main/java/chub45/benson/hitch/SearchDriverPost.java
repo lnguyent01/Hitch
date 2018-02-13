@@ -1,18 +1,15 @@
 package chub45.benson.hitch;
 
 /**
- * Created by kailash on 2/4/18.
+ * Using Date for the date makes this class necessary
  */
 
 import android.net.Uri;
 
-
-//import java.sql.Driver;
 import java.util.Date;
 
-public class DriverPost implements Post
+public class SearchDriverPost
 {
-    private static int post_counter = 0;
     /**
      * The area the driver is leaving from
      */
@@ -26,7 +23,7 @@ public class DriverPost implements Post
     /**
      * The time the driver is leaving
      */
-    private Date departure_time;
+    private String departure_time;
 
     /**
      * The number of spots left in the driver's vehicle
@@ -34,19 +31,14 @@ public class DriverPost implements Post
     private int available_spots;
 
     /**
-     * The post's author's email
+     * The driver's account email
      */
     private String author_email;
 
     /**
-     * The post's author's profile picture
+     * The driver's profile picture
      */
-    private Uri author_profile_pic;
-
-    /**
-     * The post's author's account UID
-     */
-    private String author_uid;
+    private Uri profile_pic;
 
     /**
      * An optional description for any other information the driver
@@ -55,36 +47,27 @@ public class DriverPost implements Post
     private String description;
 
     /**
-     * The post's id
-     */
-    private int post_id;
-
-    public DriverPost() {}
-
-    /**
      * Creates a post with an empty description
      * @param departing_area the departing_area
      * @param destination the trip's destination
      * @param departure_time the time the driver is leaving
      * @param available_spots the number of available spots for passengers
-     * @param author_email the post's author's email
-     * @param author_profile_pic the post's author's profile picture
-     * @param author_uid the post's author's account UID
+     * @param author_email the account email of the post's author
+     * @param profile_pic the author's profile picture
      */
-    public DriverPost(String departing_area, String destination,
-                Date departure_time, int available_spots,
-                String author_email, Uri author_profile_pic, String author_uid)
+    public SearchDriverPost() {}
+
+    public SearchDriverPost(String departing_area, String destination,
+                            String departure_time, int available_spots, String author_email,
+                            Uri profile_pic)
     {
         this.departing_area = departing_area;
         this.destination = destination;
         this.departure_time = departure_time;
         this.available_spots = available_spots;
         this.author_email = author_email;
-        this.author_profile_pic = author_profile_pic;
-        this.author_uid = author_uid;
+        this.profile_pic = profile_pic;
         this.description = "";
-        this.post_id = this.post_counter;
-        this.post_counter++;
     }
 
     /**
@@ -93,26 +76,20 @@ public class DriverPost implements Post
      * @param destination the trip's destination
      * @param departure_time the time the driver is leaving
      * @param available_spots the number of available spots for passengers
-     * @param author_email the post's author's email
-     * @param author_profile_pic the post's author's profile picture
-     * @param author_uid the post's author's account UID
+     * @param author_email the author of the post
      * @param description the post's description
      */
-    public DriverPost(String departing_area, String destination,
-                Date departure_time, int available_spots,
-                String author_email, Uri author_profile_pic, String author_uid,
-                String description)
+    public SearchDriverPost(String departing_area, String destination,
+                            String departure_time, int available_spots, String author_email,
+                            Uri profile_pic, String description)
     {
         this.departing_area = departing_area;
         this.destination = destination;
         this.departure_time = departure_time;
         this.available_spots = available_spots;
         this.author_email = author_email;
-        this.author_profile_pic = author_profile_pic;
-        this.author_uid = author_uid;
+        this.profile_pic = profile_pic;
         this.description = description;
-        this.post_id = this.post_counter;
-        this.post_counter++;
     }
 
     /**
@@ -137,7 +114,7 @@ public class DriverPost implements Post
      * Gets the time the driver is leaving
      * @return the trip's departure time
      */
-    public Date getdeparture_time()
+    public String getdeparture_time()
     {
         return departure_time;
     }
@@ -152,18 +129,10 @@ public class DriverPost implements Post
     }
 
     /**
-     * Gets the post's author's account UID
-     * @return the post's author's account UID
+     * Gets the post's author
+     * @return the post's author
      */
-    public String getauthor()
-    {
-        return author_uid;
-    }
-
-    /**
-     * Gets the post's author's email
-     */
-    public String getauthor_email()
+    public String get_author()
     {
         return author_email;
     }
@@ -172,23 +141,17 @@ public class DriverPost implements Post
      * Gets the author's profile picture
      * @return the url to the author's profile picture
      */
-    public Uri getauthor_profile_pic() { return author_profile_pic; }
+    public Uri get_profile_pic() { return profile_pic; }
 
     /**
      * Gets the post's optional description
      * Returns an empty string if the description is blank
      * @return the post's description
      */
-    public String getdescription()
+    public String get_description()
     {
         return description;
     }
-
-    /**
-     * Gets the post's id
-     * @return the post's id
-     */
-    public int get_post_id() { return this.post_id; }
 
     public void set_departing_area(String departing_area) {
         this.departing_area = departing_area;
@@ -198,7 +161,7 @@ public class DriverPost implements Post
         this.destination = destination;
     }
 
-    public void set_departure_time(Date time) {
+    public void set_departure_time(String time) {
         this.departure_time = time;
     }
 
@@ -212,6 +175,6 @@ public class DriverPost implements Post
 
     @Override
     public String toString() {
-        return Integer.toString(this.get_post_id());
+        return this.getdeparting_area();
     }
 }

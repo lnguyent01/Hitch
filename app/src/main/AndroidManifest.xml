@@ -18,11 +18,15 @@
         </activity>
         <activity android:name=".SignUpActivity" />
         <activity
-            android:name=".NavigationActivity"
-            android:label="@string/title_activity_navigation" />
-        <activity
             android:name=".AddPostActivity"
             android:label="AddPostActivity" />
+        <activity
+            android:name=".NavigationActivity"
+            android:label="NavigationActivity" />
+        <activity
+            android:name="chub45.benson.hitch.PostDetails"
+            android:label="here we are">
+        </activity>
     </application>
 
 </manifest>
