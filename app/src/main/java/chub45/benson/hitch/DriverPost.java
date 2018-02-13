@@ -59,6 +59,16 @@ public class DriverPost implements Post
      */
     private int post_id;
 
+    /**
+     * Passengers who have requested to join the ride
+     */
+    private String potential_passengers;
+
+    /**
+     * Passengers accepted by the driver
+     */
+    private String accepted_passengers;
+
     public DriverPost() {}
 
     /**
@@ -190,6 +200,18 @@ public class DriverPost implements Post
      */
     public int get_post_id() { return this.post_id; }
 
+    /**
+     * Gets the potential passengers
+     * @return the ride's potential passengers
+     */
+    public String getpotential_passengers() { return this.potential_passengers; }
+
+    /**
+     * Gets the accepted passengers
+     * @return the ride's accepted passengers
+     */
+    public String getaccepted_passengers() { return this.accepted_passengers; }
+
     public void set_departing_area(String departing_area) {
         this.departing_area = departing_area;
     }
@@ -208,6 +230,28 @@ public class DriverPost implements Post
 
     public void set_description(String description) {
         this.description = description;
+    }
+
+    public void setpotential_passengers(String potential_passengers) { this.potential_passengers = potential_passengers; }
+
+    public void setaccepted_passengers(String accepted_passengers) { this.accepted_passengers = accepted_passengers; }
+
+    public void add_potential_passenger(String passenger) {
+        this.potential_passengers += passenger + "|";
+    }
+
+    public void add_accepted_passenger(String passenger) {
+        this.accepted_passengers += passenger + "|";
+        this.available_spots--;
+    }
+
+    public void remove_potential_passenger(String passenger) {
+        this.potential_passengers.replace(passenger + "|", "");
+    }
+
+    public void remove_accepted_passenger(String passenger) {
+        this.accepted_passengers.replace(passenger + "|", "");
+        this.available_spots++;
     }
 
     @Override
