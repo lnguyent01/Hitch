@@ -149,7 +149,7 @@ public class DriverPost implements Post
      * Returns an empty string if the description is blank
      * @return the post's description
      */
-    public String get_description()
+    public String getdescription()
     {
         return description;
     }

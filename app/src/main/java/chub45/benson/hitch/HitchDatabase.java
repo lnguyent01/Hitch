@@ -70,7 +70,7 @@ public class HitchDatabase
         postMap.put("destination", post.getdestination());
         postMap.put("departure_time", post.getdeparture_time().toString());
         postMap.put("available_spots", post.getavailable_spots().toString());
-        postMap.put("description", post.get_description());
+        postMap.put("description", post.getdescription());
 
         DatabaseReference currentChild = postsRef.child(post.toString());
 

@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -34,7 +35,6 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
 
     // This is what accesses the Firebase Database
     private DatabaseReference mUserDatabase;
-
 
     private TextView mTextMessage;
     public static final String EXTRA_MESSAGE = "chub45.benson.hitch.MESSAGE";
@@ -144,7 +144,11 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
                     @Override
                     public void onItemClick(View view, int position) {
                         Intent intent = new Intent(getApplicationContext(), PostDetails.class);
-                        intent.putExtra("necessary_info", model.getdestination());
+                        intent.putExtra("destination", model.getdestination());
+                        intent.putExtra("departing_area", model.getdeparting_area());
+                        intent.putExtra("available_spots", String.valueOf(model.getavailable_spots()));
+                        intent.putExtra("departure_time", model.getdeparture_time());
+                        intent.putExtra("description", model.getdescription());
                         startActivity(intent);
                     }
                 });
@@ -198,6 +202,8 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
             TextView post_time = (TextView) mView.findViewById(R.id.time);
             TextView post_seats = (TextView) mView.findViewById(R.id.seats_left_num);
 
+
+
             // Links the types of View object references to the information retrieved by firebaseRecyclerAdapter
             //if (postProfile != null) {
                 // As long as the profile picture exists, display it
@@ -209,6 +215,10 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
             post_time.setText(postTime);
             post_seats.setText(postSeats);
 
+            if (postTo.equals("New York")) {
+                RelativeLayout listPart = (RelativeLayout) mView.findViewById(R.id.list_part);
+                listPart.getLayoutParams().height = 0;
+            }
         }
 
     }
