@@ -67,13 +67,12 @@ public class HitchDatabase
     public void addPost(Post post)
     {
         HashMap<String, String> postMap = new HashMap<>();
-
-        postMap.put("departingArea", post.get_departing_area());
-        postMap.put("destination", post.get_destination());
-        postMap.put("departureTime", post.get_departure_time().toString());
-        postMap.put("rideSize", post.get_ride_size_restriction().toString());
-        postMap.put("description", post.get_description());
-        postMap.put("author", post.get_author().toString());
+        
+        postMap.put("departing_area", post.getdeparting_area());
+        postMap.put("destination", post.getdestination());
+        postMap.put("departure_time", post.getdeparture_time().toString());
+        postMap.put("available_spots", post.getavailable_spots().toString());
+        postMap.put("description", post.getdescription());
 
         DatabaseReference currentChild = postsRef.child(post.toString());
         DatabaseReference postsAuthor = currentChild.child(post.toString());

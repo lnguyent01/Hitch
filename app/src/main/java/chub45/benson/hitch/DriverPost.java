@@ -6,8 +6,8 @@ package chub45.benson.hitch;
 
 import android.net.Uri;
 
-import com.google.firebase.auth.FirebaseUser;
 
+//import java.sql.Driver;
 import java.util.Date;
 
 public class DriverPost implements Post
@@ -34,9 +34,19 @@ public class DriverPost implements Post
     private int available_spots;
 
     /**
-     * The post's author
+     * The post's author's email
      */
-    private FirebaseUser author;
+    private String author_email;
+
+    /**
+     * The post's author's profile picture
+     */
+    private Uri author_profile_pic;
+
+    /**
+     * The post's author's account UID
+     */
+    private String author_uid;
 
     /**
      * An optional description for any other information the driver
@@ -50,21 +60,38 @@ public class DriverPost implements Post
     private int post_id;
 
     /**
+     * Passengers who have requested to join the ride
+     */
+    private String potential_passengers;
+
+    /**
+     * Passengers accepted by the driver
+     */
+    private String accepted_passengers;
+
+    public DriverPost() {}
+
+    /**
      * Creates a post with an empty description
      * @param departing_area the departing_area
      * @param destination the trip's destination
      * @param departure_time the time the driver is leaving
      * @param available_spots the number of available spots for passengers
-     * @param author the post's author
+     * @param author_email the post's author's email
+     * @param author_profile_pic the post's author's profile picture
+     * @param author_uid the post's author's account UID
      */
     public DriverPost(String departing_area, String destination,
-                Date departure_time, int available_spots, FirebaseUser author)
+                Date departure_time, int available_spots,
+                String author_email, Uri author_profile_pic, String author_uid)
     {
         this.departing_area = departing_area;
         this.destination = destination;
         this.departure_time = departure_time;
         this.available_spots = available_spots;
-        this.author = author;
+        this.author_email = author_email;
+        this.author_profile_pic = author_profile_pic;
+        this.author_uid = author_uid;
         this.description = "";
         this.post_id = this.post_counter;
         this.post_counter++;
@@ -76,17 +103,23 @@ public class DriverPost implements Post
      * @param destination the trip's destination
      * @param departure_time the time the driver is leaving
      * @param available_spots the number of available spots for passengers
-     * @param author the post's author
+     * @param author_email the post's author's email
+     * @param author_profile_pic the post's author's profile picture
+     * @param author_uid the post's author's account UID
      * @param description the post's description
      */
     public DriverPost(String departing_area, String destination,
-                Date departure_time, int available_spots, FirebaseUser author, String description)
+                Date departure_time, int available_spots,
+                String author_email, Uri author_profile_pic, String author_uid,
+                String description)
     {
         this.departing_area = departing_area;
         this.destination = destination;
         this.departure_time = departure_time;
         this.available_spots = available_spots;
-        this.author = author;
+        this.author_email = author_email;
+        this.author_profile_pic = author_profile_pic;
+        this.author_uid = author_uid;
         this.description = description;
         this.post_id = this.post_counter;
         this.post_counter++;
@@ -96,7 +129,7 @@ public class DriverPost implements Post
      * Gets the departing area
      * @return the departing area
      */
-    public String get_departing_area()
+    public String getdeparting_area()
     {
         return departing_area;
     }
@@ -105,7 +138,7 @@ public class DriverPost implements Post
      * Gets the trip destination
      * @return the trip destination
      */
-    public String get_destination()
+    public String getdestination()
     {
         return destination;
     }
@@ -114,7 +147,7 @@ public class DriverPost implements Post
      * Gets the time the driver is leaving
      * @return the trip's departure time
      */
-    public Date get_departure_time()
+    public Date getdeparture_time()
     {
         return departure_time;
     }
@@ -123,32 +156,40 @@ public class DriverPost implements Post
      * Gets the number of spots left in the driver's vehicle
      * @return number of available spots in the driver's vehicle
      */
-    public Integer get_ride_size_restriction()
+    public Integer getavailable_spots()
     {
         return available_spots;
     }
 
     /**
-     * Gets the post's author
-     * @return the post's author
+     * Gets the post's author's account UID
+     * @return the post's author's account UID
      */
-    public FirebaseUser get_author()
+    public String getauthor()
     {
-        return author;
+        return author_uid;
+    }
+
+    /**
+     * Gets the post's author's email
+     */
+    public String getauthor_email()
+    {
+        return author_email;
     }
 
     /**
      * Gets the author's profile picture
      * @return the url to the author's profile picture
      */
-    public Uri get_profile_pic() { return author.getPhotoUrl(); }
+    public Uri getauthor_profile_pic() { return author_profile_pic; }
 
     /**
      * Gets the post's optional description
      * Returns an empty string if the description is blank
      * @return the post's description
      */
-    public String get_description()
+    public String getdescription()
     {
         return description;
     }
@@ -158,6 +199,18 @@ public class DriverPost implements Post
      * @return the post's id
      */
     public int get_post_id() { return this.post_id; }
+
+    /**
+     * Gets the potential passengers
+     * @return the ride's potential passengers
+     */
+    public String getpotential_passengers() { return this.potential_passengers; }
+
+    /**
+     * Gets the accepted passengers
+     * @return the ride's accepted passengers
+     */
+    public String getaccepted_passengers() { return this.accepted_passengers; }
 
     public void set_departing_area(String departing_area) {
         this.departing_area = departing_area;
@@ -171,12 +224,34 @@ public class DriverPost implements Post
         this.departure_time = time;
     }
 
-    public void set_ride_size_restriction(int size) {
+    public void set_available_spots(int size) {
         this.available_spots = size;
     }
 
     public void set_description(String description) {
         this.description = description;
+    }
+
+    public void setpotential_passengers(String potential_passengers) { this.potential_passengers = potential_passengers; }
+
+    public void setaccepted_passengers(String accepted_passengers) { this.accepted_passengers = accepted_passengers; }
+
+    public void add_potential_passenger(String passenger) {
+        this.potential_passengers += passenger + "|";
+    }
+
+    public void add_accepted_passenger(String passenger) {
+        this.accepted_passengers += passenger + "|";
+        this.available_spots--;
+    }
+
+    public void remove_potential_passenger(String passenger) {
+        this.potential_passengers.replace(passenger + "|", "");
+    }
+
+    public void remove_accepted_passenger(String passenger) {
+        this.accepted_passengers.replace(passenger + "|", "");
+        this.available_spots++;
     }
 
     @Override
