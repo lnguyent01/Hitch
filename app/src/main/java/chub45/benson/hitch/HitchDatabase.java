@@ -67,18 +67,19 @@ public class HitchDatabase
     public void addPost(Post post)
     {
         HashMap<String, String> postMap = new HashMap<>();
-        
+
         postMap.put("departing_area", post.getdeparting_area());
         postMap.put("destination", post.getdestination());
         postMap.put("departure_time", post.getdeparture_time().toString());
         postMap.put("available_spots", post.getavailable_spots().toString());
         postMap.put("description", post.getdescription());
+        postMap.put("author_uid", post.getauthor());
+        postMap.put("author_email", post.getauthor_email());
+        postMap.put("post_id", post.get_post_id().toString());
+        postMap.put("potential_passengers", post.getpotential_passengers());
+        postMap.put("accepted_passengers", post.getaccepted_passengers());
 
-        DatabaseReference currentChild = postsRef.child(post.toString());
-        DatabaseReference postsAuthor = currentChild.child(post.toString());
-
-//        HashMap<String, String> userMap = makeUserMap(post.getAuthor());
-
+        DatabaseReference currentChild = postsRef.child(post.get_post_id().toString());
 
         currentChild.setValue(postMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -131,8 +132,8 @@ public class HitchDatabase
         usersRef.child(username).removeValue();
     }
 
-    public void removePost(String postTitle){
-        postsRef.child(postTitle).removeValue();
+    public void removePost(String post_id){
+        postsRef.child(post_id).removeValue();
     }
 
     public DatabaseReference getRoot(){

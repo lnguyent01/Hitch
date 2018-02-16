@@ -18,6 +18,7 @@ public interface Post
     public Integer getavailable_spots();
     public String getauthor();
     public String getauthor_email();
+    public Integer get_post_id();
     public Uri getauthor_profile_pic();
     public String getdescription();
     public String getpotential_passengers();
