@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Date;
 import javax.security.auth.login.LoginException;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
@@ -76,13 +77,13 @@ public class LogInActivity extends AppCompatActivity implements View.OnClickList
                 if (task.isSuccessful()) {
                     //if user successfully logs in, send to postings activity page (?)
                     //Intent intent = new Intent(LogInActivity.this, **new.class**);
-
                     // Closes all other activities once log in(aka signup and login activities)
                     //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     Intent navigationIntent = new Intent(getApplicationContext(), NavigationActivity.class );
                     navigationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(navigationIntent);
                 }
+
                 else {
                     Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }

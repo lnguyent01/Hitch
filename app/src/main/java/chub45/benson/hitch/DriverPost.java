@@ -198,7 +198,7 @@ public class DriverPost implements Post
      * Gets the post's id
      * @return the post's id
      */
-    public int getpost_id() { return this.post_id; }
+    public Integer get_post_id() { return this.post_id; }
 
     /**
      * Gets the potential passengers
