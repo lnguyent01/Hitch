@@ -25,7 +25,7 @@
             android:label="NavigationActivity" />
         <activity
             android:name="chub45.benson.hitch.PostDetails"
-            android:label="here we are">
+            android:label="Details">
         </activity>
     </application>
 

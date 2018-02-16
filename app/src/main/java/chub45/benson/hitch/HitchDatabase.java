@@ -79,6 +79,7 @@ public class HitchDatabase
         postMap.put("potential_passengers", post.getpotential_passengers());
         postMap.put("accepted_passengers", post.getaccepted_passengers());
 
+
         DatabaseReference currentChild = postsRef.child(post.get_post_id().toString());
 
         currentChild.setValue(postMap).addOnCompleteListener(new OnCompleteListener<Void>() {
