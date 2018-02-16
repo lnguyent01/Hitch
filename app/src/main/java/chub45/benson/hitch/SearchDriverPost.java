@@ -29,7 +29,7 @@ public class SearchDriverPost
     /**
      * The number of spots left in the driver's vehicle
      */
-    private int available_spots;
+    private String available_spots;
 
     /**
      * The post's author's email
@@ -80,7 +80,7 @@ public class SearchDriverPost
      * @param author_uid the post's author's account UID
      */
     public SearchDriverPost(String departing_area, String destination,
-                      Date departure_time, int available_spots,
+                      String departure_time, String available_spots,
                       String author_email, Uri author_profile_pic, String author_uid)
     {
         this.departing_area = departing_area;
@@ -107,7 +107,7 @@ public class SearchDriverPost
      * @param description the post's description
      */
     public SearchDriverPost(String departing_area, String destination,
-                      Date departure_time, int available_spots,
+                      String departure_time, String available_spots,
                       String author_email, Uri author_profile_pic, String author_uid,
                       String description)
     {
@@ -154,7 +154,7 @@ public class SearchDriverPost
      * Gets the number of spots left in the driver's vehicle
      * @return number of available spots in the driver's vehicle
      */
-    public Integer getavailable_spots()
+    public String getavailable_spots()
     {
         return available_spots;
     }
@@ -218,11 +218,11 @@ public class SearchDriverPost
         this.destination = destination;
     }
 
-    public void set_departure_time(Date time) {
+    public void set_departure_time(String time) {
         this.departure_time = time;
     }
 
-    public void set_available_spots(int size) {
+    public void set_available_spots(String size) {
         this.available_spots = size;
     }
 
@@ -234,27 +234,9 @@ public class SearchDriverPost
 
     public void setaccepted_passengers(String accepted_passengers) { this.accepted_passengers = accepted_passengers; }
 
-    public void add_potential_passenger(String passenger) {
-        this.potential_passengers += passenger + "|";
-    }
-
-    public void add_accepted_passenger(String passenger) {
-        this.accepted_passengers += passenger + "|";
-        this.available_spots--;
-    }
-
-    public void remove_potential_passenger(String passenger) {
-        this.potential_passengers.replace(passenger + "|", "");
-    }
-
-    public void remove_accepted_passenger(String passenger) {
-        this.accepted_passengers.replace(passenger + "|", "");
-        this.available_spots++;
-    }
 
     @Override
     public String toString() {
         return Integer.toString(this.get_post_id());
     }
-}
 }
