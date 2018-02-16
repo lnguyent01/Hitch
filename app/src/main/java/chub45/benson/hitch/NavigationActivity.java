@@ -149,6 +149,7 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
                         intent.putExtra("available_spots", String.valueOf(model.getavailable_spots()));
                         intent.putExtra("departure_time", model.getdeparture_time());
                         intent.putExtra("description", model.getdescription());
+                        intent.putExtra("postID", model.getpost_id());
                         startActivity(intent);
                     }
                 });

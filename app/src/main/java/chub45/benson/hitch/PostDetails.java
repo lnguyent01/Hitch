@@ -40,10 +40,15 @@ public class PostDetails extends AppCompatActivity {
         String TimeStatement = "Leaving at " + intent.getExtras().getString("departure_time");
         mDepartureTime.setText(TimeStatement);
 
+        // Use this to find out which post this is
+        String postID = intent.getExtras().getString("postID");
+
         String num = intent.getExtras().getString("available_spots");
-        String price = "32";
+        String price = "0";
         String seats_left_and_price = num + " seats left at $" + price + " each";
         mSeatsLeftAndPrice.setText(seats_left_and_price);
+
+
 
 
         mJoinButton.setOnClickListener(new View.OnClickListener() {

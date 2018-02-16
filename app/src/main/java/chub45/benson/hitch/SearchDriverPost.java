@@ -10,10 +10,7 @@ import java.util.Date;
 
 public class SearchDriverPost
 {
-    private static int post_counter = 0;
-    /**
-     * The area the driver is leaving from
-     */
+
     private String departing_area;
 
     /**
@@ -55,7 +52,7 @@ public class SearchDriverPost
     /**
      * The post's id
      */
-    private int post_id;
+    private String post_id;
 
     /**
      * Passengers who have requested to join the ride
@@ -91,8 +88,7 @@ public class SearchDriverPost
         this.author_profile_pic = author_profile_pic;
         this.author_uid = author_uid;
         this.description = "";
-        this.post_id = this.post_counter;
-        this.post_counter++;
+
     }
 
     /**
@@ -119,8 +115,7 @@ public class SearchDriverPost
         this.author_profile_pic = author_profile_pic;
         this.author_uid = author_uid;
         this.description = description;
-        this.post_id = this.post_counter;
-        this.post_counter++;
+
     }
 
     /**
@@ -196,7 +191,7 @@ public class SearchDriverPost
      * Gets the post's id
      * @return the post's id
      */
-    public Integer get_post_id() { return this.post_id; }
+    public String getpost_id() { return this.post_id; }
 
     /**
      * Gets the potential passengers
@@ -237,6 +232,6 @@ public class SearchDriverPost
 
     @Override
     public String toString() {
-        return Integer.toString(this.get_post_id());
+        return this.getpost_id();
     }
 }
