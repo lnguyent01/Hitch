@@ -36,10 +36,11 @@ public class AddPostActivity extends AppCompatActivity {
         createPostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DateFormat formatter = new SimpleDateFormat("hh:mm");
+                DateFormat formatter = new SimpleDateFormat("hh:mm a");
                 try {
-                    Date date = new Date();
-                    date.setTime(formatter.parse(departureTimeText.getText().toString()).getTime());
+                    //Date date = new Date();
+                    //date.setTime(formatter.parse(departureTimeText.getText().toString()).getTime());
+                    Date date = formatter.parse(departureTimeText.getText().toString());
                     Post post = postFactory.createPost(departingAreaText.getText().toString(),
                             destinationText.getText().toString(),
                             date, Integer.parseInt(availableSpotsText.getText().toString()),
