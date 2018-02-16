@@ -12,7 +12,7 @@ import java.util.Date;
 
 public class DriverPost implements Post
 {
-    private static int post_counter = 0;
+    private static int post_counter = 2;
     /**
      * The area the driver is leaving from
      */
@@ -198,7 +198,7 @@ public class DriverPost implements Post
      * Gets the post's id
      * @return the post's id
      */
-    public int get_post_id() { return this.post_id; }
+    public int getpost_id() { return this.post_id; }
 
     /**
      * Gets the potential passengers
@@ -256,6 +256,6 @@ public class DriverPost implements Post
 
     @Override
     public String toString() {
-        return Integer.toString(this.get_post_id());
+        return Integer.toString(this.getpost_id());
     }
 }

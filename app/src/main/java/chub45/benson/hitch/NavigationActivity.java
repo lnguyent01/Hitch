@@ -49,7 +49,8 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
                     mTextMessage.setText(R.string.title_home);
                     return true;
                 case R.id.navigation_map:
-                    mTextMessage.setText(R.string.title_map);
+                    Intent mapIntent = new Intent(getApplicationContext(), MapsActivity.class);
+                    startActivity(mapIntent);
                     return true;
                 case R.id.navigation_profile:
                     mTextMessage.setText(R.string.title_profile);
