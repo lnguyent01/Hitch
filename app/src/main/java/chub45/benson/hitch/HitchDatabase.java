@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -72,11 +73,13 @@ public class HitchDatabase
         postMap.put("departureTime", post.get_departure_time().toString());
         postMap.put("rideSize", post.get_ride_size_restriction().toString());
         postMap.put("description", post.get_description());
+        postMap.put("author", post.get_author().toString());
 
         DatabaseReference currentChild = postsRef.child(post.toString());
         DatabaseReference postsAuthor = currentChild.child(post.toString());
 
-        HashMap<String, String> userMap = makeUserMap(post.getAuthor());
+//        HashMap<String, String> userMap = makeUserMap(post.getAuthor());
+
 
         currentChild.setValue(postMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -88,7 +91,7 @@ public class HitchDatabase
                 }
             }
         });
-        postsAuthor.setValue(userMap);
+        //postsAuthor.setValue(userMap);
     }
 
     private HashMap<String,String> makeUserMap(User user){
