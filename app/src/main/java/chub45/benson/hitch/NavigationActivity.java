@@ -215,7 +215,7 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
             post_time.setText(postTime);
             post_seats.setText(postSeats);
 
-            if (postTo.equals("New York")) {
+            if (postTo.equals("New Yk")) {
                 RelativeLayout listPart = (RelativeLayout) mView.findViewById(R.id.list_part);
                 listPart.getLayoutParams().height = 0;
             }
