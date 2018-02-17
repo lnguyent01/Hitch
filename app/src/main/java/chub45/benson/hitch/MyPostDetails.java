@@ -95,7 +95,7 @@ public class MyPostDetails extends AppCompatActivity {
                     // I have already created arrays with all of the UIDs in both "accepted_passengers"
                     // and "potential_passengers"
                     // If either is empty, then final~~~~passengers_is_empty will be true, so you can check using that
-                    // Hopefully the Parsing code blocks above can be of use
+                    // Hopefully the Parsing code blocks above can be of use (could be wrong, though)
                     //
                     // If there isn't enough space, just don't accept the last ones
                     //   Example: 3 spaces, 4 pending. The first 3 usernames get accepted, the 4th one doesn't

@@ -31,7 +31,7 @@ public class ChoosePosts extends AppCompatActivity{
         acceptedPosts.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 //Opens add post activity for users to add a post by entering information
-                Intent acceptedPostsIntent = new Intent(getApplicationContext(), ChoosePosts.class);
+                Intent acceptedPostsIntent = new Intent(getApplicationContext(), AcceptedPostsActivity.class);
                 startActivity(acceptedPostsIntent);
             }
         });

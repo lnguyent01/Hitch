@@ -72,7 +72,9 @@ public class PostDetails extends AppCompatActivity {
                 String [] potential_passengers_list = potential_passengers_all.split("|");
 
                 for (int i = 0; i < potential_passengers_list.length; i++) {
-                    if (uID.equals(potential_passengers_list[i])) {
+                    String temp = potential_passengers_list[i];
+
+                    if (uID.equals(temp)) {
                         isUserRequested = true;
                     }
                 }
@@ -97,8 +99,9 @@ public class PostDetails extends AppCompatActivity {
 
                 String [] accepted_passengers_list = accepted_passengers_all.split("|");
 
-                for (int i = 0; i < accepted_passengers_list.length; i++) {
-                    if (uID.equals(accepted_passengers_list[i])) {
+                for (String accepted_passenger : accepted_passengers_list) {
+
+                    if (uID.equals(accepted_passenger)) {
                         isUserAccepted = true;
                    }
                 }
