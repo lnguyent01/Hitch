@@ -84,13 +84,14 @@ public class MyPostsActivity extends AppCompatActivity{
 
                     @Override
                     public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(getApplicationContext(), PostDetails.class);
+                        Intent intent = new Intent(getApplicationContext(), MyPostDetails.class);
                         intent.putExtra("destination", model.getdestination());
                         intent.putExtra("departing_area", model.getdeparting_area());
                         intent.putExtra("available_spots", String.valueOf(model.getavailable_spots()));
                         intent.putExtra("departure_time", model.getdeparture_time());
                         intent.putExtra("description", model.getdescription());
                         intent.putExtra("postID", model.getpost_id());
+                        intent.putExtra("name", model.getauthor_email());
                         startActivity(intent);
                     }
                 });

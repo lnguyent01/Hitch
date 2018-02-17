@@ -142,14 +142,14 @@
         android:id="@+id/SeatsLeftandPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/JoinButton"
+        android:layout_above="@+id/AcceptButton"
         android:layout_centerHorizontal="true"
         android:text="8 seats left at $32 each"
         android:textColor="@android:color/background_dark"
         android:textSize="22sp" />
 
     <ImageButton
-        android:id="@+id/JoinButton"
+        android:id="@+id/AcceptButton"
         android:layout_width="200dp"
         android:layout_height="60dp"
 

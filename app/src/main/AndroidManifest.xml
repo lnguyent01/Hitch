@@ -28,6 +28,10 @@
             android:label="Details">
         </activity>
         <activity
+            android:name="chub45.benson.hitch.MyPostDetails"
+            android:label="Details">
+        </activity>
+        <activity
             android:name="chub45.benson.hitch.ChoosePosts"
             android:label="Choose Posts">
         </activity>

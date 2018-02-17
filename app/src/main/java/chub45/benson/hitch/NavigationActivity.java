@@ -164,6 +164,7 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
                         intent.putExtra("departure_time", model.getdeparture_time());
                         intent.putExtra("description", model.getdescription());
                         intent.putExtra("postID", model.getpost_id());
+                        intent.putExtra("name", model.getauthor_email());
                         startActivity(intent);
                     }
                 });

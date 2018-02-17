@@ -9,18 +9,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.sql.Time;
-
-public class PostDetails extends AppCompatActivity {
+public class MyPostDetails extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.post_details);
+        setContentView(R.layout.my_post_details);
 
 
         ImageView mProfile = (ImageView) findViewById(R.id.profile);
-        ImageButton mJoinButton = (ImageButton) findViewById(R.id.JoinButton);
+        ImageButton mAcceptButton = (ImageButton) findViewById(R.id.AcceptButton);
         TextView mDriverName = (TextView) findViewById(R.id.DriverName);
         TextView mDriverIs = (TextView) findViewById(R.id.yourDriverIs);
         TextView mFrom = (TextView) findViewById(R.id.From);
@@ -52,17 +50,32 @@ public class PostDetails extends AppCompatActivity {
 
 
 
-        mJoinButton.setOnClickListener(new View.OnClickListener() {
-            boolean requested = false;
+        mAcceptButton.setOnClickListener(new View.OnClickListener() {
+
+            boolean PLACEHOLDER = false;
+            //Remove PLACEHOLDER
 
             @Override
             public void onClick(View view) {
-                if (!requested) {
-                    Toast.makeText(getBaseContext(), "You have requested to join this ride!", Toast.LENGTH_SHORT).show();
-                    requested = true;
+
+
+                if (!PLACEHOLDER) {
+                    Toast.makeText(getBaseContext(), "You have accepted these passengers!", Toast.LENGTH_SHORT).show();
+                    PLACEHOLDER = true;
+
+                    // Put code here
+                    // Every single passenger (Represented by UID) in the "pending" String gets moved to the "accepted" String
+                    // If there is not enough space, just don't accept the last ones
+                    //   Example: 3 spaces, 4 pending. The first 3 usernames get accepted, the 4th one doesn't
+                    // Space is decremented accordingly
+                    // Use the post's unique ID, stored in postID, to find the correct post
+
+
                 }
                 else {
-                    Toast.makeText(getBaseContext(), "You have already requested to join this ride", Toast.LENGTH_SHORT).show();
+
+                    //If space = 0, do this
+                    Toast.makeText(getBaseContext(), "There is no more space on this ride!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
