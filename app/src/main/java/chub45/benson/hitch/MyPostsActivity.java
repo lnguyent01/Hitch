@@ -92,6 +92,8 @@ public class MyPostsActivity extends AppCompatActivity{
                         intent.putExtra("description", model.getdescription());
                         intent.putExtra("postID", model.getpost_id());
                         intent.putExtra("name", model.getauthor_email());
+                        intent.putExtra("potential_passengers", model.getpotential_passengers());
+                        intent.putExtra("accepted_passengers", model.getaccepted_passengers());
                         startActivity(intent);
                     }
                 });

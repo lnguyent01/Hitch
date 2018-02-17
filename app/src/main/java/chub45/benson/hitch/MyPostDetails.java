@@ -47,36 +47,71 @@ public class MyPostDetails extends AppCompatActivity {
         String seats_left_and_price = num + " seats left at $" + price + " each";
         mSeatsLeftAndPrice.setText(seats_left_and_price);
 
+        // Parsing the potential_passengers data
+        String potential_passengers_all = intent.getExtras().getString("potential_passengers");
+
+        boolean potential_passengers_is_empty = false;
+
+        // If the list isn't empty
+        if (!potential_passengers_all.equals("")) {
+            String [] potential_passengers_list = potential_passengers_all.split("|");
+        }
+        else {
+            potential_passengers_is_empty = true;
+        }
 
 
+        // Parsing the accepted_passengers data
+        String accepted_passengers_all = intent.getExtras().getString("accepted_passengers");
 
+        boolean accepted_passengers_is_empty = false;
+
+        // If the list isn't empty
+        if (!accepted_passengers_all.equals("")) {
+            String [] accepted_passengers_list = accepted_passengers_all.split("|");
+        }
+        else {
+            accepted_passengers_is_empty = true;
+        }
+
+
+        final String finalNum = num;
+        final boolean finalPotential_passengers_is_empty = potential_passengers_is_empty;
         mAcceptButton.setOnClickListener(new View.OnClickListener() {
-
-            boolean PLACEHOLDER = false;
-            //Remove PLACEHOLDER
+            boolean no_more_potential_passengers = false;
 
             @Override
             public void onClick(View view) {
 
+                if (finalNum.equals("0")) {
+                    Toast.makeText(getBaseContext(), "There is no more space to accept passengers on this ride!", Toast.LENGTH_SHORT).show();
+                }
 
-                if (!PLACEHOLDER) {
-                    Toast.makeText(getBaseContext(), "You have accepted these passengers!", Toast.LENGTH_SHORT).show();
-                    PLACEHOLDER = true;
+                else if ((!finalPotential_passengers_is_empty) && (!no_more_potential_passengers)) {
 
                     // Put code here
-                    // Every single passenger (Represented by UID) in the "pending" String gets moved to the "accepted" String
-                    // If there is not enough space, just don't accept the last ones
+                    // Every single passenger (Represented by UID) in the "potential_passengers" String gets
+                    // moved to the "accepted_passengers" String
+                    // I have already created arrays with all of the UIDs in both "accepted_passengers"
+                    // and "potential_passengers"
+                    // If either is empty, then final~~~~passengers_is_empty will be true, so you can check using that
+                    // Hopefully the Parsing code blocks above can be of use
+                    //
+                    // If there isn't enough space, just don't accept the last ones
                     //   Example: 3 spaces, 4 pending. The first 3 usernames get accepted, the 4th one doesn't
                     // Space is decremented accordingly
                     // Use the post's unique ID, stored in postID, to find the correct post
 
+                    Toast.makeText(getBaseContext(), "You have accepted these passengers!", Toast.LENGTH_SHORT).show();
+                    no_more_potential_passengers = true;
+
 
                 }
-                else {
 
-                    //If space = 0, do this
-                    Toast.makeText(getBaseContext(), "There is no more space on this ride!", Toast.LENGTH_SHORT).show();
+                else if (finalPotential_passengers_is_empty || no_more_potential_passengers) {
+                    Toast.makeText(getBaseContext(), "There are no passengers to accept!", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
     }
