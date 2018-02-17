@@ -20,6 +20,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -149,7 +151,8 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
 
                 // Passes the post information to the postViewHolder viewHolder
                 viewHolder.setDetails(getApplicationContext(), model.getdeparting_area(),
-                        model.getdestination(), String.valueOf(model.getavailable_spots()), model.getdeparture_time());
+                        model.getdestination(), String.valueOf(model.getavailable_spots()), model.getdeparture_time(),
+                        model.getauthor_uid());
 
                 // When a post is clicked, move to another activity - one that contains more details on the post that was clicked
                 // Information is passed to that activity
@@ -183,6 +186,10 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
 
         View mView;
 
+        // Get the current user's UID
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String uID = currentUser.getUid();
+
         private postViewHolder.ClickListener mClickListener;
 
         // Enables callbacks to be sent
@@ -211,7 +218,7 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
 
         // This method is the one that does the work required to display all of the information retrieved
         // by the firebaseRecyclerAdapter
-        public void setDetails(Context ctx, String postFrom, String postTo, String postSeats, String postTime) {
+        public void setDetails(Context ctx, String postFrom, String postTo, String postSeats, String postTime, String postAuthor) {
 
             // Creates types of View object references and links them to every component of list_layout
             ImageView post_profile = (ImageView) mView.findViewById(R.id.profile);
@@ -233,7 +240,9 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
             post_time.setText(postTime);
             post_seats.setText(postSeats);
 
-            if (postTo.equals("New Yk")) {
+            // Posts by you won't show up when searching the database
+            // Will add more later, like "accepted posts won't show up", etc.
+            if (uID.equals(postAuthor)) {
                 RelativeLayout listPart = (RelativeLayout) mView.findViewById(R.id.list_part);
                 listPart.getLayoutParams().height = 0;
             }

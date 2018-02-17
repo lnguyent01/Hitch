@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.sql.Time;
+import java.util.regex.Pattern;
 
 public class PostDetails extends AppCompatActivity {
 
@@ -69,7 +70,7 @@ public class PostDetails extends AppCompatActivity {
 
             // If there is more than one person on the requested list, see if the current user is there
             if (potential_passengers_all.indexOf("|") > 0) {
-                String [] potential_passengers_list = potential_passengers_all.split("|");
+                String [] potential_passengers_list = potential_passengers_all.split(Pattern.quote("|"));
 
                 for (int i = 0; i < potential_passengers_list.length; i++) {
                     String temp = potential_passengers_list[i];
@@ -97,7 +98,7 @@ public class PostDetails extends AppCompatActivity {
         if (!(accepted_passengers_all.equals(""))) {
 
 
-                String [] accepted_passengers_list = accepted_passengers_all.split("|");
+                String [] accepted_passengers_list = accepted_passengers_all.split(Pattern.quote("|"));
 
                 for (String accepted_passenger : accepted_passengers_list) {
 
