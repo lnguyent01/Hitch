@@ -158,7 +158,7 @@ public class SearchDriverPost
      * Gets the post's author's account UID
      * @return the post's author's account UID
      */
-    public String getauthor()
+    public String getauthor_uid()
     {
         return author_uid;
     }
