@@ -1,6 +1,5 @@
 package chub45.benson.hitch;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -66,7 +65,7 @@ public class AddPostActivity extends AppCompatActivity {
         );
         final EditText departureTimeText = (EditText) findViewById(R.id.departureTimeText);
         final EditText availableSpotsText = (EditText) findViewById(R.id.availableSpotsText);
-        final EditText descriptionText = (EditText) findViewById(R.id.descriptionText);
+        final EditText descriptionText = (EditText) findViewById(R.id.displayDescriptionText);
 
         Button createPostButton = (Button) findViewById(R.id.createPostButton);
         createPostButton.setOnClickListener(new View.OnClickListener() {
