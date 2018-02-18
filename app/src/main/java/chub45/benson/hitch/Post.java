@@ -23,7 +23,6 @@ public interface Post
     public String getdescription();
     public String getpotential_passengers();
     public String getaccepted_passengers();
-    public Integer get_post_id();
     public void set_departing_area(String departing_area);
     public void set_destination(String destination);
     public void set_departure_time(Date time);

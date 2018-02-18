@@ -256,6 +256,6 @@ public class DriverPost implements Post
 
     @Override
     public String toString() {
-        return Integer.toString(this.getpost_id());
+        return Integer.toString(this.get_post_id());
     }
 }

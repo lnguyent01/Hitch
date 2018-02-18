@@ -96,6 +96,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void addMarkers(LatLng current_location) {
-        mMap.addMarker(new MarkerOptions().position(current_location).title("Added from a method"));
+        mMap.addMarker(new MarkerOptions().position(current_location).title("Added from a method " + current_location.toString()));
     }
 }

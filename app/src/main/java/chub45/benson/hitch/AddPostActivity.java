@@ -41,7 +41,7 @@ public class AddPostActivity extends AppCompatActivity {
                 new PlaceSelectionListener() {
                     @Override
                     public void onPlaceSelected(Place place) {
-                        AddPostActivity.this.setDeparting_area(place.toString());
+                        AddPostActivity.this.setDeparting_area(place.getAddress().toString());
                     }
 
                     @Override
@@ -55,7 +55,7 @@ public class AddPostActivity extends AppCompatActivity {
                 new PlaceSelectionListener() {
                     @Override
                     public void onPlaceSelected(Place place) {
-                        AddPostActivity.this.setDestination(place.toString());
+                        AddPostActivity.this.setDestination(place.getAddress().toString());
                     }
 
                     @Override
