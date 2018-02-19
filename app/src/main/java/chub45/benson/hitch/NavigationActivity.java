@@ -1,22 +1,17 @@
 package chub45.benson.hitch;
 
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
 
-public class NavigationActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
-    public static final String EXTRA_MESSAGE = "chub45.benson.hitch.MESSAGE";
 
+public class NavigationActivity extends FragmentActivity{
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -24,13 +19,32 @@ public class NavigationActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
+                    setTitle("Home");
+                    HomeFragment homeFragment = new HomeFragment();
+                    android.support.v4.app.FragmentTransaction homeFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    homeFragmentTransaction.replace(R.id.content, homeFragment);
+                    homeFragmentTransaction.commit();
                     return true;
                 case R.id.navigation_map:
-                    mTextMessage.setText(R.string.title_map);
+                    setTitle("Map");
+                    MapFragment mapFragment = new MapFragment();
+                    android.support.v4.app.FragmentTransaction mapFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    mapFragmentTransaction.replace(R.id.content, mapFragment);
+                    mapFragmentTransaction.commit();
+                    return true;
+                case R.id.navigation_posts:
+                    setTitle("Posts");
+                    PostsFragment postsFragment = new PostsFragment();
+                    android.support.v4.app.FragmentTransaction postsFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    postsFragmentTransaction.replace(R.id.content, postsFragment);
+                    postsFragmentTransaction.commit();
                     return true;
                 case R.id.navigation_profile:
-                    mTextMessage.setText(R.string.title_profile);
+                    setTitle("Profile");
+                    ProfileFragment profileFragment = new ProfileFragment();
+                    android.support.v4.app.FragmentTransaction profileFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    profileFragmentTransaction.replace(R.id.content, profileFragment);
+                    profileFragmentTransaction.commit();
                     return true;
             }
             return false;
@@ -42,27 +56,13 @@ public class NavigationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                //Need to make another
-                //selectNavigationItem(item);
-                return true;
-            }
-        });
-
-        //Create post creation button and wait until user clicks this button
-        ImageButton addPostButton = (ImageButton) findViewById(R.id.addPostButton);
-        addPostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Opens add post activity for users to add a post by entering information
-                Intent signUpIntent = new Intent(getApplicationContext(), AddPostActivity.class);
-                startActivity(signUpIntent);
-            }
-        });
-
-
+        BottomNavigationView navigation = findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        //Home Fragment Displayed when instance of activity class is created
+        setTitle("Home");
+        HomeFragment hFragment = new HomeFragment();
+        FragmentTransaction hFragmentTransaction = getSupportFragmentManager().beginTransaction();
+        hFragmentTransaction.replace(R.id.content, hFragment);
+        hFragmentTransaction.commit();
     }
 }
