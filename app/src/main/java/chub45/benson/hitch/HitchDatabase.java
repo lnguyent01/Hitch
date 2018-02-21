@@ -125,7 +125,7 @@ public class HitchDatabase
 //        return new User(returnedUserMap.get("email"), returnedUserMap.get("username"), returnedUserMap.get("fullName"));
 //    }
 
-//    public HitchPost getPost(String username) { // return type will be a post
+//    public Post getPost(String username) { // return type will be a post
 //        /* query the database to find the postTitle and return the post object */
 //    }
 

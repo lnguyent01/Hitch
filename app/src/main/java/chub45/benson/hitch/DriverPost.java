@@ -4,10 +4,18 @@ package chub45.benson.hitch;
  * Created by kailash on 2/4/18.
  */
 
+import android.content.Context;
 import android.net.Uri;
 
 
 //import java.sql.Driver;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.location.places.GeoDataApi;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
+
 import java.util.Date;
 
 public class DriverPost implements Post
@@ -125,9 +133,19 @@ public class DriverPost implements Post
         this.post_counter++;
     }
 
+    /*public String getdeparting_area() {
+        GoogleApiClient client = new GoogleApiClient.Builder().build();
+        PendingResult<PlaceBuffer> result = Places.GeoDataApi.getPlaceById(client, this.getdeparting_area_id());
+        PlaceBuffer departing_area = result.await();
+    }
+
+    public String getdestination() {
+        // return string
+    }*/
+
     /**
-     * Gets the departing area
-     * @return the departing area
+     * Gets a Google Place id representation of the departing area
+     * @return Google Place id of the departing area
      */
     public String getdeparting_area()
     {
@@ -135,8 +153,8 @@ public class DriverPost implements Post
     }
 
     /**
-     * Gets the trip destination
-     * @return the trip destination
+     * Gets a Google Place id representation of the trip destination
+     * @return Google Place id of the trip destination
      */
     public String getdestination()
     {

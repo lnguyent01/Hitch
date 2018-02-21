@@ -85,7 +85,7 @@ public class SearchDriverPost
     {
         this.departing_area = departing_area;
         this.destination = destination;
-        this.departure_time = departure_time;
+        this.departure_time = departure_time.toString();
         this.available_spots = available_spots;
         this.author_email = author_email;
         this.author_profile_pic = author_profile_pic;
@@ -113,7 +113,7 @@ public class SearchDriverPost
     {
         this.departing_area = departing_area;
         this.destination = destination;
-        this.departure_time = departure_time;
+        this.departure_time = departure_time.toString();
         this.available_spots = available_spots;
         this.author_email = author_email;
         this.author_profile_pic = author_profile_pic;
@@ -219,7 +219,7 @@ public class SearchDriverPost
     }
 
     public void set_departure_time(Date time) {
-        this.departure_time = time;
+        this.departure_time = time.toString();
     }
 
     public void set_available_spots(int size) {
@@ -256,5 +256,4 @@ public class SearchDriverPost
     public String toString() {
         return Integer.toString(this.get_post_id());
     }
-}
 }

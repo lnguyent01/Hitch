@@ -1,5 +1,6 @@
 package chub45.benson.hitch;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +9,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 
 import java.sql.Time;
 
@@ -33,8 +40,13 @@ public class PostDetails extends AppCompatActivity {
         TextView mSeatsLeftAndPrice = (TextView) findViewById(R.id.SeatsLeftandPrice);
 
         Intent intent = getIntent();
-        mDepartingFrom.setText(intent.getExtras().getString("departing_area"));
-        mGoingTo.setText(intent.getExtras().getString("destination"));
+        String departing_id = intent.getExtras().getString("departing_area");
+        String departing_text = Post.getPlaceFromId(this, departing_id).toString();
+        mDepartingFrom.setText(departing_text);
+
+        String destination_id = intent.getExtras().getString("destination");
+        String destination_text = Post.getPlaceFromId(this, destination_id).toString();
+        mGoingTo.setText(destination_text);
         mDescriptionText.setText(intent.getExtras().getString("description"));
 
         String TimeStatement = "Leaving at " + intent.getExtras().getString("departure_time");
@@ -60,5 +72,14 @@ public class PostDetails extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private String getPlaceFromId(Context context, String id) {
+        GoogleApiClient client = new GoogleApiClient.Builder(this).addApi(Places.GEO_DATA_API).build();
+        client.connect();
+
+        PendingResult<PlaceBuffer> departing_result = Places.GeoDataApi.getPlaceById(client, id);
+        PlaceBuffer place = departing_result.await();
+        return place.get(0).toString();
     }
 }

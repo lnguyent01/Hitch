@@ -6,66 +6,6 @@
     android:layout_height="match_parent"
     tools:context="chub45.benson.hitch.AddPostActivity">
 
-    <!--<EditText
-        android:id="@+id/departingAreaText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="Departing Area"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/destinationText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="Destination"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/departingAreaText" />-->
-    <!--<com.seatgeek.placesautocomplete.PlacesAutocompleteTextView
-        android:id="@+id/departingAreaText"
-        app:pacv_googleMapsApiKey="AIzaSyDR4TQu7NEA5I1Dj0ouyyEJMWAzOSRna3M"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="Departing Area"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.seatgeek.placesautocomplete.PlacesAutocompleteTextView
-        android:id="@+id/destinationText"
-        app:pacv_googleMapsApiKey="AIzaSyDR4TQu7NEA5I1Dj0ouyyEJMWAzOSRna3M"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="Destination"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/departingAreaText" />-->
     <fragment
         android:id="@+id/departingAreaText"
         android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
@@ -88,20 +28,68 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/departingAreaText" />
 
-    <EditText
-        android:id="@+id/departureTimeText"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/departureDateText"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:ems="10"
-        android:hint="Departure Time"
-        android:inputType="datetime"
+        android:hint="Departure date"
+        android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintEnd_toStartOf="@+id/btn_date"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/destinationText" />
+
+    <Button
+        android:id="@+id/btn_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/departureDateText"
+        android:layout_marginEnd="8dp"
+        android:layout_toEndOf="@+id/departureDateText"
+        android:layout_toRightOf="@+id/departureDateText"
+        android:text="Select date"
+        app:layout_constraintBottom_toBottomOf="@+id/departureDateText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/departureDateText"
+        app:layout_constraintTop_toTopOf="@+id/departureDateText" />
+
+    <TextView
+        android:id="@+id/departureTimeText"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:ems="10"
+        android:hint="Departure time"
+        android:inputType="time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_time"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/departureDateText" />
+
+    <Button
+        android:id="@+id/btn_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btn_date"
+        android:layout_alignStart="@+id/btn_date"
+        android:layout_below="@+id/btn_date"
+        android:layout_marginEnd="8dp"
+        android:text="Select time"
+        app:layout_constraintBottom_toBottomOf="@+id/departureTimeText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/departureTimeText"
+        app:layout_constraintTop_toTopOf="@+id/departureTimeText" />
+
 
     <EditText
         android:id="@+id/availableSpotsText"
@@ -109,12 +97,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:ems="10"
         android:hint="Available Spots"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/departureTimeText" />
 
