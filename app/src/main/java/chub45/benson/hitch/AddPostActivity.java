@@ -173,7 +173,15 @@ public class AddPostActivity extends AppCompatActivity {
             else {
                 AM_PM = " PM";
             }
-            departureTimeText.setText(hour + ":" + minutes + AM_PM);
+            String min = String.valueOf(minutes);
+            if (minutes == 0) {
+                min = "00";
+            }
+            String s_hour = String.valueOf(hour);
+            if (hour > 12) {
+                s_hour = String.valueOf(hour - 12);
+            }
+            departureTimeText.setText(s_hour + ":" + min + AM_PM);
         }
     }
 }

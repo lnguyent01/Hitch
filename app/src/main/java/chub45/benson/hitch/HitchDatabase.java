@@ -129,6 +129,7 @@ public class HitchDatabase
 //        /* query the database to find the postTitle and return the post object */
 //    }
 
+
     public void removeUser(String username) {
         usersRef.child(username).removeValue();
     }
