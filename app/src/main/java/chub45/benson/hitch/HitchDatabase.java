@@ -1,11 +1,8 @@
 package chub45.benson.hitch;
 
-/**
- * Created by Mattmitch on 2/4/18.
- */
-
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,6 +15,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Driver;
 import java.util.HashMap;
 
 
@@ -26,19 +24,13 @@ public class HitchDatabase
     private DatabaseReference rootRef;
     private DatabaseReference usersRef;
     private DatabaseReference postsRef;
-   // HashMap<String, String> returnedUserMap;
 
 
     public HitchDatabase() {
         rootRef = FirebaseDatabase.getInstance().getReference();
         usersRef = rootRef.child("users");
         postsRef = rootRef.child("posts");
-    //    returnedUserMap = new HashMap<>();
     }
-
-    // This function takes a user object as an argument and add this user object to
-    // the firebase database under the users collection
-    // Can possibly change the function to return true if successful
 
     public void addUser(User user)
     {
@@ -59,10 +51,6 @@ public class HitchDatabase
         });
 
     }
-
-    // This function takes a post object as an argument and add this post object to
-    // the firebase database under the posts collection
-    // Can possibly change the function to return true if successful
 
     public void addPost(Post post)
     {
@@ -92,7 +80,6 @@ public class HitchDatabase
                 }
             }
         });
-        //postsAuthor.setValue(userMap);
     }
 
     private HashMap<String,String> makeUserMap(User user){
@@ -103,32 +90,50 @@ public class HitchDatabase
         return userMap;
     }
 
-//    public User getUser(String username) {
-//        returnedUserMap.clear();
-//        Query query = usersRef.orderByChild("username").equalTo(username);
-//        query.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if(dataSnapshot.exists()) {
-//                    for (DataSnapshot node : dataSnapshot.getChildren()) {
-//                        String value = (String) node.getValue();
-//                        String key = (String) node.getKey();
-//                        returnedUserMap.put(key, value);
-//                    }
-//                }
-//            }
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//        return new User(returnedUserMap.get("email"), returnedUserMap.get("username"), returnedUserMap.get("fullName"));
-//    }
-
-//    public Post getPost(String username) { // return type will be a post
+//    public HitchPost getPost(String username) { // return type will be a post
 //        /* query the database to find the postTitle and return the post object */
 //    }
 
+    public void addPassengerRequest(final String passengerUID, String postID){
+        final DatabaseReference currentRef = postsRef.child(postID).child("potential_passengers");
+
+        currentRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                    String passengers = (String) dataSnapshot.getValue();
+                    Log.d("CURRENT", "currval: " + passengers);
+                     if (passengers.isEmpty() && !passengers.contains(passengerUID)) {
+                         currentRef.setValue(passengerUID);
+                      }
+                      else if(!passengers.isEmpty() && !passengers.contains(passengerUID)){
+                          currentRef.setValue(passengers + "|" + passengerUID);
+                      }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                     Log.d("FAILURE", "Could not add passenger request because: " + databaseError.getCode());
+            }
+        });
+    }
+
+    public void acceptPassengers(String postID){
+        final DatabaseReference currentRef = postsRef.child(postID);
+        currentRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String requestedPassengers = (String) dataSnapshot.child("potential_passengers").getValue();
+                if(!requestedPassengers.isEmpty()) {
+                    currentRef.child("accepted_passengers").setValue(requestedPassengers);
+                    currentRef.child("potential_passengers").setValue("");
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("FAILURE", "Could not accept passengers because: " + databaseError.getCode());
+            }
+        });
+    }
 
     public void removeUser(String username) {
         usersRef.child(username).removeValue();
