@@ -5,35 +5,48 @@ package chub45.benson.hitch;
  */
 
 public class User {
-    private String email;
+    private String uid;
     private String username;
     private String fullName;
+    private String city;
+    private String state;
+    private String rideRequests;
+    private String activeRides;
 
-    public User(String email) {
-        this.email = email;
-    }
-
-    public User(String email, String username, String fullName){
-        this.email = email;
+    public User(String uid, String username, String fullName, String city, String state){
+        this.uid = uid;
         this.username = username;
         this.fullName = fullName;
+        this.city = city;
+        this.state = state;
+        this.rideRequests = "";
+        this.activeRides = "";
     }
 
-    public String getEmail() {
-        return email;
+    public String getUid() {
+        return uid;
     }
+
+    public String getUsername() { return username; }
 
     public String getFullName(){
         return fullName;
     }
 
-    public String getUsername() { return username; }
+    public String getCity() { return city; }
 
-    public void setEmail(String newEmail) {
-        this.email = newEmail;
-    }
+    public String getState() { return state; }
 
-    public String toString(){
-        return username;
+    public String getRideRequests() { return rideRequests; }
+
+    public String getActiveRides() { return activeRides; }
+
+    public void addRideRequest(String postID){
+        if(rideRequests.isEmpty()){
+            rideRequests = postID;
+        }
+        else{
+            rideRequests += "|" + postID;
+        }
     }
 }
