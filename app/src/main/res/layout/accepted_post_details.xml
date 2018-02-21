@@ -129,9 +129,10 @@
         android:id="@+id/DepartureTime"
         android:layout_width="327dp"
         android:layout_height="30dp"
-        android:layout_alignLeft="@+id/displayDescriptionText"
-        android:layout_alignStart="@+id/displayDescriptionText"
-        android:layout_below="@+id/displayDescriptionText"
+        android:layout_above="@+id/SeatsLeftandPrice"
+        android:layout_alignEnd="@+id/descriptionHeader"
+        android:layout_alignRight="@+id/descriptionHeader"
+        android:layout_marginBottom="8dp"
         android:fontFamily="sans-serif"
         android:text="Leaving at 3:00 AM, February 29"
         android:textColor="@android:color/background_dark"
@@ -142,26 +143,12 @@
         android:id="@+id/SeatsLeftandPrice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/AcceptButton"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="30dp"
         android:text="8 seats left at $32 each"
         android:textColor="@android:color/background_dark"
         android:textSize="22sp" />
-
-    <ImageButton
-        android:id="@+id/AcceptButton"
-        android:layout_width="200dp"
-        android:layout_height="60dp"
-
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:adjustViewBounds="true"
-        android:background="@android:color/background_light"
-        android:contentDescription="It doesn't do anything..."
-        android:cropToPadding="false"
-        android:scaleType="fitCenter"
-        app:srcCompat="@drawable/accept" />
-
 
 
 </RelativeLayout>

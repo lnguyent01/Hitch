@@ -10,10 +10,7 @@ import java.util.Date;
 
 public class SearchDriverPost
 {
-    private static int post_counter = 0;
-    /**
-     * The area the driver is leaving from
-     */
+
     private String departing_area;
 
     /**
@@ -29,7 +26,7 @@ public class SearchDriverPost
     /**
      * The number of spots left in the driver's vehicle
      */
-    private int available_spots;
+    private String available_spots;
 
     /**
      * The post's author's email
@@ -55,7 +52,7 @@ public class SearchDriverPost
     /**
      * The post's id
      */
-    private int post_id;
+    private String post_id;
 
     /**
      * Passengers who have requested to join the ride
@@ -80,7 +77,7 @@ public class SearchDriverPost
      * @param author_uid the post's author's account UID
      */
     public SearchDriverPost(String departing_area, String destination,
-                      Date departure_time, int available_spots,
+                      String departure_time, String available_spots,
                       String author_email, Uri author_profile_pic, String author_uid)
     {
         this.departing_area = departing_area;
@@ -91,8 +88,7 @@ public class SearchDriverPost
         this.author_profile_pic = author_profile_pic;
         this.author_uid = author_uid;
         this.description = "";
-        this.post_id = this.post_counter;
-        this.post_counter++;
+
     }
 
     /**
@@ -107,7 +103,7 @@ public class SearchDriverPost
      * @param description the post's description
      */
     public SearchDriverPost(String departing_area, String destination,
-                      Date departure_time, int available_spots,
+                      String departure_time, String available_spots,
                       String author_email, Uri author_profile_pic, String author_uid,
                       String description)
     {
@@ -119,8 +115,7 @@ public class SearchDriverPost
         this.author_profile_pic = author_profile_pic;
         this.author_uid = author_uid;
         this.description = description;
-        this.post_id = this.post_counter;
-        this.post_counter++;
+
     }
 
     /**
@@ -154,7 +149,7 @@ public class SearchDriverPost
      * Gets the number of spots left in the driver's vehicle
      * @return number of available spots in the driver's vehicle
      */
-    public Integer getavailable_spots()
+    public String getavailable_spots()
     {
         return available_spots;
     }
@@ -163,7 +158,7 @@ public class SearchDriverPost
      * Gets the post's author's account UID
      * @return the post's author's account UID
      */
-    public String getauthor()
+    public String getauthor_uid()
     {
         return author_uid;
     }
@@ -196,7 +191,7 @@ public class SearchDriverPost
      * Gets the post's id
      * @return the post's id
      */
-    public Integer get_post_id() { return this.post_id; }
+    public String getpost_id() { return this.post_id; }
 
     /**
      * Gets the potential passengers
@@ -218,11 +213,11 @@ public class SearchDriverPost
         this.destination = destination;
     }
 
-    public void set_departure_time(Date time) {
-        this.departure_time = time.toString();
+    public void set_departure_time(String time) {
+        this.departure_time = time;
     }
 
-    public void set_available_spots(int size) {
+    public void set_available_spots(String size) {
         this.available_spots = size;
     }
 
@@ -234,26 +229,9 @@ public class SearchDriverPost
 
     public void setaccepted_passengers(String accepted_passengers) { this.accepted_passengers = accepted_passengers; }
 
-    public void add_potential_passenger(String passenger) {
-        this.potential_passengers += passenger + "|";
-    }
-
-    public void add_accepted_passenger(String passenger) {
-        this.accepted_passengers += passenger + "|";
-        this.available_spots--;
-    }
-
-    public void remove_potential_passenger(String passenger) {
-        this.potential_passengers.replace(passenger + "|", "");
-    }
-
-    public void remove_accepted_passenger(String passenger) {
-        this.accepted_passengers.replace(passenger + "|", "");
-        this.available_spots++;
-    }
 
     @Override
     public String toString() {
-        return Integer.toString(this.get_post_id());
+        return this.getpost_id();
     }
 }
