@@ -25,7 +25,27 @@
             android:label="NavigationActivity" />
         <activity
             android:name="chub45.benson.hitch.PostDetails"
-            android:label="here we are">
+            android:label="Details">
+        </activity>
+        <activity
+            android:name="chub45.benson.hitch.MyPostDetails"
+            android:label="Details">
+        </activity>
+        <activity
+            android:name="chub45.benson.hitch.AcceptedPostDetails"
+            android:label="Details">
+        </activity>
+        <activity
+            android:name="chub45.benson.hitch.ChoosePosts"
+            android:label="Choose Posts">
+        </activity>
+        <activity
+            android:name="chub45.benson.hitch.MyPostsActivity"
+            android:label="My Posts">
+        </activity>
+        <activity
+            android:name="chub45.benson.hitch.AcceptedPostsActivity"
+            android:label="Posts I've Been Accepted To">
         </activity>
     </application>
 

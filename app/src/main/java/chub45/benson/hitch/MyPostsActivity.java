@@ -2,7 +2,6 @@ package chub45.benson.hitch;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -18,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -26,12 +24,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 
-import java.util.Date;
-
-public class NavigationActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
-
-    // This is where users type in what they want to search
-    private SearchView mSearchView;
+public class MyPostsActivity extends AppCompatActivity{
 
     // This is what displays all posts relevant to what the user searched
     private RecyclerView mResultList;
@@ -39,100 +32,31 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
     // This is what accesses the Firebase Database
     private DatabaseReference mUserDatabase;
 
-    private TextView mTextMessage;
-    public static final String EXTRA_MESSAGE = "chub45.benson.hitch.MESSAGE";
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
-                    return true;
-                case R.id.navigation_map:
-                    mTextMessage.setText(R.string.title_map);
-                    return true;
-                case R.id.navigation_profile:
-                    mTextMessage.setText(R.string.title_profile);
-                    return true;
-            }
-            return false;
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_navigation);
-
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-        //Create post creation button and wait until user clicks this button
-        ImageButton addPostButton = (ImageButton) findViewById(R.id.addPostButton);
-        addPostButton.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                //Opens add post activity for users to add a post by entering information
-                Intent signUpIntent = new Intent(getApplicationContext(), AddPostActivity.class);
-                startActivity(signUpIntent);
-            }
-        });
-
-
-        // TEMPORARY way to look at your created posts and your "accepted to" posts
-        Button posts_TEMP = (Button) findViewById(R.id.posts_TEMP);
-        posts_TEMP.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                //Opens menu to choose how you want to view posts
-                Intent testPostView = new Intent(getApplicationContext(), ChoosePosts.class);
-                startActivity(testPostView);
-            }
-        });
-
-        // Links mSearchView to the actual search bar
-        mSearchView = findViewById(R.id.search_bar_name);
-        // Enables use of the submit button to submit search queries
-        mSearchView.setSubmitButtonEnabled(true);
-        // Makes this class listen for queries from mSearchBar
-        mSearchView.setOnQueryTextListener(this);
-        mSearchView.setQueryHint("Enter your destination...");
+        setContentView(R.layout.my_post_list);
 
         // Links mUserDatabase to the actual Firebase database, accessing everything stored under "posts"
         mUserDatabase = FirebaseDatabase.getInstance().getReference("posts");
 
         // Links mResultList to the actual result list in the .xml
-        mResultList = (RecyclerView) findViewById(R.id.result_list);
+        mResultList = (RecyclerView) findViewById(R.id.my_post_list);
         // Makes the result list have a constant size
         mResultList.setHasFixedSize(true);
         mResultList.setLayoutManager(new LinearLayoutManager(this));
-    }
 
-    // This begins the section that includes the overridden methods from SearchView.OnQueryTextListener
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        firebaseUserSearch(query);
-        return true;
-    }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        firebaseUserSearch(newText);
-        return true;
+
+        firebaseUserSearch("");
     }
-    // This ends the section that includes the overridden methods from SearchView.OnQueryTextListener
 
 
     // This function does all the work when it comes to accessing the database and retrieving the relevant information
     private void firebaseUserSearch(String searchText) {
 
-        // Accesses the Firebase database and includes all of the "posts" that have a "to" String that starts with searchText
-        // This is case-sensitive, because Firebase does not natively support non-case-sensitive queries
-        // The "\uf8ff" is necessary for reasons largely unknown (it's a Firebase thing)
-        Query firebaseSearchQuery = mUserDatabase.orderByChild("destination").startAt(searchText).endAt(searchText + "\uf8ff");
 
         // The FirebaseRecyclerAdapter is from FirebaseUI, a third-party library. It accesses the Firebase database.
         FirebaseRecyclerAdapter<SearchDriverPost, postViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<SearchDriverPost, postViewHolder>(
@@ -143,8 +67,8 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
                 R.layout.list_layout,
                 // This is what puts the post information from the post class into the list_layout
                 postViewHolder.class,
-                // This is required to correctly filter out all unnecessary information from the Firebase database
-                firebaseSearchQuery
+                // This loads all the posts from the Firebase database
+                mUserDatabase
         ) {
             @Override
             protected void populateViewHolder(postViewHolder viewHolder, final SearchDriverPost model, int position) {
@@ -160,7 +84,7 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
 
                     @Override
                     public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(getApplicationContext(), PostDetails.class);
+                        Intent intent = new Intent(getApplicationContext(), MyPostDetails.class);
                         intent.putExtra("destination", model.getdestination());
                         intent.putExtra("departing_area", model.getdeparting_area());
                         intent.putExtra("available_spots", String.valueOf(model.getavailable_spots()));
@@ -168,6 +92,7 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
                         intent.putExtra("description", model.getdescription());
                         intent.putExtra("postID", model.getpost_id());
                         intent.putExtra("name", model.getauthor_email());
+                        intent.putExtra("authorID", model.getauthor_uid());
                         intent.putExtra("potential_passengers", model.getpotential_passengers());
                         intent.putExtra("accepted_passengers", model.getaccepted_passengers());
                         startActivity(intent);
@@ -240,9 +165,8 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
             post_time.setText(postTime);
             post_seats.setText(postSeats);
 
-            // Posts by you won't show up when searching the database
-            // Will add more later, like "accepted posts won't show up", etc.
-            if (uID.equals(postAuthor)) {
+
+            if (!(uID.equals(postAuthor))) {
                 RelativeLayout listPart = (RelativeLayout) mView.findViewById(R.id.list_part);
                 listPart.getLayoutParams().height = 0;
             }
