@@ -6,6 +6,8 @@ package chub45.benson.hitch;
 
 import android.content.Context;
 import android.net.Uri;
+import android.provider.ContactsContract;
+import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -13,6 +15,11 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
 
@@ -31,6 +38,7 @@ public interface Post
     public String getpotential_passengers();
     public String getaccepted_passengers();
 
+    // Static utility methods
     public static Place getPlaceFromId(Context context, String id) {
         GoogleApiClient client = new GoogleApiClient.Builder(context).addApi(Places.GEO_DATA_API).build();
         client.connect();
