@@ -5,13 +5,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -106,7 +104,6 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
         mSearchView.setSubmitButtonEnabled(true);
         // Makes this class listen for queries from mSearchBar
         mSearchView.setOnQueryTextListener(this);
-        mSearchView.setQueryHint("Enter your destination...");
 
         // Links mUserDatabase to the actual Firebase database, accessing everything stored under "posts"
         mUserDatabase = FirebaseDatabase.getInstance().getReference("posts");
@@ -115,10 +112,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
         mResultList = (RecyclerView) view.findViewById(R.id.result_list);
         // Makes the result list have a constant size
         mResultList.setHasFixedSize(true);
-        LinearLayoutManager mLayout= new LinearLayoutManager(getContext());
-        mResultList.setLayoutManager(mLayout);
-        mLayout.setOrientation(LinearLayoutManager.VERTICAL);
-
+       // mResultList.setLayoutManager(new LinearLayoutManager(this));
         return view;
     }
 
@@ -182,19 +176,19 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
         Query firebaseSearchQuery = mUserDatabase.orderByChild("destination").startAt(searchText).endAt(searchText + "\uf8ff");
 
         // The FirebaseRecyclerAdapter is from FirebaseUI, a third-party library. It accesses the Firebase database.
-        FirebaseRecyclerAdapter<SearchDriverPost, postViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<SearchDriverPost, postViewHolder>(
+        FirebaseRecyclerAdapter<SearchDriverPost, HomeFragment.postViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<SearchDriverPost, HomeFragment.postViewHolder>(
 
                 // The information from the Firebase database in stored in this class
                 SearchDriverPost.class,
                 // This is how the post information is going to be displayed
                 R.layout.list_layout,
                 // This is what puts the post information from the post class into the list_layout
-                postViewHolder.class,
+                HomeFragment.postViewHolder.class,
                 // This is required to correctly filter out all unnecessary information from the Firebase database
                 firebaseSearchQuery
         ) {
             @Override
-            protected void populateViewHolder(postViewHolder viewHolder, final SearchDriverPost model, int position) {
+            protected void populateViewHolder(HomeFragment.postViewHolder viewHolder, final SearchDriverPost model, int position) {
 
                 // Passes the post information to the postViewHolder viewHolder
                 viewHolder.setDetails(getActivity().getApplicationContext(), model.getdeparting_area(),
@@ -202,7 +196,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
 
                 // When a post is clicked, move to another activity - one that contains more details on the post that was clicked
                 // Information is passed to that activity
-                viewHolder.setOnClickListener(new postViewHolder.ClickListener() {
+                viewHolder.setOnClickListener(new HomeFragment.postViewHolder.ClickListener() {
 
                     @Override
                     public void onItemClick(View view, int position) {
@@ -223,7 +217,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
 
         View mView;
 
-        private postViewHolder.ClickListener mClickListener;
+        private HomeFragment.postViewHolder.ClickListener mClickListener;
 
         // Enables callbacks to be sent
         public interface ClickListener{
@@ -232,7 +226,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
 
         // This method, when used, allows whatever used it to do something when this post is clicked
         // firebaseRecyclerAdapter uses this method to move to another activity when clicked
-        public void setOnClickListener(postViewHolder.ClickListener clickListener){
+        public void setOnClickListener(HomeFragment.postViewHolder.ClickListener clickListener){
             mClickListener = clickListener;
         }
         public postViewHolder(View itemView) {
