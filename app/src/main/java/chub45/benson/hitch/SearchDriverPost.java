@@ -14,9 +14,19 @@ public class SearchDriverPost
     private String departing_area;
 
     /**
+     * The area the driver is leaving from in form of a google id
+     */
+    private String departing_area_id;
+
+    /**
      * The driver's destination
      */
     private String destination;
+
+    /**
+     * The driver's destination in form of a google id
+     */
+    private String destination_id;
 
     /**
      * The time the driver is leaving
@@ -77,11 +87,14 @@ public class SearchDriverPost
      * @param author_uid the post's author's account UID
      */
     public SearchDriverPost(String departing_area, String destination,
+                      String departure_area_id, String destination_id,
                       String departure_time, String available_spots,
                       String author_email, Uri author_profile_pic, String author_uid)
     {
         this.departing_area = departing_area;
         this.destination = destination;
+        this.departing_area_id = departure_area_id;
+        this.destination_id = destination_id;
         this.departure_time = departure_time.toString();
         this.available_spots = available_spots;
         this.author_email = author_email;
@@ -146,6 +159,24 @@ public class SearchDriverPost
     }
 
     /**
+     * Gets a Google Place id representation of the departing area
+     * @return Google Place id of the departing area
+     */
+    public String getdeparting_area_id()
+    {
+        return departing_area_id;
+    }
+
+    /**
+     * Gets a Google Place id representation of the trip destination
+     * @return Google Place id of the trip destination
+     */
+    public String getdestination_id()
+    {
+        return destination_id;
+    }
+
+    /**
      * Gets the number of spots left in the driver's vehicle
      * @return number of available spots in the driver's vehicle
      */
@@ -207,6 +238,14 @@ public class SearchDriverPost
 
     public void set_departing_area(String departing_area) {
         this.departing_area = departing_area;
+    }
+
+    public void set_departing_area_id(String departing_area_id) {
+        this.departing_area_id = departing_area_id;
+    }
+
+    public void set_destination_id(String destination_id) {
+        this.destination_id = destination_id;
     }
 
     public void set_destination(String destination) {

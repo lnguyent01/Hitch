@@ -32,7 +32,7 @@ public class AddPostActivity extends AppCompatActivity {
     private static HitchDatabase db = new HitchDatabase();
     private DatePickerDialogListener dateListener;
     private TimePickerDialogListener timeListener;
-    private String departing_area, destination;
+    private String departing_area, destination, departing_area_id, destination_id;
     private int year, month, day, hour, minutes;
     private TextView departureDateText, departureTimeText;
     private EditText availableSpotsText, descriptionText;
@@ -62,7 +62,8 @@ public class AddPostActivity extends AppCompatActivity {
                 new PlaceSelectionListener() {
                     @Override
                     public void onPlaceSelected(Place place) {
-                        AddPostActivity.this.setDeparting_area(place.getId());
+                        AddPostActivity.this.setDeparting_area(place.getAddress().toString());
+                        AddPostActivity.this.setDeparting_area_id(place.getId());
                     }
 
                     @Override
@@ -76,7 +77,8 @@ public class AddPostActivity extends AppCompatActivity {
                 new PlaceSelectionListener() {
                     @Override
                     public void onPlaceSelected(Place place) {
-                        AddPostActivity.this.setDestination(place.getId());
+                        AddPostActivity.this.setDestination(place.getAddress().toString());
+                        AddPostActivity.this.setDestination_id(place.getId());
                     }
 
                     @Override
@@ -119,7 +121,7 @@ public class AddPostActivity extends AppCompatActivity {
                         AddPostActivity.this.hour, AddPostActivity.this.minutes);
                 Date date = c.getTime();
                 if (validInputs()) {
-                    Post post = postFactory.createPost(departing_area, destination,
+                    Post post = postFactory.createPost(departing_area, destination, departing_area_id, destination_id,
                             date, Integer.parseInt(availableSpotsText.getText().toString()),
                             user, descriptionText.getText().toString());
                     db.addPost(post);
@@ -135,6 +137,10 @@ public class AddPostActivity extends AppCompatActivity {
     public void setDeparting_area(String departing_area) { this.departing_area = departing_area; }
 
     public void setDestination(String destination) { this.destination = destination; }
+    
+    public void setDeparting_area_id(String departing_area_id) { this.departing_area_id = departing_area_id; }
+    
+    public void setDestination_id(String destination_id) { this.destination_id = destination_id; }
 
     public void setYear(int year) { this.year = year; }
 
@@ -176,6 +182,9 @@ public class AddPostActivity extends AppCompatActivity {
             String min = String.valueOf(minutes);
             if (minutes == 0) {
                 min = "00";
+            }
+            else if (minutes < 10) {
+                min = "0" + min;
             }
             String s_hour = String.valueOf(hour);
             if (hour > 12) {
