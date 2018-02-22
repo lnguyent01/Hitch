@@ -421,37 +421,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return result[0];
     }
 
-    /*public interface AsyncResponse {
-        void processFinish(Place place);
-    }
-
-    private class PlaceTask extends AsyncTask<String, Void, Place> implements AsyncResponse {
-        public AsyncResponse delegate = this;
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected Place doInBackground(String...strings) {
-            Context context = MapsActivity.this;
-            GoogleApiClient client = new GoogleApiClient.Builder(context).addApi(Places.GEO_DATA_API).build();
-            client.connect();
-
-            PendingResult<PlaceBuffer> departing_result = Places.GeoDataApi.getPlaceById(client, strings);
-            departing_result.setResultCallback(callback);
-\            return place.get(0);
-        }
-
-        @Override
-        protected void onPostExecute(Place place) {
-            this.processFinish(place);
-        }
-
-        public void processFinish(Place place) {
-            setPost_location(place);
-        }
-    }*/
-
     public void setPost_location(Place loc) {
         this.post_location = loc;
     }
