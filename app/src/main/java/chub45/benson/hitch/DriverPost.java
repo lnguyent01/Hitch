@@ -21,15 +21,26 @@ import java.util.Date;
 public class DriverPost implements Post
 {
     private static int post_counter = 2;
+
     /**
-     * The area the driver is leaving from
+     * The area the driver is leaving from in human readable format
      */
     private String departing_area;
 
     /**
-     * The driver's destination
+     * The area the driver is leaving from in form of a google id
+     */
+    private String departing_area_id;
+
+    /**
+     * The driver's destination in human readable format
      */
     private String destination;
+
+    /**
+     * The driver's destination in form of a google id
+     */
+    private String destination_id;
 
     /**
      * The time the driver is leaving
@@ -89,12 +100,14 @@ public class DriverPost implements Post
      * @param author_profile_pic the post's author's profile picture
      * @param author_uid the post's author's account UID
      */
-    public DriverPost(String departing_area, String destination,
+    public DriverPost(String departing_area, String destination, String departure_area_id, String destination_id,
                 Date departure_time, int available_spots,
                 String author_email, Uri author_profile_pic, String author_uid)
     {
         this.departing_area = departing_area;
         this.destination = destination;
+        this.departing_area_id = departure_area_id;
+        this.destination_id = destination_id;
         this.departure_time = departure_time;
         this.available_spots = available_spots;
         this.author_email = author_email;
@@ -119,13 +132,15 @@ public class DriverPost implements Post
      * @param author_uid the post's author's account UID
      * @param description the post's description
      */
-    public DriverPost(String departing_area, String destination,
+    public DriverPost(String departing_area, String destination, String departing_area_id, String destination_id,
                 Date departure_time, int available_spots,
                 String author_email, Uri author_profile_pic, String author_uid,
                 String description)
     {
         this.departing_area = departing_area;
         this.destination = destination;
+        this.departing_area_id = departing_area_id;
+        this.destination_id = destination_id;
         this.departure_time = departure_time;
         this.available_spots = available_spots;
         this.author_email = author_email;
@@ -154,7 +169,7 @@ public class DriverPost implements Post
      * @param potential_passengers the trip's potential passengers
      * @param accepted_passengers the trip's accepted passengers
      */
-    public DriverPost(String departing_area, String destination,
+    public DriverPost(String departing_area, String destination, String departing_area_id, String destination_id,
                       Date departure_time, int available_spots,
                       String author_email, String author_uid,
                       String description, int post_id, String potential_passengers,
@@ -163,6 +178,8 @@ public class DriverPost implements Post
         this.departing_area = departing_area;
         this.destination = destination;
         this.departure_time = departure_time;
+        this.departing_area_id = departing_area_id;
+        this.destination_id = destination_id;
         this.available_spots = available_spots;
         this.author_email = author_email;
         this.author_profile_pic = new Uri.Builder().path("").build();
@@ -179,32 +196,30 @@ public class DriverPost implements Post
         this.accepted_passengers = accepted_passengers;
     }
 
-    /*public String getdeparting_area() {
-        GoogleApiClient client = new GoogleApiClient.Builder().build();
-        PendingResult<PlaceBuffer> result = Places.GeoDataApi.getPlaceById(client, this.getdeparting_area_id());
-        PlaceBuffer departing_area = result.await();
+    public String getdeparting_area() {
+        return departing_area;
     }
 
     public String getdestination() {
-        // return string
-    }*/
+        return destination;
+    }
 
     /**
      * Gets a Google Place id representation of the departing area
      * @return Google Place id of the departing area
      */
-    public String getdeparting_area()
+    public String getdeparting_area_id()
     {
-        return departing_area;
+        return departing_area_id;
     }
 
     /**
      * Gets a Google Place id representation of the trip destination
      * @return Google Place id of the trip destination
      */
-    public String getdestination()
+    public String getdestination_id()
     {
-        return destination;
+        return destination_id;
     }
 
     /**
@@ -282,6 +297,14 @@ public class DriverPost implements Post
 
     public void set_destination(String destination) {
         this.destination = destination;
+    }
+
+    public void set_departing_area_id(String departing_area_id) {
+        this.departing_area_id = departing_area_id;
+    }
+
+    public void set_destination_id(String destination_id) {
+        this.destination_id = destination_id;
     }
 
     public void set_departure_time(Date time) {

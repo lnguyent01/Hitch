@@ -27,6 +27,8 @@ public interface Post
 {
     public String getdeparting_area();
     public String getdestination();
+    public String getdeparting_area_id();
+    public String getdestination_id();
     public Date getdeparture_time();
     public Integer getavailable_spots();
 
@@ -50,6 +52,8 @@ public interface Post
 
     public void set_departing_area(String departing_area);
     public void set_destination(String destination);
+    public void set_departing_area_id(String departing_area_id);
+    public void set_destination_id(String destination_id);
     public void set_departure_time(Date time);
     public void set_available_spots(int size);
     public void set_description(String description);
