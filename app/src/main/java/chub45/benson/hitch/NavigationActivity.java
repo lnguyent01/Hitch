@@ -1,6 +1,7 @@
 package chub45.benson.hitch;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -25,8 +26,8 @@ public class NavigationActivity extends AppCompatActivity{
                     homeFragmentTransaction.commit();
                     return true;
                 case R.id.navigation_map:
-                    Intent mapIntent = new Intent(getApplicationContext(), MapsActivity.class);
-                    startActivity(mapIntent);
+//                    Intent mapIntent = new Intent(getApplicationContext(), MapsActivity.class);
+//                    startActivity(mapIntent);
                     setTitle("Map");
                     MapFragment mapFragment = new MapFragment();
                     android.support.v4.app.FragmentTransaction mapFragmentTransaction = getSupportFragmentManager().beginTransaction();

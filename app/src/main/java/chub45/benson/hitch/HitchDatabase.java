@@ -172,14 +172,6 @@ public class HitchDatabase
         return most_recent_post_id + 1;
     }
 
-    private HashMap<String,String> makeUserMap(User user) {
-        HashMap<String, String> userMap = new HashMap<String, String>();
-        userMap.put("username", user.toString());
-        userMap.put("email", user.getEmail());
-        userMap.put("fullName", user.getFullName());
-        return userMap;
-    }
-
     public HashMap<String, String> makePostMap(Post post){
         HashMap<String, String> postMap = new HashMap<>();
         postMap.put("departing_area", post.getdeparting_area());
@@ -314,6 +306,10 @@ public class HitchDatabase
                 Log.d("FAILURE", "Could not accept passengers because: " + databaseError.getCode());
             }
         });
+    }
+
+    public DatabaseReference getRoot() {
+        return rootRef;
     }
 
     public void removeUser(String uid) {
