@@ -69,6 +69,10 @@
             android:name="chub45.benson.hitch.AcceptedPostsActivity"
             android:label="Posts I've Been Accepted To">
         </activity>
+        <activity
+            android:name="chub45.benson.hitch.RequestedPostsActivity"
+            android:label="Posts I've Requested To Join">
+        </activity>
     </application>
 
 </manifest>
