@@ -246,6 +246,12 @@ public class NavigationActivity extends AppCompatActivity implements SearchView.
                 RelativeLayout listPart = (RelativeLayout) mView.findViewById(R.id.list_part);
                 listPart.getLayoutParams().height = 0;
             }
+
+            // Posts with a size of 0 (no space) won't show up when searching the database
+            if (postSeats.equals("0")) {
+                RelativeLayout listPart = (RelativeLayout) mView.findViewById(R.id.list_part);
+                listPart.getLayoutParams().height = 0;
+            }
         }
 
     }
