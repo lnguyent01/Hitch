@@ -34,3 +34,14 @@ refer to this for our main screen : https://github.com/firebase/quickstart-andro
 22. Press the circle and then the up arrow
 23. Click on the Hitch app
 24. App should start
+
+# Steps to test Use Case UC1: Driver makes a post
+1. Open the app
+2. Log in (Or  create an account first, then log in)
+3. Click on the green square button with a plus icon
+4. Enter whatever details you wish
+5. click the "Rides" button
+6. Now, click the "My Posts" button
+7. If the post was added successfully, the post you just added should be visible
+
+
