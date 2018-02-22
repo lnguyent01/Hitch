@@ -100,6 +100,8 @@ public class HitchDatabase
                     collectPosts((Map<String, Object>) postSnapshot.getValue());
                     String departing_area = postSnapshot.child("departing_area").toString();
                     String destination = postSnapshot.child("destination").toString();
+                    String departing_area_id = postSnapshot.child("departing_area_id").toString();
+                    String destination_id = postSnapshot.child("destination_id").toString();
                     String departure_time = postSnapshot.child("departure_time").toString();
                     String num_spots = (String) postSnapshot.child("available_spots").getValue();
                     int available_spots = Integer.parseInt(num_spots);
@@ -110,7 +112,7 @@ public class HitchDatabase
                     int id = Integer.parseInt(s_id);
                     String potential_passengers = postSnapshot.child("potential_passengers").toString();
                     String accepted_passengers = postSnapshot.child("accepted_passengers").toString();
-                    HitchDatabase.this.addToPostsList(factory.createPostFromDb(departing_area, destination, departure_time, available_spots, author_uid,
+                    HitchDatabase.this.addToPostsList(factory.createPostFromDb(departing_area, destination, departing_area_id, destination_id, departure_time, available_spots, author_uid,
                             author_email, description, id, potential_passengers, accepted_passengers));
                 }
             }
@@ -124,13 +126,15 @@ public class HitchDatabase
 }
 
     private void collectPosts(Map<String, Object> posts) {
-        String departing_area, destination, departure_time, num_spots, author_uid, author_email, description, s_id, potential_passengers, accepted_passengers;
+        String departing_area, destination, departing_area_id, destination_id, departure_time, num_spots, author_uid, author_email, description, s_id, potential_passengers, accepted_passengers;
         PostFactory factory = new DefaultPostFactory();
         int available_spots, id;
         for (Map.Entry<String, Object> entry: posts.entrySet()) {
             Map post = (Map) entry.getValue();
             departing_area = post.get("departing_area").toString();
             destination = post.get("destination").toString();
+            departing_area_id = post.get("departing_area_id").toString();
+            destination_id = post.get("destination_id").toString();
             departure_time = post.get("departure_time").toString();
             num_spots = (String) post.get("available_spots").toString();
             available_spots = Integer.parseInt(num_spots);
@@ -141,7 +145,7 @@ public class HitchDatabase
             id = Integer.parseInt(s_id);
             potential_passengers = post.get("potential_passengers").toString();
             accepted_passengers = post.get("accepted_passengers").toString();
-            this.addToPostsList(factory.createPostFromDb(departing_area, destination, departure_time, available_spots, author_uid,
+            this.addToPostsList(factory.createPostFromDb(departing_area, destination, departing_area_id, destination_id, departure_time, available_spots, author_uid,
                     author_email, description, id, potential_passengers, accepted_passengers));
         }
     }
@@ -176,6 +180,8 @@ public class HitchDatabase
         HashMap<String, String> postMap = new HashMap<>();
         postMap.put("departing_area", post.getdeparting_area());
         postMap.put("destination", post.getdestination());
+        postMap.put("departing_area_id", post.getdeparting_area_id());
+        postMap.put("destination_id", post.getdestination_id());
         postMap.put("departure_time", post.getdeparture_time().toString());
         postMap.put("available_spots", post.getavailable_spots().toString());
         postMap.put("description", post.getdescription());

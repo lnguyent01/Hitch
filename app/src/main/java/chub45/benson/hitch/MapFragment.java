@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -180,7 +181,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 return false;
             }
         };
-        triggerQuery = factory.createPostFromDb("","", "", 0, "","","", -1, "", "");
+        triggerQuery = factory.createPostFromDb("","", "", "","", 0, "","","", -1, "", "");
     }
 
     @Override
@@ -301,11 +302,14 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 });
 
             }
+            else {
+                String locationErrorText = "Please enable location access in the app's permissions in your settings";
+                Toast.makeText(MapFragment.this.getActivity().getApplicationContext(), locationErrorText, Toast.LENGTH_LONG);
+            }
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
 
-        mMap.addMarker(new MarkerOptions().position(isla_vista).title("Marker in Isla Vista"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(isla_vista));
     }
 
@@ -329,8 +333,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return close_posts;
     }
 
-    public Post getPostByDestination(String destination) {
-        Query query = db.getRoot().child("posts").child(destination).orderByChild("destination").equalTo(destination);
+    public Post getPostByDestination(String destination_id) {
+        Query query = db.getRoot().child("posts").child(destination_id).orderByChild("destination_id").equalTo(destination_id);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -380,7 +384,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void collectPost(HashMap<String, HashMap<String, String>> all_posts) {
-        String departing_area, destination, departure_time, num_spots, author_uid, author_email, description, s_id, potential_passengers, accepted_passengers;
+        String departing_area, destination, departure_time, departing_area_id, destination_id, num_spots, author_uid, author_email, description, s_id, potential_passengers, accepted_passengers;
         PostFactory factory = new DefaultPostFactory();
         HashMap<String, String> post;
         Post tempPost;
@@ -392,6 +396,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             if (post != null) {
                 departing_area = post.get("departing_area");
                 destination = post.get("destination");
+                departing_area_id = post.get("departing_area");
+                destination_id = post.get("destination");
                 departure_time = post.get("departure_time");
                 num_spots = post.get("available_spots");
                 available_spots = Integer.parseInt(num_spots);
@@ -402,7 +408,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 post_id = Integer.parseInt(s_id);
                 potential_passengers = post.get("potential_passengers");
                 accepted_passengers = post.get("accepted_passengers");
-                this.current_post = factory.createPostFromDb(departing_area, destination, departure_time, available_spots, author_uid,
+                this.current_post = factory.createPostFromDb(departing_area, destination, departing_area_id, destination_id, departure_time, available_spots, author_uid,
                         author_email, description, post_id, potential_passengers, accepted_passengers);
             }
         }
@@ -419,7 +425,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         for (int i = 0; i < all_posts.size(); i++) {
             post = all_posts.get(String.valueOf(i));
             if ((post != null) && (!post.get("post_id").equals("-1")) && (!post.get("destination").equals(""))){
-                tempPost = addMarkerandCreatePost(post.get("destination"), post);
+                tempPost = addMarkerandCreatePost(post.get("destination_id"), post);
             }
         }
     }
@@ -431,7 +437,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 .setResultCallback(new ResultCallback<PlaceBuffer>() {
                     @Override
                     public void onResult(PlaceBuffer places) {
-                        String departing_area, destination, departure_time, num_spots, author_uid, author_email, description, s_id, potential_passengers, accepted_passengers;
+                        String departing_area, destination, departing_area_id, destination_id, departure_time, num_spots, author_uid, author_email, description, s_id, potential_passengers, accepted_passengers;
                         int available_spots, post_id;
                         LatLng post_coordinates;
                         MarkerOptions markerOptions;
@@ -442,6 +448,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             //MapFragment.this.setPost_location(myPlace);
                             departing_area = post.get("departing_area");
                             destination = post.get("destination");
+                            departing_area_id = post.get("departing_area_id");
+                            destination_id = post.get("destination_id");
                             departure_time = post.get("departure_time");
                             num_spots = post.get("available_spots");
                             available_spots = Integer.parseInt(num_spots);
@@ -452,7 +460,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             post_id = Integer.parseInt(s_id);
                             potential_passengers = post.get("potential_passengers");
                             accepted_passengers = post.get("accepted_passengers");
-                            result[0] = factory.createPostFromDb(departing_area, destination, departure_time, available_spots, author_uid,
+                            result[0] = factory.createPostFromDb(departing_area, destination, departing_area_id, destination_id, departure_time, available_spots, author_uid,
                                     author_email, description, post_id, potential_passengers, accepted_passengers);
                             if (distanceBetween(current_location, post_coordinates) < DEFAULT_POST_DISTANCE * 1000000) {
                                 markerOptions = new MarkerOptions().position(post_coordinates).title(myPlace.getAddress().toString()).snippet(result[0].getdescription());
