@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="chub45.benson.hitch.NavigationActivity">
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -48,6 +48,23 @@
         app:layout_constraintVertical_bias="0.855"
         app:srcCompat="@android:drawable/ic_menu_add" />
 
+    <Button
+        android:id="@+id/rides_button"
+        android:layout_width="88dp"
+        android:layout_height="48dp"
+        android:text="Rides"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="312dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.66"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_bar_name"
+        app:layout_constraintVertical_bias="0.855"
+        tools:layout_editor_absoluteX="186dp"
+        tools:layout_editor_absoluteY="356dp" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/result_list"
         android:layout_width="match_parent"
@@ -65,5 +82,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" >
-</android.support.v7.widget.RecyclerView>
+
+    </android.support.v7.widget.RecyclerView>
 </android.support.constraint.ConstraintLayout>

@@ -42,7 +42,7 @@ public class MyPostDetails extends AppCompatActivity {
         mDepartureTime.setText(TimeStatement);
 
         // Use this to find out which post this is
-        final String postID = intent.getExtras().getString("postID");
+        String postID = intent.getExtras().getString("postID");
 
         String num = intent.getExtras().getString("available_spots");
         String price = "0";
@@ -91,8 +91,18 @@ public class MyPostDetails extends AppCompatActivity {
 
                 else if ((!finalPotential_passengers_is_empty) && (!no_more_potential_passengers)) {
 
-                    HitchDatabase acceptThem = new HitchDatabase();
-                    acceptThem.acceptPassengers(postID);
+                    // Put code here
+                    // Every single passenger (Represented by UID) in the "potential_passengers" String gets
+                    // moved to the "accepted_passengers" String
+                    // I have already created arrays with all of the UIDs in both "accepted_passengers"
+                    // and "potential_passengers"
+                    // If either is empty, then final~~~~passengers_is_empty will be true, so you can check using that
+                    // Hopefully the Parsing code blocks above can be of use
+                    //
+                    // If there isn't enough space, just don't accept the last ones
+                    //   Example: 3 spaces, 4 pending. The first 3 usernames get accepted, the 4th one doesn't
+                    // Space is decremented accordingly
+                    // Use the post's unique ID, stored in postID, to find the correct post
 
                     Toast.makeText(getBaseContext(), "You have accepted these passengers!", Toast.LENGTH_SHORT).show();
                     no_more_potential_passengers = true;
