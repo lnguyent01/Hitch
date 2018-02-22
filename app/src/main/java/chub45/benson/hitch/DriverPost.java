@@ -94,6 +94,8 @@ public class DriverPost implements Post
         this.author_uid = author_uid;
         this.description = "";
         this.post_id = this.post_counter;
+        this.potential_passengers = "";
+        this.accepted_passengers = "";
         this.post_counter++;
     }
 
@@ -122,6 +124,8 @@ public class DriverPost implements Post
         this.author_uid = author_uid;
         this.description = description;
         this.post_id = this.post_counter;
+        this.potential_passengers = "";
+        this.accepted_passengers = "";
         this.post_counter++;
     }
 
@@ -198,7 +202,7 @@ public class DriverPost implements Post
      * Gets the post's id
      * @return the post's id
      */
-    public int get_post_id() { return this.post_id; }
+    public Integer get_post_id() { return this.post_id; }
 
     /**
      * Gets the potential passengers

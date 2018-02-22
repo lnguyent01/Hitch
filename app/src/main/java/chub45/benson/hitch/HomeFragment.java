@@ -129,9 +129,6 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         }
-        else{
-            Toast.makeText(context, "Home Selected", Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override

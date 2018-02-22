@@ -80,8 +80,6 @@ public class ProfileFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-        } else {
-            Toast.makeText(context, " Posts Fragment Attached", Toast.LENGTH_SHORT).show();
         }
     }
 
