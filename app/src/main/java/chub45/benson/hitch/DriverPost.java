@@ -4,15 +4,23 @@ package chub45.benson.hitch;
  * Created by kailash on 2/4/18.
  */
 
+import android.content.Context;
 import android.net.Uri;
 
 
 //import java.sql.Driver;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.location.places.GeoDataApi;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
+
 import java.util.Date;
 
 public class DriverPost implements Post
 {
-    private static int post_counter = 0;
+    private static int post_counter = 2;
     /**
      * The area the driver is leaving from
      */
@@ -93,7 +101,8 @@ public class DriverPost implements Post
         this.author_profile_pic = author_profile_pic;
         this.author_uid = author_uid;
         this.description = "";
-        this.post_id = this.post_counter;
+        HitchDatabase db = new HitchDatabase();
+        this.post_id = db.getnext_post_id();
         this.potential_passengers = "";
         this.accepted_passengers = "";
         this.post_counter++;
@@ -123,15 +132,66 @@ public class DriverPost implements Post
         this.author_profile_pic = author_profile_pic;
         this.author_uid = author_uid;
         this.description = description;
-        this.post_id = this.post_counter;
+        HitchDatabase db = new HitchDatabase();
+        this.post_id = db.getnext_post_id();
         this.potential_passengers = "";
         this.accepted_passengers = "";
         this.post_counter++;
     }
 
     /**
-     * Gets the departing area
-     * @return the departing area
+     * Creates a post in which all details are known
+     * Currently used for recreating posts from database
+     * @param departing_area the departing_area
+     * @param destination the trip's destination
+     * @param departure_time the time the driver is leaving
+     * @param available_spots the number of available spots for passengers
+     * @param author_email the post's author's email
+     * // temporarily instantiated blank @param author_profile_pic the post's author's profile picture
+     * @param author_uid the post's author's account UID
+     * @param description the post's description
+     * @param post_id the post's id
+     * @param potential_passengers the trip's potential passengers
+     * @param accepted_passengers the trip's accepted passengers
+     */
+    public DriverPost(String departing_area, String destination,
+                      Date departure_time, int available_spots,
+                      String author_email, String author_uid,
+                      String description, int post_id, String potential_passengers,
+                      String accepted_passengers)
+    {
+        this.departing_area = departing_area;
+        this.destination = destination;
+        this.departure_time = departure_time;
+        this.available_spots = available_spots;
+        this.author_email = author_email;
+        this.author_profile_pic = new Uri.Builder().path("").build();
+        this.author_uid = author_uid;
+        this.description = description;
+        HitchDatabase db = new HitchDatabase();
+        if (departing_area == "") {
+            this.post_id = post_id;
+        }
+        else {
+            this.post_id = db.getnext_post_id();
+        }
+        this.potential_passengers = potential_passengers;
+        this.accepted_passengers = accepted_passengers;
+    }
+
+    /*public String getdeparting_area() {
+        GoogleApiClient client = new GoogleApiClient.Builder().build();
+        PendingResult<PlaceBuffer> result = Places.GeoDataApi.getPlaceById(client, this.getdeparting_area_id());
+        PlaceBuffer departing_area = result.await();
+    }
+
+    public String getdestination() {
+        // return string
+    }*/
+
+    /**
+     * Gets a Google Place id representation of the departing area
+     * @return Google Place id of the departing area
      */
     public String getdeparting_area()
     {
@@ -139,8 +199,8 @@ public class DriverPost implements Post
     }
 
     /**
-     * Gets the trip destination
-     * @return the trip destination
+     * Gets a Google Place id representation of the trip destination
+     * @return Google Place id of the trip destination
      */
     public String getdestination()
     {
