@@ -7,19 +7,34 @@
     tools:context="chub45.benson.hitch.SignUpActivity">
 
     <EditText
-        android:id="@+id/userText"
+        android:id="@+id/fullNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:ems="10"
-        android:hint="User Name"
+        android:hint="Full Name"
         android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/usernameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="Username"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fullNameText" />
 
     <EditText
         android:id="@+id/passText"
@@ -34,7 +49,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userText" />
+        app:layout_constraintTop_toBottomOf="@+id/usernameText" />
 
     <EditText
         android:id="@+id/emailText"
@@ -52,21 +67,6 @@
         app:layout_constraintTop_toBottomOf="@+id/passText" />
 
     <EditText
-        android:id="@+id/countryText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="Country"
-        android:inputType="text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailText" />
-
-    <EditText
         android:id="@+id/stateText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -79,7 +79,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/countryText" />
+        app:layout_constraintTop_toBottomOf="@+id/emailText" />
 
     <EditText
         android:id="@+id/cityText"
@@ -101,7 +101,7 @@
         android:layout_width="98dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="140dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="15dp"
         android:background="@color/colorPrimary"
         android:text="sign up"
         android:textColor="@android:color/background_light"

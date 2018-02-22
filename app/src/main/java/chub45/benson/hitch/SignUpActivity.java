@@ -17,13 +17,16 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
     ProgressBar progressBar;
-    EditText emailText, passText;
+    EditText emailText, passText, fullNameText, usernameText, cityText, stateText;
 
     private FirebaseAuth mAuth;
+
+    private static HitchDatabase db = new HitchDatabase();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,11 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
 
         emailText = (EditText) findViewById(R.id.emailText);
         passText = (EditText) findViewById(R.id.passText);
+        fullNameText = (EditText) findViewById(R.id.fullNameText);
+        usernameText = (EditText) findViewById(R.id.usernameText);
+        cityText = (EditText) findViewById(R.id.cityText);
+        stateText = (EditText) findViewById(R.id.stateText);
+
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         mAuth = FirebaseAuth.getInstance();
@@ -76,6 +84,14 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "User Registered Successfully", Toast.LENGTH_SHORT).show();
+                    FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+                    String username = usernameText.getText().toString().trim();
+                    String fullName = fullNameText.getText().toString().trim();
+                    String city = cityText.getText().toString().trim();
+                    String state = stateText.getText().toString().trim();
+                    User user = new User(fbUser.getUid(), username, fullName, city, state);
+                    db.addUser(user);
+
                 }
                 else {
                     if (task.getException() instanceof FirebaseAuthUserCollisionException) {
@@ -100,4 +116,6 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 break;
         }
     }
+
+
 }

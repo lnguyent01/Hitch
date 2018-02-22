@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.content.Intent;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -58,6 +59,14 @@ public class AddPostActivity extends AppCompatActivity {
                     db.addPost(post);*/
                     finish();
                 }
+            }
+        });
+        Button testProfileButton = (Button) findViewById(R.id.testProfileButton);
+        testProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddPostActivity.this, ProfileActivity.class);
+                startActivity(intent);
             }
         });
     }
