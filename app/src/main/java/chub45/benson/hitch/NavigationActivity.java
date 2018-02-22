@@ -60,6 +60,7 @@ public class NavigationActivity extends AppCompatActivity{
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
         //Home Fragment Displayed when instance of activity class is created
         setTitle("Home");
         HomeFragment hFragment = new HomeFragment();
