@@ -80,8 +80,6 @@ public class MapFragment extends Fragment {
         super.onAttach(context);
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
-        } else {
-            Toast.makeText(context, "Map Fragment Attached", Toast.LENGTH_SHORT).show();
         }
     }
 
