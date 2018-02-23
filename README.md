@@ -34,6 +34,9 @@ Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9
 3. Accepting requests deletes everyone from the potential_passengers field, decremonts spots, but does not move people to the accepted_passengers field
 4. The map is inconsistent
 
+# How to test even with bugs
+We are fully aware that these bugs impede testing. Please go to https://hitch-7466c.firebaseio.com/, to the database section. Invitations to join this Firebase project have been sent to chandanaupadhyaya@ucsb.edu and jcai00@ucsb.edu
+
 # Steps to test Use Case UC1: User makes a new account
 1. Open the app
 2. Click on the "Sign up" text after "Don't have an account?"
