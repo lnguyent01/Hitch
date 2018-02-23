@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,6 +19,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class HitchDatabase
@@ -25,12 +27,13 @@ public class HitchDatabase
     private DatabaseReference rootRef;
     private DatabaseReference usersRef;
     private DatabaseReference postsRef;
-
+    private int most_recent_post_id;
 
     public HitchDatabase() {
         rootRef = FirebaseDatabase.getInstance().getReference();
         usersRef = rootRef.child("users");
         postsRef = rootRef.child("posts");
+        most_recent_post_id = -1; //placeholder
     }
 
     public void addUser(User user)
@@ -79,10 +82,34 @@ public class HitchDatabase
         });
     }
 
+    public int getnext_post_id() {
+        DatabaseReference reference = this.getRoot().child("postCount");
+        Query query = reference.orderByChild("post_id");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+                    int key = Integer.parseInt(postSnapshot.getKey());
+                    if (HitchDatabase.this.most_recent_post_id < key) {
+                        HitchDatabase.this.most_recent_post_id = key;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return most_recent_post_id + 1;
+    }
+  
     public HashMap<String, String> makePostMap(Post post){
         HashMap<String, String> postMap = new HashMap<>();
         postMap.put("departing_area", post.getdeparting_area());
         postMap.put("destination", post.getdestination());
+        postMap.put("departing_area_id", post.getdeparting_area_id());
+        postMap.put("destination_id", post.getdestination_id());
         postMap.put("departure_time", post.getdeparture_time().toString());
         postMap.put("available_spots", post.getavailable_spots().toString());
         postMap.put("description", post.getdescription());
@@ -213,6 +240,10 @@ public class HitchDatabase
                 Log.d("FAILURE", "Could not accept passengers because: " + databaseError.getCode());
             }
         });
+    }
+
+public DatabaseReference getRoot() {
+        return rootRef;
     }
 
     public void removeUser(String uid) {

@@ -5,6 +5,14 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality. 
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
 
     <application
         android:allowBackup="true"
@@ -27,12 +35,26 @@
         <activity
             android:name=".NavigationActivity"
             android:label="NavigationActivity" />
+
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCRzlYgAfXfsSEE1IVZMeVG2CVd0SuYHj0" />
         <activity
-            android:name=".PostDetails"
-            android:label="Details" />
+            android:name="chub45.benson.hitch.MyPostDetails"
+            android:label="Details">
+        </activity>
         <activity
-            android:name=".MyPostDetails"
-            android:label="Details" />
+            android:name="chub45.benson.hitch.PostDetails"
+            android:label="Details">
+        </activity>
         <activity
             android:name=".AcceptedPostDetails"
             android:label="Details" />
@@ -49,6 +71,10 @@
             android:name=".ProfileActivity"
             android:label="My Profile" />
         <activity android:name=".EditProfileActivity" />
+        <activity
+            android:name="chub45.benson.hitch.RequestedPostsActivity"
+            android:label="Posts I've Requested To Join">
+        </activity>
     </application>
 
 </manifest>

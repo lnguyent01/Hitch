@@ -84,6 +84,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                 progressBar.setVisibility(View.GONE);
                 if (task.isSuccessful()) {
                     Toast.makeText(getApplicationContext(), "User Registered Successfully", Toast.LENGTH_SHORT).show();
+                  
                     FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
                     String username = usernameText.getText().toString().trim();
                     String fullName = fullNameText.getText().toString().trim();
@@ -92,6 +93,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     User user = new User(fbUser.getUid(), username, fullName, city, state);
                     db.addUser(user);
 
+                    Intent logInIntent = new Intent(getApplicationContext(), LogInActivity.class);
+                    startActivity(logInIntent);
                 }
                 else {
                     if (task.getException() instanceof FirebaseAuthUserCollisionException) {
