@@ -1,5 +1,6 @@
 package chub45.benson.hitch;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -37,16 +43,26 @@ public class PostDetails extends AppCompatActivity {
         TextView mSeatsLeftAndPrice = (TextView) findViewById(R.id.SeatsLeftandPrice);
 
         Intent intent = getIntent();
+        //String departing_id = intent.getExtras().getString("departing_area");
+        //String departing_text = Post.getPlaceFromId(this, departing_id).toString();
+        //mDepartingFrom.setText(departing_text);
+
+
         mDepartingFrom.setText(intent.getExtras().getString("departing_area"));
         mGoingTo.setText(intent.getExtras().getString("destination"));
         mDescriptionText.setText(intent.getExtras().getString("description"));
         mDriverName.setText(intent.getExtras().getString("name"));
 
+
+        //String destination_id = intent.getExtras().getString("destination");
+        //String destination_text = Post.getPlaceFromId(this, destination_id).toString();
+        //mGoingTo.setText(destination_text);
+
         String TimeStatement = "Leaving at " + intent.getExtras().getString("departure_time");
         mDepartureTime.setText(TimeStatement);
 
         // Use this to find out which post this is
-        String postID = intent.getExtras().getString("postID");
+        final String postID = intent.getExtras().getString("postID");
 
         String num = intent.getExtras().getString("available_spots");
         String price = "0";
@@ -56,7 +72,7 @@ public class PostDetails extends AppCompatActivity {
 
         // Get the current user's UID
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        String uID = currentUser.getUid();
+        final String uID = currentUser.getUid();
 
 
         // If this is true, then the current user is on the list of potential passengers,
@@ -121,11 +137,8 @@ public class PostDetails extends AppCompatActivity {
             public void onClick(View view) {
                 if ((!finalIsUserRequested) && (!finalIsUserAccepted) && (!Requested)) {
 
-                    // Put code here that adds the user's UID to the "potential_passengers" String
-                    // Only do this if space > 0
-                    // Remember, the divider is |
-                    // If the "potential_passengers" String is empty, don't add |
-                    // Hopefully the isUserRequested and isUserAccepted code blocks can be of use
+                    HitchDatabase requestIt = new HitchDatabase();
+                    requestIt.addPassengerRequest(uID, postID);
 
                     Toast.makeText(getBaseContext(), "You have requested to join this ride!", Toast.LENGTH_SHORT).show();
                     Requested = true;
