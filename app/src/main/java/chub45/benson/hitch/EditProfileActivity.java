@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -32,6 +34,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_edit_profile);
 
         emailText = (EditText) findViewById(R.id.emailText);
+        passText = (EditText) findViewById(R.id.passText);
         fullNameText = (EditText) findViewById(R.id.fullNameText);
         usernameText = (EditText) findViewById(R.id.usernameText);
         cityText = (EditText) findViewById(R.id.cityText);
@@ -75,12 +78,12 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         switch(view.getId()) {
             case R.id.finishBtn:
                 updateUserInfo();
-                startActivity(new Intent(this, ProfileActivity.class));
-
+                finish();
                 break;
             case R.id.cancelBtn:
-                startActivity(new Intent(this, ProfileActivity.class));
+                finish();
                 break;
+
         }
     }
 
