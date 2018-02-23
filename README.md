@@ -147,6 +147,13 @@ Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9
 1. Open the app
 2. Log in (Or create an account first, then log in)
 3. Click the profile icon in the navigation bar at the bottom of the screen (last one)
+4. If this is the first time viewing your profile, you must edit the profile first (UC15)
+5. If successful, you will be able to view your information
+
+# Steps to test Use Case UC15: User edits their profile
+1. Open the app
+2. Log in (Or create an account first, then log in)
+3. Click the profile icon in the navigation bar at the bottom of the screen (last one)
 4. First, click on the edit profile button, located in the top left corner
 5. Then, input the desired fields to update your profile
 6. Select "Finish", then the profile will be updated.
