@@ -25,13 +25,68 @@ public class HitchDatabase
     private DatabaseReference rootRef;
     private DatabaseReference usersRef;
     private DatabaseReference postsRef;
+    private DatabaseReference countRef;
 
 
     public HitchDatabase() {
         rootRef = FirebaseDatabase.getInstance().getReference();
+        countRef = rootRef.child("postCount");
         usersRef = rootRef.child("users");
         postsRef = rootRef.child("posts");
+        addCountMap();
     }
+
+    private void addCountMap(){
+        rootRef.addValueEventListener(new ValueEventListener() {
+            Integer greatest = -1;
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if((String)dataSnapshot.child("postCount").getValue() == null){
+                    countRef.setValue("0");
+                }
+                else {
+                    for (DataSnapshot child : dataSnapshot.child("posts").getChildren()) {
+                        String str = child.getKey();
+                        Integer value = Integer.parseInt(str);
+                        if (value > greatest) {
+                            greatest = value;
+                        }
+                        countRef.setValue(greatest + 1);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("COUNTMAPERR", "Unable to create new count map.");
+            }
+        });
+    }
+
+//    Attempt at getting post count from database
+//    public void updatePostCount(){
+//        Log.d("MATTHEW", "Update Post Count called");
+//        rootRef.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if(dataSnapshot.exists()){
+//                    collectPostCount(dataSnapshot.child("postCount").getValue().toString());
+//                }
+//            }
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.d("UPDATE COUNTER ERROR", "Unable to add to local count.");
+//            }
+//        });
+//    }
+//
+//    public void collectPostCount(String info){
+//        Log.d("MATTHEW", "Value of snapshot: " + info);
+//        postCount = Integer.parseInt(info);
+//    }
+//
+//    public int getNewPostId(){
+//        return postCount;
+//    }
 
     public void addUser(User user)
     {
@@ -79,7 +134,7 @@ public class HitchDatabase
         });
     }
 
-    public HashMap<String, String> makePostMap(Post post){
+    private HashMap<String, String> makePostMap(Post post){
         HashMap<String, String> postMap = new HashMap<>();
         postMap.put("departing_area", post.getdeparting_area());
         postMap.put("destination", post.getdestination());
