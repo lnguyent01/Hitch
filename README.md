@@ -2,13 +2,6 @@
 Link for Static Diagram: https://www.lucidchart.com/invitations/accept/2c7b62d3-613a-4de1-9c9e-436d5247e70d
 Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9f-6cb3-49eb-ba5c-91d7d1069e56
 
-![alt text](https://github.com/lnguyent01/Hitch/blob/master/AppInterface.jpg)
-
-
-
-refer to this for our main screen : https://github.com/firebase/quickstart-android/blob/master/database/README.md
-
-
 # Steps to build and run project using Android Studio's emulator
 1. Download and install the latest version of Android Studio
 2. Clone the project onto the machine with Android Studio
@@ -66,7 +59,7 @@ refer to this for our main screen : https://github.com/firebase/quickstart-andro
 10. If the post was added successfully, the post you just added should be visible
 
 # Steps to test Use Case UC4: User deletes account
-1. wait what the fuck
+1. N/A
 
 # Steps to test Use Case UC5: User views the Rides they’ve been accepted to
 1. Open the app
@@ -151,6 +144,11 @@ refer to this for our main screen : https://github.com/firebase/quickstart-andro
 10. These can be verified to be correct using the methods from step 7
 
 # Steps to test Use Case UC14: User views their profile
-1. ???
-
-# FILL IN THE STEPS FOR USE CASE 4 (UC4)
+1. Open the app
+2. Log in (Or create an account first, then log in)
+3. Click the profile icon in the navigation bar at the bottom of the screen (last one)
+4. First, click on the edit profile button, located in the top left corner
+5. Then, input the desired fields to update your profile
+6. Select "Finish", then the profile will be updated.
+7. If successful, the input should be displayed in the profile
+8. This can be verified by checking the Firebase database and verify the information is saved there
