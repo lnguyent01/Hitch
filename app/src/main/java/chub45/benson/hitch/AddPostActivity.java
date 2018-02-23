@@ -9,6 +9,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.content.Intent;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -130,6 +131,14 @@ public class AddPostActivity extends AppCompatActivity {
                 else {
                     Toast.makeText(getApplicationContext(), "Invalid data entered", Toast.LENGTH_LONG);
                 }
+            }
+        });
+        Button testProfileButton = (Button) findViewById(R.id.testProfileButton);
+        testProfileButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AddPostActivity.this, ProfileActivity.class);
+                startActivity(intent);
             }
         });
     }
