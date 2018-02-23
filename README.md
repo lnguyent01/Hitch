@@ -49,7 +49,7 @@ Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9
 # Steps to test Use Case UC3: Passenger requests to join a Driver’s Ride
 1. Open the app
 2. Log in (Or create an account first, then log in)
-3. Enter a destination in the Search Bar (If you simply want to see all the available Rides, just exit out of the search bar completely, by clicking the "x" twice)
+3. Enter a destination in the Search Bar (If you simply want to see all the available Rides, then after you have entered some text, delete that text, then exit out of the search bar completely, by clicking the "x" twice)
 4. Select a Ride post from the list
 5. Click on it
 6. Press the "Request to Join" button
