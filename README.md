@@ -58,17 +58,14 @@ Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9
 9. Now, click the "Requested Rides" button
 10. If the post was added successfully, the post you just added should be visible
 
-# Steps to test Use Case UC4: User deletes account
-1. N/A
-
-# Steps to test Use Case UC5: User views the Rides they’ve been accepted to
+# Steps to test Use Case UC4: User views the Rides they’ve been accepted to
 1. Open the app
 2. Log in (Or create an account first, then log in)
 3. Click the "Rides" button
 4. Now, click the "Accepted Rides" button
 5. All the Rides that you have been accepted to will be visible, which may be none (you may need to use another account to make a post (UC2), have this account request to join it (UC3), then use the first account to accept requests (UC11) in order to have at least one Ride post visible on this page)
 
-# Steps to test Use Case UC6: User views all the details of a Ride they’ve been accepted to
+# Steps to test Use Case UC5: User views all the details of a Ride they’ve been accepted to
 1. Open the app
 2. Log in (Or create an account first, then log in)
 3. Click the "Rides" button
@@ -77,14 +74,14 @@ Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9
 6. Click on a Ride post
 7. If successful, you will be able to see all the details of the Ride you selected: the driver’s name, their profile picture, where the driver is departing from, when they are leaving, where the driver is going to, the Ride’s description, and how many seats are available
 
-# Steps to test Use Case UC7: User views the Rides they’ve requested to join
+# Steps to test Use Case UC6: User views the Rides they’ve requested to join
 1. Open the app
 2. Log in (Or create an account first, then log in)
 3. Click the "Rides" button
 4. Now, click the "Requested Rides" button
 5. If successful, all the Rides that you have requested to join will be visible, which may be none (you may need to use another account to make a post (UC2) and have this account request to join it (UC3))
 
-# Steps to test Use Case UC8: User views all the details of a Ride they’ve requested to join
+# Steps to test Use Case UC7: User views all the details of a Ride they’ve requested to join
 1. Open the app
 2. Log in (Or create an account first, then log in)
 3. Click the "Rides" button
@@ -93,14 +90,14 @@ Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9
 6. Click on a Ride post
 7. If successful, you will be able to see all the details of the Ride you selected: the driver’s name, their profile picture, where the driver is departing from, when they are leaving, where the driver is going to, the Ride’s description, and how many seats are available
 
-# Steps to test Use Case UC9: User views the Rides they’ve posted
+# Steps to test Use Case UC8: User views the Rides they’ve posted
 1. Open the app
 2. Log in (Or create an account first, then log in)
 3. Click the "Rides" button
 4. Now, click the "My Posts" button
 5. If successful, all the Rides that you created will be visible, which may be none (you may need to make a post first (UC2))
 
-# Steps to test Use Case UC10: User views all the details of a Ride they’ve posted
+# Steps to test Use Case UC9: User views all the details of a Ride they’ve posted
 1. Open the app
 2. Log in (Or create an account first, then log in)
 3. Click the "Rides" button
@@ -109,7 +106,7 @@ Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9
 6. Click on a Ride post
 7. If successful, you will be able to see all the details of the Ride you selected: the driver’s name, their profile picture, where the driver is departing from, when they are leaving, where the driver is going to, the Ride’s description, how many seats are available, and a button to “Accept Requests”
 
-# Steps to test Use Case UC11: Driver accepts Passenger(s) to their Ride
+# Steps to test Use Case UC10: Driver accepts Passenger(s) to their Ride
 1. Open the app
 2. Log in (Or create an account first, then log in)
 3. Click the "Rides" button
@@ -123,13 +120,13 @@ Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9
 11. Now, click the "Accepted Rides" button
 12. If successful, the Ride you clicked the "Accept Requests" button on will be visible
 
-# Steps to test Use Case UC12: User searches for Rides
+# Steps to test Use Case UC11: User searches for Rides
 1. Open the app
 2. Log in (Or create an account first, then log in)
 3. Enter a destination in the Search Bar (If you simply want to see all the available Rides, just exit out of the search bar completely, by clicking the "x" twice)
 4. If successful, a list of every Ride post with a destination that starts with the information entered by the user is displayed (if you have exited out of the search bar completely, then all available Rides will be displayed instead)
 
-# Steps to test Use Case UC13: User views posts on map
+# Steps to test Use Case UC12: User views posts on map
 1. Open the app
 2. Log in (Or create an account first, then log in)
 3. Click the map icon in the navigation bar at the bottom of the screen (second from the right)
@@ -143,14 +140,14 @@ Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9
 9. If successful, you will be taken to a screen showing the post's details
 10. These can be verified to be correct using the methods from step 7
 
-# Steps to test Use Case UC14: User views their profile
+# Steps to test Use Case UC13: User views their profile
 1. Open the app
 2. Log in (Or create an account first, then log in)
 3. Click the profile icon in the navigation bar at the bottom of the screen (last one)
 4. If this is the first time viewing your profile, you must edit the profile first (UC15)
 5. If successful, you will be able to view your information
 
-# Steps to test Use Case UC15: User edits their profile
+# Steps to test Use Case UC14: User edits their profile
 1. Open the app
 2. Log in (Or create an account first, then log in)
 3. Click the profile icon in the navigation bar at the bottom of the screen (last one)
