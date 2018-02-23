@@ -155,7 +155,7 @@ public class HitchDatabase
     }
 
     public int getnext_post_id() {
-        DatabaseReference reference = this.getRoot().child("posts");
+        DatabaseReference reference = this.getRoot().child("postCount");
         Query query = reference.orderByChild("post_id");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

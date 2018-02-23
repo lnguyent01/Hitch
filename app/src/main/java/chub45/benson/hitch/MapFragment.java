@@ -200,55 +200,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             e.printStackTrace();
         }
 
-        mMapView.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                mMap = googleMap;
-                mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-                mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-                    @Override
-                    public void onInfoWindowClick(Marker marker) {
-                        Intent intent = new Intent(getActivity().getApplicationContext(), PostDetails.class);
-                        LatLng position = marker.getPosition();
-                        Post post = MapFragment.this.getPostByDestination(marker.getId());
-                        intent.putExtra("destination", MapFragment.this.current_post.getdestination());
-                        intent.putExtra("departing_area", MapFragment.this.current_post.getdeparting_area());
-                        intent.putExtra("available_spots", String.valueOf(MapFragment.this.current_post.getavailable_spots()));
-                        intent.putExtra("departure_time", MapFragment.this.current_post.getdeparture_time().toString());
-                        intent.putExtra("description", MapFragment.this.current_post.getdescription());
-                        startActivity(intent);
-                    }
-                });
-                // Add a marker in Isla Vista and move the camera
-                LatLng isla_vista = new LatLng(34.41073, -119.86352);
-                LatLng debug = new LatLng(34.3, -119.9);
-                current_location = debug;
-                try {
-                    if (locationPermissionGranted()) {
-                        Task locationResult = mFusedLocationClient.getLastLocation();
-                        locationResult.addOnCompleteListener(MapFragment.this.getActivity(), new OnCompleteListener() {
-                            @Override
-                            public void onComplete(@NonNull Task task) {
-                                if (task.isSuccessful()) {
-                                    // Set the map's camera position to the current location of the device.
-                                    current_loc = (Location) task.getResult();
-                                    current_location = new LatLng(current_loc.getLatitude(), current_loc.getLongitude());
-                                    MapFragment.this.mMap.addMarker(new MarkerOptions().position(current_location).title("Current location worked"));
-                                    //MapFragment.this.addPosts(current_location);
-                                    MapFragment.this.getAllPosts();
-                                }
-                            }
-                        });
+        mMapView.getMapAsync(this);
 
-                    }
-                } catch (SecurityException e) {
-                    Log.e("Exception: %s", e.getMessage());
-                }
-
-                mMap.addMarker(new MarkerOptions().position(isla_vista).title("Marker in Isla Vista"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(isla_vista));
-            }
-        });
         return rootView;
     }
 
@@ -269,15 +222,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                Intent intent = new Intent(getActivity().getApplicationContext(), PostDetails.class);
-                LatLng position = marker.getPosition();
-                Post post = MapFragment.this.getPostByDestination(marker.getId());
-                intent.putExtra("destination", MapFragment.this.current_post.getdestination());
-                intent.putExtra("departing_area", MapFragment.this.current_post.getdeparting_area());
-                intent.putExtra("available_spots", String.valueOf(MapFragment.this.current_post.getavailable_spots()));
-                intent.putExtra("departure_time", MapFragment.this.current_post.getdeparture_time().toString());
-                intent.putExtra("description", MapFragment.this.current_post.getdescription());
-                startActivity(intent);
+                //MapFragment.this.displayPostDetails(marker.getId());
+
+                String destination = marker.getTitle();
+                Query query = db.getRoot().child("posts").orderByChild("destination").equalTo(destination);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            collectPost((ArrayList<HashMap<String, String>>) dataSnapshot.getValue());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e("[Database Error]", databaseError.getMessage());
+                    }
+                });
+                db.addPost(triggerQuery);
             }
         });
         // Add a marker in Isla Vista and move the camera
@@ -294,7 +256,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             // Set the map's camera position to the current location of the device.
                             current_loc = (Location) task.getResult();
                             current_location = new LatLng(current_loc.getLatitude(), current_loc.getLongitude());
-                            MapFragment.this.mMap.addMarker(new MarkerOptions().position(current_location).title("Current location worked"));
+                            //MapFragment.this.mMap.addMarker(new MarkerOptions().position(current_location).title("Current location worked"));
                             //MapFragment.this.addPosts(current_location);
                             MapFragment.this.getAllPosts();
                         }
@@ -310,6 +272,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Log.e("Exception: %s", e.getMessage());
         }
 
+        //mMap.addMarker(new MarkerOptions().position(isla_vista).title("Isla Vista"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(isla_vista));
     }
 
@@ -333,13 +296,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         return close_posts;
     }
 
-    public Post getPostByDestination(String destination_id) {
+    public void displayPostDetails(String destination_id) {
         Query query = db.getRoot().child("posts").child(destination_id).orderByChild("destination_id").equalTo(destination_id);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    collectPost((HashMap<String, HashMap<String, String>>) dataSnapshot.getValue());
+                    collectPost((ArrayList<HashMap<String, String>>) dataSnapshot.getValue());
                 }
             }
 
@@ -349,7 +312,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             }
         });
         db.addPost(triggerQuery);
-        return current_post;
     }
 
     private float distanceBetween(LatLng point1, LatLng point2) {
@@ -383,54 +345,50 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         db.addPost(triggerQuery);
     }
 
-    private void collectPost(HashMap<String, HashMap<String, String>> all_posts) {
+    private void collectPost(ArrayList<HashMap<String, String>> postmap) {
         String departing_area, destination, departure_time, departing_area_id, destination_id, num_spots, author_uid, author_email, description, s_id, potential_passengers, accepted_passengers;
         PostFactory factory = new DefaultPostFactory();
-        HashMap<String, String> post;
+        HashMap<String, String> post = postmap.get(0);
         Post tempPost;
-        LatLng post_coordinates;
-        Place current_post_location;
         int available_spots, post_id;
-        for (int i = 0; i < all_posts.size(); i++) {
-            post = all_posts.get(String.valueOf(i));
-            if (post != null) {
-                departing_area = post.get("departing_area");
-                destination = post.get("destination");
-                departing_area_id = post.get("departing_area");
-                destination_id = post.get("destination");
-                departure_time = post.get("departure_time");
-                num_spots = post.get("available_spots");
-                available_spots = Integer.parseInt(num_spots);
-                author_uid = post.get("author_uid");
-                author_email = post.get("author_email");
-                description = post.get("description");
-                s_id = post.get("post_id");
-                post_id = Integer.parseInt(s_id);
-                potential_passengers = post.get("potential_passengers");
-                accepted_passengers = post.get("accepted_passengers");
-                this.current_post = factory.createPostFromDb(departing_area, destination, departing_area_id, destination_id, departure_time, available_spots, author_uid,
-                        author_email, description, post_id, potential_passengers, accepted_passengers);
-            }
+        if (post != null) {
+            departing_area = post.get("departing_area");
+            destination = post.get("destination");
+            departing_area_id = post.get("departing_area");
+            destination_id = post.get("destination");
+            departure_time = post.get("departure_time");
+            num_spots = post.get("available_spots");
+            available_spots = Integer.parseInt(num_spots);
+            author_uid = post.get("author_uid");
+            author_email = post.get("author_email");
+            description = post.get("description");
+            s_id = post.get("post_id");
+            post_id = Integer.parseInt(s_id);
+            potential_passengers = post.get("potential_passengers");
+            accepted_passengers = post.get("accepted_passengers");
+            tempPost = factory.createPostFromDb(departing_area, destination, departing_area_id, destination_id, departure_time, available_spots, author_uid,
+                    author_email, description, post_id, potential_passengers, accepted_passengers);
+            Intent intent = new Intent(getActivity().getApplicationContext(), PostDetails.class);
+            intent.putExtra("destination", tempPost.getdestination());
+            intent.putExtra("departing_area", tempPost.getdeparting_area());
+            intent.putExtra("available_spots", String.valueOf(tempPost.getavailable_spots()));
+            intent.putExtra("departure_time", tempPost.getdeparture_time().toString());
+            intent.putExtra("description", tempPost.getdescription());
+            startActivity(intent);
         }
     }
 
     private void collectPosts(HashMap<String, HashMap<String, String>> all_posts) {
-        String departing_area, destination, departure_time, num_spots, author_uid, author_email, description, s_id, potential_passengers, accepted_passengers;
-        PostFactory factory = new DefaultPostFactory();
         HashMap<String, String> post;
-        Post tempPost;
-        LatLng post_coordinates;
-        Place current_post_location;
-        int available_spots, id;
         for (int i = 0; i < all_posts.size(); i++) {
             post = all_posts.get(String.valueOf(i));
-            if ((post != null) && (!post.get("post_id").equals("-1")) && (!post.get("destination").equals(""))){
-                tempPost = addMarkerandCreatePost(post.get("destination_id"), post);
+            if ((post != null) && (!post.get("post_id").equals("-1")) && (post.get("destination_id") != null) && (!post.get("destination_id").equals(""))){
+                addMarkerandCreatePost(post.get("destination_id"), post);
             }
         }
     }
 
-    public Post addMarkerandCreatePost(String place_id, HashMap<String, String> post) {
+    public void addMarkerandCreatePost(String place_id, HashMap<String, String> post) {
         final Post[] result = new Post[1];
 
         Places.GeoDataApi.getPlaceById(mGoogleApiClient, place_id)
@@ -463,7 +421,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             result[0] = factory.createPostFromDb(departing_area, destination, departing_area_id, destination_id, departure_time, available_spots, author_uid,
                                     author_email, description, post_id, potential_passengers, accepted_passengers);
                             if (distanceBetween(current_location, post_coordinates) < DEFAULT_POST_DISTANCE * 1000000) {
-                                markerOptions = new MarkerOptions().position(post_coordinates).title(myPlace.getAddress().toString()).snippet(result[0].getdescription());
+                                markerOptions = new MarkerOptions().position(post_coordinates).title(result[0].getdestination()).snippet(result[0].getdescription());
                                 mMap.addMarker(markerOptions);
                                 //MapFragment.this.addPostMarker(post_coordinates, result[0]);
                             }
@@ -471,7 +429,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         places.release();
                     }
                 });
-        return result[0];
+        //return result[0];
     }
 
     public void setPost_location(Place loc) {
