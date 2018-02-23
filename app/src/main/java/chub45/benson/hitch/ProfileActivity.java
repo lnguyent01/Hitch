@@ -2,26 +2,21 @@ package chub45.benson.hitch;
 
 import android.content.DialogInterface;
 import android.graphics.BitmapFactory;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.net.Uri;
 import android.widget.Toast;
-import android.graphics.Bitmap;
+
 import android.database.Cursor;
 import android.util.Log;
 
-import java.util.HashMap;
-
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -62,25 +57,19 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         emailTV = (TextView)findViewById(R.id.emailTV);
         stateTV = (TextView)findViewById(R.id.stateTV);
         cityTV = (TextView)findViewById(R.id.cityTV);
+        findViewById(R.id.editProfileBtn).setOnClickListener(this);
 
         FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        //User user = get user from database using fbUser
-
         if (fbUser != null) {
-            // Name, email address, and profile photo Url
-            fullNameTV.setText(fbUser.getDisplayName());
             emailTV.setText("Email: " + fbUser.getEmail());
 
-            //displayData(getQuery(dbRef, fbUser));
             Query query =  dbRef.child("users").child(fbUser.getUid());
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        //User user = dataSnapshot.getValue(User.class);
                         Log.wtf("mytag", "dataSnapshot exists");
-                        //HashMap<String, String> userQuery = (HashMap<String, String>) dataSnapshot.getValue();
 
                         getFullNameTV().setText(dataSnapshot.getValue(User.class).getFullName());
                         getStateTV().setText("State: " + dataSnapshot.getValue(User.class).getState());
@@ -97,48 +86,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             });
         }
 
-        /*
         profilePicIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chooseProfilePic();
             }
         });
-        */
-
-        findViewById(R.id.editProfileBtn).setOnClickListener(this);
-    }
-
-    private Query getQuery(DatabaseReference ref, FirebaseUser user) {
-        Query query =  ref.child("uid").equalTo(user.getUid());
-        return query;
-    }
-
-    private void displayData(Query query) {
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Log.wtf("hello", "inner class is called");
-                if (dataSnapshot.exists()) {
-                    //User user = dataSnapshot.getValue(User.class);
-                    Log.wtf("mytag", "dataSnapshot exists");
-                    //HashMap<String, String> userQuery = (HashMap<String, String>) dataSnapshot.getValue();
-                    if (dataSnapshot.getValue(User.class) != null) {
-                        Log.wtf("anothertag", "userQuery != null");
-                        getFullNameTV().setText(dataSnapshot.getValue(User.class).getFullName());
-                        getStateTV().setText(dataSnapshot.getValue(User.class).getState());
-                        getCityTV().setText(dataSnapshot.getValue(User.class).getCity());
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("[Database Error]", databaseError.getMessage());
-            }
-
-        });
-
-
     }
 
     ImageView getProfileIV() {
@@ -164,7 +117,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    /*
+
     private void chooseProfilePic() {
         //Displays dialog to choose pic from camera or gallery
         final CharSequence[] choices = {"Take a Photo", "Choose From Library", "Cancel"};
@@ -188,18 +141,17 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         });
         builder.show();
     }
-
+    //Camera chosen
     private void cameraIntent() {
-        //Camera chosen
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
+    //Gallery chosen
     private void galleryIntent() {
-        //Gallery chosen
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
-        //intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, SELECT_FILE);
     }
 
@@ -258,5 +210,5 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
     }
-    */
+
 }
