@@ -21,7 +21,6 @@ public class ChoosePosts extends AppCompatActivity{
         Button myPosts = (Button) findViewById(R.id.my_posts);
         myPosts.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                //Opens add post activity for users to add a post by entering information
                 Intent myPostsIntent = new Intent(getApplicationContext(), MyPostsActivity.class);
                 startActivity(myPostsIntent);
             }
@@ -30,9 +29,16 @@ public class ChoosePosts extends AppCompatActivity{
         Button acceptedPosts = (Button) findViewById(R.id.accepted_posts);
         acceptedPosts.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                //Opens add post activity for users to add a post by entering information
                 Intent acceptedPostsIntent = new Intent(getApplicationContext(), AcceptedPostsActivity.class);
                 startActivity(acceptedPostsIntent);
+            }
+        });
+
+        Button RequestedPosts = (Button) findViewById(R.id.requested_posts);
+        RequestedPosts.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent requestedPostsIntent = new Intent(getApplicationContext(), RequestedPostsActivity.class);
+                startActivity(requestedPostsIntent);
             }
         });
     }
