@@ -40,16 +40,6 @@ public interface Post
     public String getpotential_passengers();
     public String getaccepted_passengers();
 
-    // Static utility methods
-    public static Place getPlaceFromId(Context context, String id) {
-        GoogleApiClient client = new GoogleApiClient.Builder(context).addApi(Places.GEO_DATA_API).build();
-        client.connect();
-
-        PendingResult<PlaceBuffer> departing_result = Places.GeoDataApi.getPlaceById(client, id);
-        PlaceBuffer place = departing_result.await();
-        return place.get(0);
-    }
-
     public void set_departing_area(String departing_area);
     public void set_destination(String destination);
     public void set_departing_area_id(String departing_area_id);
