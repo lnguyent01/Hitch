@@ -124,8 +124,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (fbUser != null) {
-            emailTV.setText("Email: " + fbUser.getEmail());
-
             Query query =  dbRef.child("users").child(fbUser.getUid());
             query.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -134,6 +132,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         fullNameTV.setText(dataSnapshot.getValue(User.class).getFullName());
                         stateTV.setText("State: " + dataSnapshot.getValue(User.class).getState());
                         cityTV.setText("City: " + dataSnapshot.getValue(User.class).getCity());
+                        usernameTV.setText("@"+ dataSnapshot.getValue(User.class).getUsername());
+                        emailTV.setText("Email: " + fbUser.getEmail());
                     }
                     else {
                         Log.wtf("mytag", "dataSnapshot does not exists");
