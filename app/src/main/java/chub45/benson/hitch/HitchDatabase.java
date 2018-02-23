@@ -28,8 +28,6 @@ public class HitchDatabase
     private DatabaseReference usersRef;
     private DatabaseReference postsRef;
     private int most_recent_post_id;
-    private ArrayList<Post> posts;
-
 
     public HitchDatabase() {
         rootRef = FirebaseDatabase.getInstance().getReference();
@@ -82,76 +80,6 @@ public class HitchDatabase
                 }
             }
         });
-    }
-
-    public ArrayList<Post> getPosts() {
-        this.getAllPosts();
-        return this.posts;
-    }
-
-    public void getAllPosts() {
-        PostFactory factory = new DefaultPostFactory();
-        Query query = postsRef.orderByChild("available_spots");
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            if (dataSnapshot.exists()) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    collectPosts((Map<String, Object>) postSnapshot.getValue());
-                    String departing_area = postSnapshot.child("departing_area").toString();
-                    String destination = postSnapshot.child("destination").toString();
-                    String departing_area_id = postSnapshot.child("departing_area_id").toString();
-                    String destination_id = postSnapshot.child("destination_id").toString();
-                    String departure_time = postSnapshot.child("departure_time").toString();
-                    String num_spots = (String) postSnapshot.child("available_spots").getValue();
-                    int available_spots = Integer.parseInt(num_spots);
-                    String author_uid = postSnapshot.child("author_uid").toString();
-                    String author_email = postSnapshot.child("author_email").toString();
-                    String description = postSnapshot.child("description").toString();
-                    String s_id = (String) postSnapshot.child("post_id").getValue();
-                    int id = Integer.parseInt(s_id);
-                    String potential_passengers = postSnapshot.child("potential_passengers").toString();
-                    String accepted_passengers = postSnapshot.child("accepted_passengers").toString();
-                    HitchDatabase.this.addToPostsList(factory.createPostFromDb(departing_area, destination, departing_area_id, destination_id, departure_time, available_spots, author_uid,
-                            author_email, description, id, potential_passengers, accepted_passengers));
-                }
-            }
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            Log.e("[Database Error]", databaseError.getMessage());
-        }
-    });
-}
-
-    private void collectPosts(Map<String, Object> posts) {
-        String departing_area, destination, departing_area_id, destination_id, departure_time, num_spots, author_uid, author_email, description, s_id, potential_passengers, accepted_passengers;
-        PostFactory factory = new DefaultPostFactory();
-        int available_spots, id;
-        for (Map.Entry<String, Object> entry: posts.entrySet()) {
-            Map post = (Map) entry.getValue();
-            departing_area = post.get("departing_area").toString();
-            destination = post.get("destination").toString();
-            departing_area_id = post.get("departing_area_id").toString();
-            destination_id = post.get("destination_id").toString();
-            departure_time = post.get("departure_time").toString();
-            num_spots = (String) post.get("available_spots").toString();
-            available_spots = Integer.parseInt(num_spots);
-            author_uid = post.get("author_uid").toString();
-            author_email = post.get("author_email").toString();
-            description = post.get("description").toString();
-            s_id = (String) post.get("post_id").toString();
-            id = Integer.parseInt(s_id);
-            potential_passengers = post.get("potential_passengers").toString();
-            accepted_passengers = post.get("accepted_passengers").toString();
-            this.addToPostsList(factory.createPostFromDb(departing_area, destination, departing_area_id, destination_id, departure_time, available_spots, author_uid,
-                    author_email, description, id, potential_passengers, accepted_passengers));
-        }
-    }
-
-    public void addToPostsList(Post post) {
-        posts.add(post);
     }
 
     public int getnext_post_id() {

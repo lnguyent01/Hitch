@@ -81,106 +81,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         db = new HitchDatabase();
         factory = new DefaultPostFactory();
         posts = new ArrayList<>();
-        Date date = new Date();
-        FirebaseUser user = new FirebaseUser() {
-            @NonNull
-            @Override
-            public String getUid() {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public String getProviderId() {
-                return null;
-            }
-
-            @Override
-            public boolean isAnonymous() {
-                return false;
-            }
-
-            @Nullable
-            @Override
-            public List<String> getProviders() {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public List<? extends UserInfo> getProviderData() {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public FirebaseUser zzP(@NonNull List<? extends UserInfo> list) {
-                return null;
-            }
-
-            @Override
-            public FirebaseUser zzax(boolean b) {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public FirebaseApp zzEF() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public String getDisplayName() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public Uri getPhotoUrl() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public String getEmail() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public String getPhoneNumber() {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public kx zzEG() {
-                return null;
-            }
-
-            @Override
-            public void zza(@NonNull kx kx) {
-
-            }
-
-            @NonNull
-            @Override
-            public String zzEH() {
-                return null;
-            }
-
-            @NonNull
-            @Override
-            public String zzEI() {
-                return null;
-            }
-
-            @Override
-            public boolean isEmailVerified() {
-                return false;
-            }
-        };
         triggerQuery = factory.createPostFromDb("","", "", "","", 0, "","","", -1, "", "");
     }
 
@@ -256,8 +156,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             // Set the map's camera position to the current location of the device.
                             current_loc = (Location) task.getResult();
                             current_location = new LatLng(current_loc.getLatitude(), current_loc.getLongitude());
-                            //MapFragment.this.mMap.addMarker(new MarkerOptions().position(current_location).title("Current location worked"));
-                            //MapFragment.this.addPosts(current_location);
                             MapFragment.this.getAllPosts();
                         }
                     }
@@ -272,46 +170,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Log.e("Exception: %s", e.getMessage());
         }
 
-        //mMap.addMarker(new MarkerOptions().position(isla_vista).title("Isla Vista"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(isla_vista));
     }
 
     private boolean locationPermissionGranted() {
         return (ContextCompat.checkSelfPermission(this.getActivity().getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED);
-    }
-
-    private ArrayList<Post> getClosePosts(LatLng current_location) {
-        ArrayList<Post> close_posts = new ArrayList<>();
-        getAllPosts();
-        Place post_location;
-        LatLng post_coordinates;
-
-        for (int i = 0; i < this.posts.size(); i++) {
-            post_location = Post.getPlaceFromId(this.getActivity().getApplicationContext(), posts.get(i).getdeparting_area());
-            post_coordinates = post_location.getLatLng();
-            if (distanceBetween(current_location, post_coordinates) < DEFAULT_POST_DISTANCE * 1000000) {
-                close_posts.add(this.posts.get(i));
-            }
-        }
-        return close_posts;
-    }
-
-    public void displayPostDetails(String destination_id) {
-        Query query = db.getRoot().child("posts").child(destination_id).orderByChild("destination_id").equalTo(destination_id);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    collectPost((ArrayList<HashMap<String, String>>) dataSnapshot.getValue());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("[Database Error]", databaseError.getMessage());
-            }
-        });
-        db.addPost(triggerQuery);
     }
 
     private float distanceBetween(LatLng point1, LatLng point2) {
@@ -427,17 +290,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                             if (distanceBetween(current_location, post_coordinates) < DEFAULT_POST_DISTANCE * 1000000) {
                                 markerOptions = new MarkerOptions().position(post_coordinates).title(result[0].getdestination()).snippet(result[0].getdescription());
                                 mMap.addMarker(markerOptions);
-                                //MapFragment.this.addPostMarker(post_coordinates, result[0]);
                             }
                         }
                         places.release();
                     }
                 });
-        //return result[0];
-    }
-
-    public void setPost_location(Place loc) {
-        this.post_location = loc;
     }
 
     private OnFragmentInteractionListener mListener;
