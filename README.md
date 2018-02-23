@@ -28,6 +28,12 @@ Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9
 23. Click on the Hitch app
 24. App should start
 
+# List of known bugs
+1. Logging in takes a random amount of time, from fast to a minute or two
+2. Posts have IDs, as a way of finding a specific post. When you add a post, it alwasy has an ID of 0, so new posts overwrite each other
+3. Accepting requests deletes everyone from the potential_passengers field, decremonts spots, but does not move people to the accepted_passengers field
+4. The map is inconsistent
+
 # Steps to test Use Case UC1: User makes a new account
 1. Open the app
 2. Click on the "Sign up" text after "Don't have an account?"
