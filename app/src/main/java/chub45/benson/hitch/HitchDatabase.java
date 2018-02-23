@@ -28,6 +28,7 @@ public class HitchDatabase
     private DatabaseReference usersRef;
     private DatabaseReference postsRef;
     private DatabaseReference countRef;
+    protected int postCount;
     private int most_recent_post_id;
 
     public HitchDatabase() {
@@ -35,32 +36,45 @@ public class HitchDatabase
         countRef = rootRef.child("postCount");
         usersRef = rootRef.child("users");
         postsRef = rootRef.child("posts");
-        addCountMap();
         most_recent_post_id = -1; //placeholder
     }
 
-    private void addCountMap(){
-        rootRef.addValueEventListener(new ValueEventListener() {
+    public void changeInPostCount(){
+        Query query = postsRef;
+        query.addChildEventListener(new ChildEventListener() {
             Integer greatest = -1;
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if((String)dataSnapshot.child("postCount").getValue() == null){
-                    countRef.setValue("0");
-                }
-                else {
-                    for (DataSnapshot child : dataSnapshot.child("posts").getChildren()) {
-                        String str = child.getKey();
-                        Integer value = Integer.parseInt(str);
-                        if (value > greatest) {
-                            greatest = value;
-                        }
-                        countRef.setValue(greatest + 1);
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    String str = child.getKey();
+                    Integer value = Integer.parseInt(str);
+                    if (value > greatest) {
+                        greatest = value;
                     }
+                    countRef.setValue(greatest + 1);
+                    postCount = greatest + 1;
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    String str = child.getKey();
+                    Integer value = Integer.parseInt(str);
+                    if (value > greatest) {
+                        greatest = value;
+                    }
+                    countRef.setValue(greatest + 1);
+                    postCount = greatest + 1;
                 }
             }
             @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+            @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d("COUNTMAPERR", "Unable to create new count map.");
+                Log.d("[Datatbase Error]", "Unable to update database.");
             }
         });
     }
