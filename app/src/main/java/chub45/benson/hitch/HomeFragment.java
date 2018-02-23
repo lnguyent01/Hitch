@@ -5,18 +5,23 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
@@ -98,21 +103,36 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
             }
         });
 
-        // Links mSearchView to the actual search bar
-        mSearchView = view.findViewById(R.id.search_bar_name);
-        // Enables use of the submit button to submit search queries
-        mSearchView.setSubmitButtonEnabled(true);
-        // Makes this class listen for queries from mSearchBar
-        mSearchView.setOnQueryTextListener(this);
+        // Way to look at your created posts and your "accepted to" posts
+        Button ridesButton = (Button) view.findViewById(R.id.rides_button);
+        ridesButton.setOnClickListener(new View.OnClickListener() {
 
-        // Links mUserDatabase to the actual Firebase database, accessing everything stored under "posts"
+            public void onClick(View view) {
+                //Opens menu to choose how you want to view posts
+                Intent testPostView = new Intent(getContext(), ChoosePosts.class);
+                startActivity(testPostView);
+            }
+        });
+
+// Links mSearchView to the actual search bar
+        mSearchView = view.findViewById(R.id.search_bar_name);
+// Enables use of the submit button to submit search queries
+        mSearchView.setSubmitButtonEnabled(true);
+// Makes this class listen for queries from mSearchBar
+        mSearchView.setOnQueryTextListener(this);
+        mSearchView.setQueryHint("Enter your destination...");
+
+// Links mUserDatabase to the actual Firebase database, accessing everything stored under "posts"
         mUserDatabase = FirebaseDatabase.getInstance().getReference("posts");
 
-        // Links mResultList to the actual result list in the .xml
+// Links mResultList to the actual result list in the .xml
         mResultList = (RecyclerView) view.findViewById(R.id.result_list);
-        // Makes the result list have a constant size
+// Makes the result list have a constant size
         mResultList.setHasFixedSize(true);
-       // mResultList.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager mLayout= new LinearLayoutManager(getContext());
+        mResultList.setLayoutManager(mLayout);
+        mLayout.setOrientation(LinearLayoutManager.VERTICAL);
+
         return view;
     }
 
@@ -176,33 +196,43 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
         Query firebaseSearchQuery = mUserDatabase.orderByChild("destination").startAt(searchText).endAt(searchText + "\uf8ff");
 
         // The FirebaseRecyclerAdapter is from FirebaseUI, a third-party library. It accesses the Firebase database.
-        FirebaseRecyclerAdapter<SearchDriverPost, HomeFragment.postViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<SearchDriverPost, HomeFragment.postViewHolder>(
+        FirebaseRecyclerAdapter<SearchDriverPost, postViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<SearchDriverPost, postViewHolder>(
 
                 // The information from the Firebase database in stored in this class
                 SearchDriverPost.class,
                 // This is how the post information is going to be displayed
                 R.layout.list_layout,
                 // This is what puts the post information from the post class into the list_layout
-                HomeFragment.postViewHolder.class,
+                postViewHolder.class,
                 // This is required to correctly filter out all unnecessary information from the Firebase database
                 firebaseSearchQuery
         ) {
             @Override
-            protected void populateViewHolder(HomeFragment.postViewHolder viewHolder, final SearchDriverPost model, int position) {
+            protected void populateViewHolder(postViewHolder viewHolder, final SearchDriverPost model, int position) {
 
                 // Passes the post information to the postViewHolder viewHolder
                 viewHolder.setDetails(getActivity().getApplicationContext(), model.getdeparting_area(),
-                        model.getdestination(), String.valueOf(model.getavailable_spots()), model.getdeparture_time());
+                        model.getdestination(), String.valueOf(model.getavailable_spots()), model.getdeparture_time(),
+                        model.getauthor_uid());
 
                 // When a post is clicked, move to another activity - one that contains more details on the post that was clicked
                 // Information is passed to that activity
-                viewHolder.setOnClickListener(new HomeFragment.postViewHolder.ClickListener() {
+                viewHolder.setOnClickListener(new postViewHolder.ClickListener() {
 
                     @Override
                     public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(getActivity().getApplicationContext(), PostDetails.class);
-                        intent.putExtra("necessary_info", model.getdestination());
-                        startActivity(intent);
+                        Context context = view.getContext();
+                        Intent intent = new Intent(context, PostDetails.class);
+                        intent.putExtra("destination", model.getdestination());
+                        intent.putExtra("departing_area", model.getdeparting_area());
+                        intent.putExtra("available_spots", String.valueOf(model.getavailable_spots()));
+                        intent.putExtra("departure_time", model.getdeparture_time());
+                        intent.putExtra("description", model.getdescription());
+                        intent.putExtra("postID", model.getpost_id());
+                        intent.putExtra("name", model.getauthor_email());
+                        intent.putExtra("potential_passengers", model.getpotential_passengers());
+                        intent.putExtra("accepted_passengers", model.getaccepted_passengers());
+                        context.startActivity(intent);
                     }
                 });
             }
@@ -217,7 +247,12 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
 
         View mView;
 
-        private HomeFragment.postViewHolder.ClickListener mClickListener;
+        // Get the current user's UID
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String uID = currentUser.getUid();
+
+
+        private postViewHolder.ClickListener mClickListener;
 
         // Enables callbacks to be sent
         public interface ClickListener{
@@ -226,7 +261,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
 
         // This method, when used, allows whatever used it to do something when this post is clicked
         // firebaseRecyclerAdapter uses this method to move to another activity when clicked
-        public void setOnClickListener(HomeFragment.postViewHolder.ClickListener clickListener){
+        public void setOnClickListener(postViewHolder.ClickListener clickListener){
             mClickListener = clickListener;
         }
         public postViewHolder(View itemView) {
@@ -245,7 +280,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
 
         // This method is the one that does the work required to display all of the information retrieved
         // by the firebaseRecyclerAdapter
-        public void setDetails(Context ctx, String postFrom, String postTo, String postSeats, String postTime) {
+        public void setDetails(Context ctx, String postFrom, String postTo, String postSeats, String postTime, String postAuthor) {
 
             // Creates types of View object references and links them to every component of list_layout
             ImageView post_profile = (ImageView) mView.findViewById(R.id.profile);
@@ -265,6 +300,19 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
             post_time.setText(postTime);
             post_seats.setText(postSeats);
 
+
+            // Posts by you won't show up when searching the database
+            // Will add more later, like "accepted posts won't show up", etc.
+            if (uID.equals(postAuthor)) {
+                RelativeLayout listPart = (RelativeLayout) mView.findViewById(R.id.list_part);
+                listPart.getLayoutParams().height = 0;
+            }
+
+            // Posts with a size of 0 (no space) won't show up when searching the database
+            if (postSeats.equals("0")) {
+                RelativeLayout listPart = (RelativeLayout) mView.findViewById(R.id.list_part);
+                listPart.getLayoutParams().height = 0;
+            }
         }
     }
 }

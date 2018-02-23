@@ -43,15 +43,20 @@ public class PostDetails extends AppCompatActivity {
         TextView mSeatsLeftAndPrice = (TextView) findViewById(R.id.SeatsLeftandPrice);
 
         Intent intent = getIntent();
-        String departing_id = intent.getExtras().getString("departing_area");
-        String departing_text = Post.getPlaceFromId(this, departing_id).toString();
-        mDepartingFrom.setText(departing_text);
+        //String departing_id = intent.getExtras().getString("departing_area");
+        //String departing_text = Post.getPlaceFromId(this, departing_id).toString();
+        //mDepartingFrom.setText(departing_text);
 
-        String destination_id = intent.getExtras().getString("destination");
-        String destination_text = Post.getPlaceFromId(this, destination_id).toString();
-        mGoingTo.setText(destination_text);
+
+        mDepartingFrom.setText(intent.getExtras().getString("departing_area"));
+        mGoingTo.setText(intent.getExtras().getString("destination"));
         mDescriptionText.setText(intent.getExtras().getString("description"));
         mDriverName.setText(intent.getExtras().getString("name"));
+
+
+        //String destination_id = intent.getExtras().getString("destination");
+        //String destination_text = Post.getPlaceFromId(this, destination_id).toString();
+        //mGoingTo.setText(destination_text);
 
         String TimeStatement = "Leaving at " + intent.getExtras().getString("departure_time");
         mDepartureTime.setText(TimeStatement);

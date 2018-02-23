@@ -44,13 +44,12 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCRzlYgAfXfsSEE1IVZMeVG2CVd0SuYHj0" />
-
         <activity
-            android:name="chub45.benson.hitch.PostDetails"
+            android:name="chub45.benson.hitch.MyPostDetails"
             android:label="Details">
         </activity>
         <activity
-            android:name="chub45.benson.hitch.MyPostDetails"
+            android:name="chub45.benson.hitch.PostDetails"
             android:label="Details">
         </activity>
         <activity
