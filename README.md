@@ -137,7 +137,18 @@ refer to this for our main screen : https://github.com/firebase/quickstart-andro
 4. If successful, a list of every Ride post with a destination that starts with the information entered by the user is displayed (if you have exited out of the search bar completely, then all available Rides will be displayed instead)
 
 # Steps to test Use Case UC13: User views posts on map
-1. ???
+1. Open the app
+2. Log in (Or create an account firest, then log in)
+3. Click the map icon in the navigation bar at the bottom of the screen (second from the right)
+4. If initial map construction is successful, then there will be a marker at each post's destination
+5. Click on a marker
+6. If successful, a small window will pop up at the marker showing the destination and the post's description
+7. These can be verified in two ways:
+   a. View the post through the search bar and confirm the fields are the same
+   b. Examine the Firebase database and verify the information is correct
+8. Click on the window
+9. If successful, you will be taken to a screen showing the post's details
+10. These can be verified to be correct using the methods from step 7
 
 # Steps to test Use Case UC14: User views their profile
 1. ???
