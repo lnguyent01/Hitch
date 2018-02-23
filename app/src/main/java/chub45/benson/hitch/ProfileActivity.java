@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.view.View;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.content.Intent;
@@ -69,14 +70,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
-                        Log.wtf("mytag", "dataSnapshot exists");
-
                         getFullNameTV().setText(dataSnapshot.getValue(User.class).getFullName());
                         getStateTV().setText("State: " + dataSnapshot.getValue(User.class).getState());
                         getCityTV().setText("City: " + dataSnapshot.getValue(User.class).getCity());
                     }
                     else {
-                        Log.wtf("hello", "dataSnapshot does not exist");
+                        Log.wtf("mytag", "dataSnapshot does not exists");
                     }
                 }
                 @Override
@@ -85,13 +84,14 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 }
             });
         }
-
+        /*
         profilePicIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chooseProfilePic();
             }
         });
+        */
     }
 
     ImageView getProfileIV() {
@@ -116,8 +116,7 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
     }
-
-
+    /*
     private void chooseProfilePic() {
         //Displays dialog to choose pic from camera or gallery
         final CharSequence[] choices = {"Take a Photo", "Choose From Library", "Cancel"};
@@ -150,8 +149,9 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     //Gallery chosen
     private void galleryIntent() {
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
+        //intent.setFlags(0);
+        //intent.setType("image/*");
+        //intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(intent, SELECT_FILE);
     }
 
@@ -162,8 +162,10 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
         //Save uri from gallery
         if(requestCode == SELECT_FILE) //&& resultCode == RESULT_OK)
         {
+            Log.wtf("TEST1", "SELECT FILE RUNS");
             Uri selectedImg;
             if (data != null) {
+                Log.wtf("TEST2", "DATA != NULL");
                 selectedImg = data.getData();
                 String[] filePathColumn = { MediaStore.Images.Media.DATA };
                 Cursor cursor = getContentResolver().query(selectedImg,
@@ -177,6 +179,8 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
                 getProfileIV().setImageBitmap(BitmapFactory.decodeFile(picturePath));
 
             }
+            else
+                Log.wtf("TEST2", "DATA == NULL");
 
 
             Uri imageUri = data.getData();
@@ -210,5 +214,5 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
     }
-
+    */
 }
