@@ -374,6 +374,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             intent.putExtra("available_spots", String.valueOf(tempPost.getavailable_spots()));
             intent.putExtra("departure_time", tempPost.getdeparture_time().toString());
             intent.putExtra("description", tempPost.getdescription());
+            intent.putExtra("postID", tempPost.get_post_id());
+            intent.putExtra("name", tempPost.getauthor_email());
+            intent.putExtra("potential_passengers", tempPost.getpotential_passengers());
+            intent.putExtra("accepted_passengers", tempPost.getaccepted_passengers());
             startActivity(intent);
         }
     }

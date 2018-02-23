@@ -26,8 +26,6 @@ public class NavigationActivity extends AppCompatActivity{
                     homeFragmentTransaction.commit();
                     return true;
                 case R.id.navigation_map:
-//                    Intent mapIntent = new Intent(getApplicationContext(), MapsActivity.class);
-//                    startActivity(mapIntent);
                     setTitle("Map");
                     MapFragment mapFragment = new MapFragment();
                     android.support.v4.app.FragmentTransaction mapFragmentTransaction = getSupportFragmentManager().beginTransaction();

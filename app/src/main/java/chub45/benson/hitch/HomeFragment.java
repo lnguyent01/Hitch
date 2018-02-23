@@ -98,7 +98,7 @@ public class HomeFragment extends Fragment implements SearchView.OnQueryTextList
 
             public void onClick(View view) {
                 //Opens add post activity for users to add a post by entering information
-                Intent signUpIntent = new Intent(getActivity().getApplicationContext(), AddPostActivity.class);
+                Intent signUpIntent = new Intent(getContext(), AddPostActivity.class);
                 startActivity(signUpIntent);
             }
         });

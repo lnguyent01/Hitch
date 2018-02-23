@@ -152,13 +152,4 @@ public class PostDetails extends AppCompatActivity {
             }
         });
     }
-
-    private String getPlaceFromId(Context context, String id) {
-        GoogleApiClient client = new GoogleApiClient.Builder(this).addApi(Places.GEO_DATA_API).build();
-        client.connect();
-
-        PendingResult<PlaceBuffer> departing_result = Places.GeoDataApi.getPlaceById(client, id);
-        PlaceBuffer place = departing_result.await();
-        return place.get(0).toString();
-    }
 }
