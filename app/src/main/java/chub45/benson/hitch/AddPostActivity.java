@@ -133,14 +133,6 @@ public class AddPostActivity extends AppCompatActivity {
                 }
             }
         });
-        Button testProfileButton = (Button) findViewById(R.id.testProfileButton);
-        testProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(AddPostActivity.this, ProfileActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     public void setDeparting_area(String departing_area) { this.departing_area = departing_area; }
