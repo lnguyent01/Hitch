@@ -138,7 +138,7 @@ refer to this for our main screen : https://github.com/firebase/quickstart-andro
 
 # Steps to test Use Case UC13: User views posts on map
 1. Open the app
-2. Log in (Or create an account firest, then log in)
+2. Log in (Or create an account first, then log in)
 3. Click the map icon in the navigation bar at the bottom of the screen (second from the right)
 4. If initial map construction is successful, then there will be a marker at each post's destination
 5. Click on a marker
