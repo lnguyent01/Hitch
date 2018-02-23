@@ -1,9 +1,5 @@
 package chub45.benson.hitch;
 
-/**
- *  Created by Mattmitch 2/4/18
- */
-
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.util.Log;
