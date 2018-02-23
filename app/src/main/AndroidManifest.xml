@@ -67,9 +67,6 @@
         <activity
             android:name=".AcceptedPostsActivity"
             android:label="Posts I&apos;ve Been Accepted To" />
-        <activity
-            android:name=".ProfileActivity"
-            android:label="My Profile" />
         <activity android:name=".EditProfileActivity" />
         <activity
             android:name="chub45.benson.hitch.RequestedPostsActivity"
