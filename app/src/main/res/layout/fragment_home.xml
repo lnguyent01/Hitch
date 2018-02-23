@@ -39,7 +39,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="312dp"
         android:background="@color/colorPrimary"
-        android:onClick="createPost"
+        android:clickable="true"
         app:layout_constraintBottom_toBottomOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.944"
