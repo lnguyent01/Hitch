@@ -15,7 +15,7 @@ Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9
 8. Select Pixel 2 from the list of devices
 9. Press next
 10. Choose the API 27 release with Google APIs enabled
-11. Enter a device name if you wish
+11. Enter a device name if you want a different name from the default name
 12. Select Portrait for the Startup Orientation
 13. For Graphics, select Automatic
 14. Make sure Enable Device Frame is checked
