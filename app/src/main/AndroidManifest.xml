@@ -46,14 +46,8 @@
             android:name=".AcceptedPostsActivity"
             android:label="Posts I&apos;ve Been Accepted To" />
         <activity
-            android:name=".ProfileActivity">
-                <intent-filter>
-                    <action android:name="android.intent.action.MAIN" />
-                    <category android:name="android.intent.category.LAUNCHER" />
-                </intent-filter>
-        </activity>
-            <!--android:label="My Profile" </activity> -->
-
+            android:name=".ProfileActivity"
+            android:label="My Profile" />
         <activity android:name=".EditProfileActivity" />
     </application>
 
