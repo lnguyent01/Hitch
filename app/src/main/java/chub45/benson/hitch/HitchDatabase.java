@@ -172,7 +172,7 @@ public class HitchDatabase
         });
         return most_recent_post_id + 1;
     }
-
+  
     public HashMap<String, String> makePostMap(Post post){
         HashMap<String, String> postMap = new HashMap<>();
         postMap.put("departing_area", post.getdeparting_area());
@@ -197,18 +197,18 @@ public class HitchDatabase
         currentPostRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                    String passengers = (String) dataSnapshot.getValue();
-                     if (passengers.isEmpty() && !passengers.contains(passengerUid)) {
-                         currentPostRef.setValue(passengerUid);
-                      }
-                      else if(!passengers.isEmpty() && !passengers.contains(passengerUid)){
-                          currentPostRef.setValue(passengers + "|" + passengerUid);
-                      }
+                String passengers = (String) dataSnapshot.getValue();
+                if (passengers.isEmpty() && !passengers.contains(passengerUid)) {
+                    currentPostRef.setValue(passengerUid);
+                }
+                else if(!passengers.isEmpty() && !passengers.contains(passengerUid)){
+                    currentPostRef.setValue(passengers + "|" + passengerUid);
+                }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                     Log.d("FAILURE", "Could not add to request to post because: " + databaseError.getCode());
+                Log.d("FAILURE", "Could not add to request to post because: " + databaseError.getCode());
             }
         });
 
@@ -311,7 +311,7 @@ public class HitchDatabase
         });
     }
 
-    public DatabaseReference getRoot() {
+public DatabaseReference getRoot() {
         return rootRef;
     }
 

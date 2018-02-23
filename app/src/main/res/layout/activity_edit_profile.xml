@@ -4,7 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="chub45.benson.hitch.SignUpActivity">
+    tools:context="chub45.benson.hitch.EditProfileActivity">
+
+    <FrameLayout
+        android:id="@+id/profileFragment"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
 
     <EditText
         android:id="@+id/fullNameText"
@@ -97,42 +102,31 @@
         app:layout_constraintTop_toBottomOf="@+id/stateText" />
 
     <Button
-        android:id="@+id/signUpButton"
+        android:id="@+id/finishBtn"
         android:layout_width="98dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="140dp"
+        android:layout_marginEnd="200dp"
         android:layout_marginTop="15dp"
         android:background="@color/colorPrimary"
-        android:text="sign up"
+        android:text="Finish"
         android:textColor="@android:color/background_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cityText"
         app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:id="@+id/signinText"
-        android:layout_width="wrap_content"
-        android:layout_height="17dp"
-        android:layout_marginEnd="88dp"
-        android:text="Already have an account? Sign in"
+    <Button
+        android:id="@+id/cancelBtn"
+        android:layout_width="98dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="84dp"
+        android:layout_marginTop="15dp"
+        android:background="@color/colorPrimary"
+        android:text="Cancel"
+        android:textColor="@android:color/background_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signUpButton"
-        app:layout_constraintVertical_bias="0.333" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:layout_marginTop="33dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/emailText" />
+        app:layout_constraintTop_toBottomOf="@+id/cityText"
+        app:layout_constraintVertical_bias="0.0" />
 
 </android.support.constraint.ConstraintLayout>

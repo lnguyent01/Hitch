@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="chub45.benson.hitch">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -53,21 +56,18 @@
             android:label="Details">
         </activity>
         <activity
-            android:name="chub45.benson.hitch.AcceptedPostDetails"
-            android:label="Details">
-        </activity>
+            android:name=".AcceptedPostDetails"
+            android:label="Details" />
         <activity
-            android:name="chub45.benson.hitch.ChoosePosts"
-            android:label="Choose Posts">
-        </activity>
+            android:name=".ChoosePosts"
+            android:label="Choose Posts" />
         <activity
-            android:name="chub45.benson.hitch.MyPostsActivity"
-            android:label="My Posts">
-        </activity>
+            android:name=".MyPostsActivity"
+            android:label="My Posts" />
         <activity
-            android:name="chub45.benson.hitch.AcceptedPostsActivity"
-            android:label="Posts I've Been Accepted To">
-        </activity>
+            android:name=".AcceptedPostsActivity"
+            android:label="Posts I&apos;ve Been Accepted To" />
+        <activity android:name=".EditProfileActivity" />
         <activity
             android:name="chub45.benson.hitch.RequestedPostsActivity"
             android:label="Posts I've Requested To Join">

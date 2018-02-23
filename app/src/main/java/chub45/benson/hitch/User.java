@@ -13,6 +13,8 @@ public class User {
     private String rideRequests;
     private String activeRides;
 
+    public User() {}
+
     public User(String uid, String username, String fullName, String city, String state){
         this.uid = uid;
         this.username = username;
