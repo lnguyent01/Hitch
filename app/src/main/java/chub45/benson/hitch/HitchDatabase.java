@@ -193,7 +193,6 @@ public class HitchDatabase
 
     public void addPassengerRequest(final String passengerUid, final String postID){
         final DatabaseReference currentPostRef = postsRef.child(postID).child("potential_passengers");
-        final DatabaseReference currentPostSeats = postsRef.child(postID).child("available_spots");
         final DatabaseReference currentUserRef = usersRef.child(passengerUid).child("rideRequests");
 
         currentPostRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -214,22 +213,6 @@ public class HitchDatabase
             }
         });
 
-        currentPostSeats.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String seats = (String) dataSnapshot.getValue();
-                int seatsValue = Integer.parseInt(seats);
-
-                seatsValue = seatsValue - 1;
-
-                currentPostSeats.setValue("" + seatsValue);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("FAILURE", "Could not add to request to post because: " + databaseError.getCode());
-            }
-        });
 
         currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -251,7 +234,6 @@ public class HitchDatabase
 
     public void removePassengerRequest(final String passengerUid, final String postID){
         final DatabaseReference currentPostRef = postsRef.child(postID).child("potential_passengers");
-        final DatabaseReference currentPostSeats = postsRef.child(postID).child("available_spots");
         //final DatabaseReference currentUserRef = usersRef.child(passengerUid).child("rideRequests");
 
         currentPostRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -302,22 +284,6 @@ public class HitchDatabase
             }
         });
 
-        currentPostSeats.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String seats = (String) dataSnapshot.getValue();
-                int seatsValue = Integer.parseInt(seats);
-
-                seatsValue = seatsValue + 1;
-
-                currentPostSeats.setValue("" + seatsValue);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("FAILURE", "Could not cancel request because: " + databaseError.getCode());
-            }
-        });
 
         ///currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
            // @Override
