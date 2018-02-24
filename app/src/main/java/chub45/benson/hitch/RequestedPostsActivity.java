@@ -32,7 +32,7 @@ public class RequestedPostsActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.accepted_post_list);
+        setContentView(R.layout.requested_post_list);
 
         // Links mUserDatabase to the actual Firebase database, accessing everything stored under "posts"
         mUserDatabase = FirebaseDatabase.getInstance().getReference("posts");
@@ -79,7 +79,7 @@ public class RequestedPostsActivity extends AppCompatActivity{
 
                     @Override
                     public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(getApplicationContext(), AcceptedPostDetails.class);
+                        Intent intent = new Intent(getApplicationContext(), RequestedPostDetails.class);
                         intent.putExtra("destination", model.getdestination());
                         intent.putExtra("departing_area", model.getdeparting_area());
                         intent.putExtra("available_spots", String.valueOf(model.getavailable_spots()));

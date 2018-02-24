@@ -20,6 +20,7 @@ import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 
 public class HitchDatabase
@@ -192,6 +193,7 @@ public class HitchDatabase
 
     public void addPassengerRequest(final String passengerUid, final String postID){
         final DatabaseReference currentPostRef = postsRef.child(postID).child("potential_passengers");
+        final DatabaseReference currentPostSeats = postsRef.child(postID).child("available_spots");
         final DatabaseReference currentUserRef = usersRef.child(passengerUid).child("rideRequests");
 
         currentPostRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -204,6 +206,23 @@ public class HitchDatabase
                 else if(!passengers.isEmpty() && !passengers.contains(passengerUid)){
                     currentPostRef.setValue(passengers + "|" + passengerUid);
                 }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("FAILURE", "Could not add to request to post because: " + databaseError.getCode());
+            }
+        });
+
+        currentPostSeats.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String seats = (String) dataSnapshot.getValue();
+                int seatsValue = Integer.parseInt(seats);
+
+                seatsValue = seatsValue - 1;
+
+                currentPostSeats.setValue("" + seatsValue);
             }
 
             @Override
@@ -228,6 +247,94 @@ public class HitchDatabase
                 Log.d("FAILURE", "Could not add to request to user because: " + databaseError.getCode());
             }
         });
+    }
+
+    public void removePassengerRequest(final String passengerUid, final String postID){
+        final DatabaseReference currentPostRef = postsRef.child(postID).child("potential_passengers");
+        final DatabaseReference currentPostSeats = postsRef.child(postID).child("available_spots");
+        //final DatabaseReference currentUserRef = usersRef.child(passengerUid).child("rideRequests");
+
+        currentPostRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String passengers = (String) dataSnapshot.getValue();
+
+                if (passengers.indexOf("|") > 0) {
+                    String[] potential_passengers_list = passengers.split(Pattern.quote("|"));
+
+                    String final_passengers = "";
+
+                    for (int i = 0; i < potential_passengers_list.length; i++) {
+                        String temp = potential_passengers_list[i];
+
+                        if (passengerUid.equals(temp) && i == 0) {
+                            if (potential_passengers_list.length < 2) {
+                            } else {
+                                final_passengers = potential_passengers_list[1] + "|";
+                                i = 1;
+                            }
+                        } else if (passengerUid.equals(temp)) {
+                        } else {
+                            final_passengers = final_passengers + potential_passengers_list[i] + "|";
+                        }
+
+
+                    }
+
+                    if (final_passengers.substring(final_passengers.length() - 1).equals("|") && final_passengers.length() > 0) {
+                        final_passengers = final_passengers.substring(0, final_passengers.length() - 1);
+                    }
+
+                    currentPostRef.setValue(final_passengers);
+                }
+
+
+
+                else {
+                    currentPostRef.setValue("");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("FAILURE", "Could not cancel request because: " + databaseError.getCode());
+            }
+        });
+
+        currentPostSeats.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String seats = (String) dataSnapshot.getValue();
+                int seatsValue = Integer.parseInt(seats);
+
+                seatsValue = seatsValue + 1;
+
+                currentPostSeats.setValue("" + seatsValue);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("FAILURE", "Could not cancel request because: " + databaseError.getCode());
+            }
+        });
+
+        ///currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+           // @Override
+          //  public void onDataChange(DataSnapshot dataSnapshot) {
+           //     String rides = (String) dataSnapshot.getValue();
+           //     if(rides.isEmpty()){
+           //         currentUserRef.setValue(postID);
+           //     }
+           //     else if(!rides.isEmpty() && !rides.contains(postID)){
+           //         currentUserRef.setValue(rides + "|" + postID);
+           //     }
+           // }
+           // @Override
+           // public void onCancelled(DatabaseError databaseError) {
+            //    Log.d("FAILURE", "Could not add to request to user because: " + databaseError.getCode());
+           // }
+       // });
     }
 
     public void acceptPassengers(final String postID){

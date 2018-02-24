@@ -3,18 +3,27 @@ package chub45.benson.hitch;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import java.util.regex.Pattern;
 
 public class RequestedPostDetails extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.accepted_post_details);
+        setContentView(R.layout.requested_post_details);
 
 
         ImageView mProfile = (ImageView) findViewById(R.id.profile);
+        ImageButton mCancelButton = (ImageButton) findViewById(R.id.CancelButton);
         TextView mDriverName = (TextView) findViewById(R.id.DriverName);
         TextView mDriverIs = (TextView) findViewById(R.id.yourDriverIs);
         TextView mFrom = (TextView) findViewById(R.id.From);
@@ -36,13 +45,42 @@ public class RequestedPostDetails extends AppCompatActivity {
         mDepartureTime.setText(TimeStatement);
 
         // Use this to find out which post this is
-        String postID = intent.getExtras().getString("postID");
+        final String postID = intent.getExtras().getString("postID");
+
+        // Get the current user's UID
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        final String uID = currentUser.getUid();
 
         String num = intent.getExtras().getString("available_spots");
         String price = "0";
         String seats_left_and_price = num + " seats left at $" + price + " each";
         mSeatsLeftAndPrice.setText(seats_left_and_price);
 
+        String potential_passengers_all = intent.getExtras().getString("potential_passengers");
+        String [] potential_passengers_list = potential_passengers_all.split(Pattern.quote("|"));
+
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+
+            boolean Cancelled = false;
+
+            @Override
+            public void onClick(View view) {
+
+
+
+                if (Cancelled == true) {
+                    Toast.makeText(getBaseContext(), "You have already cancelled your request to join this ride!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    HitchDatabase CancelIt = new HitchDatabase();
+                    CancelIt.removePassengerRequest(uID, postID);
+
+                    Toast.makeText(getBaseContext(), "You have cancelled your request to join this ride!", Toast.LENGTH_SHORT).show();
+                    Cancelled = true;
+                }
+            }
+
+        });
 
     }
 }

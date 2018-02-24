@@ -59,6 +59,9 @@
             android:name=".AcceptedPostDetails"
             android:label="Details" />
         <activity
+            android:name=".RequestedPostDetails"
+            android:label="Details" />
+        <activity
             android:name=".ChoosePosts"
             android:label="Choose Posts" />
         <activity
