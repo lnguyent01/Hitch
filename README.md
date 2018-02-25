@@ -1,8 +1,6 @@
-# Hitch
-Link for Static Diagram: https://www.lucidchart.com/invitations/accept/2c7b62d3-613a-4de1-9c9e-436d5247e70d
-Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9f-6cb3-49eb-ba5c-91d7d1069e56
-
 # Steps to build and run project using Android Studio's emulator
+0. Enable Virtualization for your device, the specifics of this depends on your processor and OS but
+   this usually involves enabling a setting in your device's BIOS
 1. Download and install the latest version of Android Studio
 2. Clone the project onto the machine with Android Studio
 3. Open the project in Android Studio
@@ -13,7 +11,7 @@ Link for Sequence Diagram: https://www.lucidchart.com/invitations/accept/b5aa8a9
 8. Select Pixel 2 from the list of devices
 9. Press next
 10. Choose the API 27 release with Google APIs enabled
-11. Enter a device name if you wish
+11. Enter a device name if you want a different name from the default name
 12. Select Portrait for the Startup Orientation
 13. For Graphics, select Automatic
 14. Make sure Enable Device Frame is checked
