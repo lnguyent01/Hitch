@@ -10,32 +10,26 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import android.content.DialogInterface;
-import android.graphics.BitmapFactory;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 
-import android.view.View;
-import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
-import android.net.Uri;
-import android.widget.Toast;
 
-import android.database.Cursor;
 import android.util.Log;
-import android.app.Activity;
+import android.graphics.Bitmap;
+import android.os.Environment;
+import android.graphics.BitmapFactory;
+import java.io.File;
+import java.io.InputStream;
+import java.io.FileNotFoundException;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.theartofdev.edmodo.cropper.CropImage;
-import com.theartofdev.edmodo.cropper.CropImageView;
-
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.Query;
@@ -59,7 +53,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private String mParam2;
 
     private static final int REQUEST_CAMERA = 3;
-    private static final int SELECT_FILE = 1;
+    private static final int SELECT_FILE = 20;
 
     Uri imageHoldUri = null;
 
@@ -149,7 +143,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         profilePicIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //chooseProfilePic();
+                chooseProfilePic();
             }
         });
 
@@ -181,100 +175,86 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private void chooseProfilePic() {
         //Displays dialog to choose pic from camera or gallery
-        final CharSequence[] choices = {"Take a Photo", "Choose From Library", "Cancel"};
-
+        final CharSequence[] items = {"Take Photo", "Choose from Library",
+                "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add Photo!");
 
-        builder.setItems(choices, new DialogInterface.OnClickListener() {
+        //SET ITEMS AND THERE LISTENERS
+        builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int choice) {
-                if (choices[choice].equals("Take a Photo")) {
+            public void onClick(DialogInterface dialog, int item) {
+
+                if (items[item].equals("Take Photo")) {
                     cameraIntent();
-                }
-                else if (choices[choice].equals("Choose from Library")) {
+                } else if (items[item].equals("Choose from Library")) {
                     galleryIntent();
-                }
-                else if (choices[choice].equals("Cancel")); {
+                } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
             }
         });
         builder.show();
     }
-    //Camera chosen
+
+    private void galleryIntent() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+
+        // where do we want to find the data?
+        File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        String pictureDirectoryPath = pictureDirectory.getPath();
+        // finally, get a URI representation
+        Uri data = Uri.parse(pictureDirectoryPath);
+
+        // set the data and type.  Get all image types.
+        photoPickerIntent.setDataAndType(data, "image/*");
+
+        // we will invoke this activity, and get something back from it.
+        startActivityForResult(photoPickerIntent, SELECT_FILE);
+    }
+
     private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
-    //Gallery chosen
-    private void galleryIntent() {
-        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        //intent.setFlags(0);
-        //intent.setType("image/*");
-        //intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(intent, SELECT_FILE);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.wtf("TEST", "ON ACTIVITY CALLED");
-        //Save uri from gallery
-        if(requestCode == SELECT_FILE) //&& resultCode == RESULT_OK)
-        {
-            Log.wtf("TEST1", "SELECT FILE RUNS");
-            Uri selectedImg;
-            if (data != null) {
-                Log.wtf("TEST2", "DATA != NULL");
-                selectedImg = data.getData();
-                String[] filePathColumn = { MediaStore.Images.Media.DATA };
-                Cursor cursor = getActivity().getContentResolver().query(selectedImg,
-                        filePathColumn, null, null, null);
-                cursor.moveToFirst();
+        if (resultCode == getActivity().RESULT_OK) {
+            // if we are here, everything processed successfully.
+            if (requestCode == SELECT_FILE) {
+                // if we are here, we are hearing back from the image gallery.
 
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                String picturePath = cursor.getString(columnIndex);
-                cursor.close();
+                // the address of the image on the SD Card.
+                Uri imageUri = data.getData();
 
-                getProfileIV().setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                // declare a stream to read the image data from the SD Card.
+                InputStream inputStream;
+
+                // we are getting an input stream, based on the URI of the image.
+                try {
+                    inputStream = getActivity().getContentResolver().openInputStream(imageUri);
+
+                    // get a bitmap from the stream.
+                    Bitmap image = BitmapFactory.decodeStream(inputStream);
+
+
+                    // show the image to the user
+                    profilePicIV.setImageBitmap(image);
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                    // show a message to the user indictating that the image is unavailable.
+                    Toast.makeText(getActivity(), "Unable to open image", Toast.LENGTH_LONG).show();
+                }
 
             }
-            else
-                Log.wtf("TEST2", "DATA == NULL");
-
-
-            Uri imageUri = data.getData();
-            CropImage.activity(imageUri)
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(1,1)
-                    .start(getActivity());
-
-
-        }
-        else if ( requestCode == REQUEST_CAMERA && resultCode == Activity.RESULT_OK ) {
-            //Save uri from camera
-            Uri imageUri = data.getData();
-            CropImage.activity(imageUri)
-                    .setGuidelines(CropImageView.Guidelines.ON)
-                    .setAspectRatio(1, 1)
-                    .start(getActivity());
-            Toast.makeText(getActivity(), "hello", Toast.LENGTH_SHORT).show();
-        }
-
-        //Image crop library code
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == Activity.RESULT_OK) {
-                imageHoldUri = result.getUri();
-
-                profilePicIV.setImageURI(imageHoldUri);
-            }
-            else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
-                Exception error = result.getError();
+            else if (requestCode == REQUEST_CAMERA) {
+                Bitmap image = (Bitmap) data.getExtras().get("data");
+                profilePicIV.setImageBitmap(image);
             }
         }
+
     }
 
     // TODO: Rename method, update argument and hook method into UI event
