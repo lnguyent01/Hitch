@@ -211,7 +211,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void collectPost(ArrayList<HashMap<String, String>> postmap) {
         String departing_area, destination, departure_time, departing_area_id, destination_id, num_spots, author_uid, author_email, description, s_id, potential_passengers, accepted_passengers;
         PostFactory factory = new DefaultPostFactory();
-        HashMap<String, String> post = postmap.get(0);
+        HashMap<String, String> post = postmap.get(postmap.size() - 1);
         Post tempPost;
         int available_spots, post_id;
         if (post != null) {
