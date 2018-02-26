@@ -162,7 +162,7 @@ public class AddPostActivity extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
             AddPostActivity.this.setYear(year);
-            AddPostActivity.this.setMonth(monthOfYear + 1);
+            AddPostActivity.this.setMonth(monthOfYear);
             AddPostActivity.this.setDay(dayOfMonth);
             departureDateText.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
         }

@@ -152,17 +152,13 @@ public class HitchDatabase
     }
 
     public int getnext_post_id() {
+        final int[] post_id = new int[1];
         DatabaseReference reference = this.getRoot().child("postCount");
         Query query = reference.orderByChild("post_id");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    int key = Integer.parseInt(postSnapshot.getKey());
-                    if (HitchDatabase.this.most_recent_post_id < key) {
-                        HitchDatabase.this.most_recent_post_id = key;
-                    }
-                }
+                post_id[0] = Integer.parseInt(dataSnapshot.getValue().toString());
             }
 
             @Override
@@ -170,7 +166,8 @@ public class HitchDatabase
 
             }
         });
-        return most_recent_post_id + 1;
+        countRef.setValue(post_id[0] + 1);
+        return post_id[0] + 1;
     }
   
     public HashMap<String, String> makePostMap(Post post){

@@ -186,12 +186,7 @@ public class DriverPost implements Post
         this.author_uid = author_uid;
         this.description = description;
         HitchDatabase db = new HitchDatabase();
-        if (departing_area == "") {
-            this.post_id = post_id;
-        }
-        else {
-            this.post_id = db.getnext_post_id();
-        }
+        this.post_id = post_id;
         this.potential_passengers = potential_passengers;
         this.accepted_passengers = accepted_passengers;
     }

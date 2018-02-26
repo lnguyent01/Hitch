@@ -126,7 +126,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 String destination = marker.getTitle();
                 Query query = db.getRoot().child("posts").orderByChild("destination").equalTo(destination);
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
