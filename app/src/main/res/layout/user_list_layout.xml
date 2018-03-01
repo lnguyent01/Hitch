@@ -6,7 +6,7 @@
     android:layout_height="100dp">
 
     <ImageView
-        android:id="@+id/profile"
+        android:id="@+id/user_pic"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_alignParentLeft="true"
@@ -24,8 +24,8 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="22dp"
         android:layout_marginStart="22dp"
-        android:layout_toEndOf="@+id/profile"
-        android:layout_toRightOf="@+id/profile"
+        android:layout_toEndOf="@+id/user_pic"
+        android:layout_toRightOf="@+id/user_pic"
         android:text="Emporio Alnino"
         android:textColor="@android:color/background_dark"
         android:textSize="24sp" />

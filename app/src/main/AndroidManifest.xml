@@ -68,6 +68,9 @@
             android:name=".MyPostsActivity"
             android:label="My Posts" />
         <activity
+            android:name="chub45.benson.hitch.AcceptMyPostsActivity"
+            android:label="Tap a Passenger to Accept Them" />
+        <activity
             android:name=".AcceptedPostsActivity"
             android:label="Posts I&apos;ve Been Accepted To" />
         <activity android:name=".EditProfileActivity" />
