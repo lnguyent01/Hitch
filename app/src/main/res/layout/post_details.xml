@@ -19,8 +19,8 @@
 
     <TextView
         android:id="@+id/DriverName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="280dp"
+        android:layout_height="30dp"
         android:layout_below="@+id/yourDriverIs"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
@@ -55,14 +55,14 @@
         android:background="@drawable/seats_open_layout"
         android:paddingBottom="40dp"
         android:paddingLeft="12dp"
-        android:paddingRight="217dp"
+        android:paddingRight="265dp"
         android:text="Departing from:"
         android:textSize="16sp" />
 
     <TextView
         android:id="@+id/departingFrom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="365dp"
+        android:layout_height="30dp"
         android:layout_alignBottom="@+id/From"
         android:layout_alignLeft="@+id/profile"
         android:layout_alignStart="@+id/profile"
@@ -82,14 +82,14 @@
         android:background="@drawable/seats_open_layout"
         android:paddingBottom="40dp"
         android:paddingLeft="12dp"
-        android:paddingRight="264dp"
+        android:paddingRight="312dp"
         android:text="Going to:"
         android:textSize="16sp" />
 
     <TextView
         android:id="@+id/goingTo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="365dp"
+        android:layout_height="30dp"
         android:layout_alignBottom="@+id/To"
         android:layout_alignLeft="@+id/departingFrom"
         android:layout_alignStart="@+id/departingFrom"
@@ -109,13 +109,13 @@
         android:background="@drawable/seats_open_layout"
         android:paddingBottom="90dp"
         android:paddingLeft="12dp"
-        android:paddingRight="244dp"
+        android:paddingRight="292dp"
         android:text="Description:"
         android:textSize="16sp" />
 
     <TextView
         android:id="@+id/displayDescriptionText"
-        android:layout_width="wrap_content"
+        android:layout_width="365dp"
         android:layout_height="80dp"
         android:layout_alignBottom="@+id/descriptionHeader"
         android:layout_alignLeft="@+id/goingTo"
@@ -129,9 +129,9 @@
         android:id="@+id/DepartureTime"
         android:layout_width="327dp"
         android:layout_height="30dp"
-        android:layout_alignLeft="@+id/displayDescriptionText"
-        android:layout_alignStart="@+id/displayDescriptionText"
-        android:layout_below="@+id/displayDescriptionText"
+        android:layout_above="@+id/SeatsLeftandPrice"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="14dp"
         android:fontFamily="sans-serif"
         android:text="Leaving at 3:00 AM, February 29"
         android:textColor="@android:color/background_dark"
@@ -144,6 +144,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/JoinButton"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="11dp"
         android:text="8 seats left at $32 each"
         android:textColor="@android:color/background_dark"
         android:textSize="22sp" />
@@ -155,6 +156,7 @@
 
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="24dp"
         android:adjustViewBounds="true"
         android:background="@android:color/background_light"
         android:contentDescription="It doesn't do anything..."

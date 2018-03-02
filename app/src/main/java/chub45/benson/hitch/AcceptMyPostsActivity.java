@@ -12,8 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -33,13 +31,13 @@ public class AcceptMyPostsActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.potential_passengers_list);
+        setContentView(R.layout.passengers_list);
 
         // Links mUserDatabase to the actual Firebase database, accessing everything stored under "users"
         mUserDatabase = FirebaseDatabase.getInstance().getReference("users");
 
         // Links mResultList to the actual result list in the .xml
-        mResultList = (RecyclerView) findViewById(R.id.potential_passengers_list);
+        mResultList = (RecyclerView) findViewById(R.id.passengers_list);
         // Makes the result list have a constant size
         mResultList.setHasFixedSize(true);
         mResultList.setLayoutManager(new LinearLayoutManager(this));
