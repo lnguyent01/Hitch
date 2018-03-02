@@ -65,9 +65,8 @@ public class PostDetails extends AppCompatActivity {
         final String postID = intent.getExtras().getString("postID");
 
         String num = intent.getExtras().getString("available_spots");
-        String price = "0";
-        String seats_left_and_price = num + " seats left at $" + price + " each";
-        mSeatsLeftAndPrice.setText(seats_left_and_price);
+        String seats_left = num + " seats left";
+        mSeatsLeftAndPrice.setText(seats_left);
 
 
         // Get the current user's UID
