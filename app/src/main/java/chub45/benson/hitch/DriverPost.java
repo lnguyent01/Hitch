@@ -20,7 +20,7 @@ import java.util.Date;
 
 public class DriverPost implements Post
 {
-    private static int post_counter = 2;
+    private static int post_counter = 0;
 
     /**
      * The area the driver is leaving from in human readable format
@@ -114,8 +114,7 @@ public class DriverPost implements Post
         this.author_profile_pic = author_profile_pic;
         this.author_uid = author_uid;
         this.description = "";
-        HitchDatabase db = new HitchDatabase();
-        this.post_id = db.getnext_post_id();
+        this.post_id = post_counter;
         this.potential_passengers = "";
         this.accepted_passengers = "";
         this.post_counter++;
@@ -147,8 +146,7 @@ public class DriverPost implements Post
         this.author_profile_pic = author_profile_pic;
         this.author_uid = author_uid;
         this.description = description;
-        HitchDatabase db = new HitchDatabase();
-        this.post_id = db.getnext_post_id();
+        this.post_id = post_counter;
         this.potential_passengers = "";
         this.accepted_passengers = "";
         this.post_counter++;
@@ -185,12 +183,11 @@ public class DriverPost implements Post
         this.author_profile_pic = new Uri.Builder().path("").build();
         this.author_uid = author_uid;
         this.description = description;
-        HitchDatabase db = new HitchDatabase();
         if (departing_area == "") {
             this.post_id = post_id;
         }
         else {
-            this.post_id = db.getnext_post_id();
+            this.post_id = post_counter;
         }
         this.potential_passengers = potential_passengers;
         this.accepted_passengers = accepted_passengers;

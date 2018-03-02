@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA" />
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -35,6 +34,9 @@
         <activity
             android:name=".NavigationActivity"
             android:label="NavigationActivity" />
+        <activity
+            android:name=".EditProfileActivity"
+            android:label="Edit Profile" />
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -73,7 +75,6 @@
         <activity
             android:name=".AcceptedPostsActivity"
             android:label="Posts I&apos;ve Been Accepted To" />
-        <activity android:name=".EditProfileActivity" />
         <activity
             android:name="chub45.benson.hitch.RequestedPostsActivity"
             android:label="Posts I've Requested To Join">
