@@ -25,108 +25,36 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 
-public class HitchDatabase
-{
+public class HitchDatabase {
     private DatabaseReference rootRef;
     private DatabaseReference usersRef;
     private DatabaseReference postsRef;
     private DatabaseReference countRef;
-    protected int postCount;
-    private int most_recent_post_id;
 
     public HitchDatabase() {
         rootRef = FirebaseDatabase.getInstance().getReference();
         countRef = rootRef.child("postCount");
         usersRef = rootRef.child("users");
         postsRef = rootRef.child("posts");
-        most_recent_post_id = -1; //placeholder
     }
 
-    public void changeInPostCount(){
-        Query query = postsRef;
-        query.addChildEventListener(new ChildEventListener() {
-            Integer greatest = -1;
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    String str = child.getKey();
-                    Integer value = Integer.parseInt(str);
-                    if (value > greatest) {
-                        greatest = value;
-                    }
-                    countRef.setValue(greatest + 1);
-                    postCount = greatest + 1;
-                }
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    String str = child.getKey();
-                    Integer value = Integer.parseInt(str);
-                    if (value > greatest) {
-                        greatest = value;
-                    }
-                    countRef.setValue(greatest + 1);
-                    postCount = greatest + 1;
-                }
-            }
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {}
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("[Datatbase Error]", "Unable to update database.");
-            }
-        });
-    }
-
-//    Attempt at getting post count from database
-//    public void updatePostCount(){
-//        Log.d("MATTHEW", "Update Post Count called");
-//        rootRef.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if(dataSnapshot.exists()){
-//                    collectPostCount(dataSnapshot.child("postCount").getValue().toString());
-//                }
-//            }
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.d("UPDATE COUNTER ERROR", "Unable to add to local count.");
-//            }
-//        });
-//    }
-//
-//    public void collectPostCount(String info){
-//        Log.d("MATTHEW", "Value of snapshot: " + info);
-//        postCount = Integer.parseInt(info);
-//    }
-//
-//    public int getNewPostId(){
-//        return postCount;
-//    }
-
-    public void addUser(User user)
-    {
+    public void addUser(User user) {
         HashMap<String, String> userMap = makeUserMap(user);
         DatabaseReference currentChild = usersRef.child(user.getUid());
 
         currentChild.setValue(userMap).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     // Make toast or whatever you want
-                }
-                else{
+                } else {
                     // Make burnt toast
                 }
             }
         });
     }
 
-    private HashMap<String,String> makeUserMap(User user){
+    private HashMap<String, String> makeUserMap(User user) {
         HashMap<String, String> userMap = new HashMap<String, String>();
         userMap.put("uid", user.getUid());
         userMap.put("fullName", user.getFullName());
@@ -137,8 +65,7 @@ public class HitchDatabase
         return userMap;
     }
 
-    public void addPost(Post post)
-    {
+    public void addPost(Post post) {
         HashMap<String, String> postMap = makePostMap(post);
         DatabaseReference currentChild = postsRef.child(post.get_post_id().toString());
 
@@ -152,31 +79,10 @@ public class HitchDatabase
                 }
             }
         });
+        updatePostCount();
     }
 
-    public int getnext_post_id() {
-        DatabaseReference reference = this.getRoot().child("postCount");
-        Query query = reference.orderByChild("post_id");
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-                    int key = Integer.parseInt(postSnapshot.getKey());
-                    if (HitchDatabase.this.most_recent_post_id < key) {
-                        HitchDatabase.this.most_recent_post_id = key;
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        return most_recent_post_id + 1;
-    }
-  
-    public HashMap<String, String> makePostMap(Post post){
+    public HashMap<String, String> makePostMap(Post post) {
         HashMap<String, String> postMap = new HashMap<>();
         postMap.put("departing_area", post.getdeparting_area());
         postMap.put("destination", post.getdestination());
@@ -193,7 +99,7 @@ public class HitchDatabase
         return postMap;
     }
 
-    public void addPassengerRequest(final String passengerUid, final String postID){
+    public void addPassengerRequest(final String passengerUid, final String postID) {
         final DatabaseReference currentPostRef = postsRef.child(postID).child("potential_passengers");
         final DatabaseReference currentUserRef = usersRef.child(passengerUid).child("rideRequests");
 
@@ -203,15 +109,14 @@ public class HitchDatabase
                 String passengers = (String) dataSnapshot.getValue();
                 if (passengers.isEmpty() && !passengers.contains(passengerUid)) {
                     currentPostRef.setValue(passengerUid);
-                }
-                else if(!passengers.isEmpty() && !passengers.contains(passengerUid)){
+                } else if (!passengers.isEmpty() && !passengers.contains(passengerUid)) {
                     currentPostRef.setValue(passengers + "|" + passengerUid);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d("FAILURE", "Could not add to request to post because: " + databaseError.getCode());
+                Log.d("[Database Error]", "Could not add to request to post because: " + databaseError.getCode());
             }
         });
 
@@ -220,19 +125,20 @@ public class HitchDatabase
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String rides = (String) dataSnapshot.getValue();
-                if(rides.isEmpty()){
+                if (rides.isEmpty()) {
                     currentUserRef.setValue(postID);
-                }
-                else if(!rides.isEmpty() && !rides.contains(postID)){
+                } else if (!rides.isEmpty() && !rides.contains(postID)) {
                     currentUserRef.setValue(rides + "|" + postID);
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d("FAILURE", "Could not add to request to user because: " + databaseError.getCode());
+                Log.d("[Database Error]", "Could not add to request to user because: " + databaseError.getCode());
             }
         });
     }
+
 
     public void removePassengerRequest(final String passengerUid, final String postID){
         final DatabaseReference currentPostRef = postsRef.child(postID).child("potential_passengers");
@@ -314,6 +220,7 @@ public class HitchDatabase
                 String acceptedPassengers = (String) dataSnapshot.child("accepted_passengers").getValue();
                 Integer availSpots = Integer.parseInt((String) dataSnapshot.child("available_spots").getValue());
 
+
                 // If this is true, then the current user is on the list of accepted passengers
                 boolean isUserAccepted = false;
 
@@ -389,15 +296,38 @@ public class HitchDatabase
 
 
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.d("FAILURE", "Could not accept passengers because: " + databaseError.getCode());
+                Log.d("[Database Error]", "Could not accept passengers because: " + databaseError.getCode());
+            }
+        });
+    }
+
+    public void updatePostCount() {
+        postsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            Integer greatest = -1;
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    String str = child.getKey();
+                    Integer i = Integer.parseInt(str);
+                    if (i > greatest)
+                        greatest = i;
+                }
+                countRef.setValue(greatest + 1);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("[Database Error]", "Could not update post count: " + databaseError.getCode());
             }
         });
 
     }
 
-public DatabaseReference getRoot() {
+    public DatabaseReference getRoot() {
         return rootRef;
     }
 
@@ -405,7 +335,30 @@ public DatabaseReference getRoot() {
         usersRef.child(uid).removeValue();
     }
 
-    public void removePost(String post_id){
+    public void removePost(String post_id) {
         postsRef.child(post_id).removeValue();
     }
+
+//    public int getnext_post_id() {
+//        DatabaseReference reference = this.getRoot().child("postCount");
+//        Query query = reference.orderByChild("post_id");
+//        query.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
+//                    int key = Integer.parseInt(postSnapshot.getKey());
+//                    if (HitchDatabase.this.most_recent_post_id < key) {
+//                        HitchDatabase.this.most_recent_post_id = key;
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//        return most_recent_post_id + 1;
+//    }
+
 }
