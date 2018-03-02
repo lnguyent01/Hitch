@@ -61,11 +61,17 @@
             android:name=".AcceptedPostDetails"
             android:label="Details" />
         <activity
+            android:name=".RequestedPostDetails"
+            android:label="Details" />
+        <activity
             android:name=".ChoosePosts"
             android:label="Choose Posts" />
         <activity
             android:name=".MyPostsActivity"
             android:label="My Posts" />
+        <activity
+            android:name="chub45.benson.hitch.AcceptMyPostsActivity"
+            android:label="Tap a Passenger to Accept Them" />
         <activity
             android:name=".AcceptedPostsActivity"
             android:label="Posts I&apos;ve Been Accepted To" />

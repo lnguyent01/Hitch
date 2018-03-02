@@ -43,6 +43,34 @@ public class User {
 
     public String getActiveRides() { return activeRides; }
 
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public void setRideRequests(String rideRequests) {
+        this.rideRequests = rideRequests;
+    }
+
+    public void setActiveRides(String activeRides) {
+        this.activeRides = activeRides;
+    }
+
     public void addRideRequest(String postID){
         if(rideRequests.isEmpty()){
             rideRequests = postID;

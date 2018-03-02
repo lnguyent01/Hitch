@@ -19,7 +19,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.regex.Pattern;
 
-public class RequestedPostsActivity extends AppCompatActivity{
+public class AcceptMyPostsActivity extends AppCompatActivity{
 
     // This is what displays all posts relevant to what the user searched
     private RecyclerView mResultList;
@@ -29,49 +29,54 @@ public class RequestedPostsActivity extends AppCompatActivity{
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.requested_post_list);
+        setContentView(R.layout.potential_passengers_list);
 
-        // Links mUserDatabase to the actual Firebase database, accessing everything stored under "posts"
-        mUserDatabase = FirebaseDatabase.getInstance().getReference("posts");
+        // Links mUserDatabase to the actual Firebase database, accessing everything stored under "users"
+        mUserDatabase = FirebaseDatabase.getInstance().getReference("users");
 
         // Links mResultList to the actual result list in the .xml
-        mResultList = (RecyclerView) findViewById(R.id.accepted_post_list);
+        mResultList = (RecyclerView) findViewById(R.id.potential_passengers_list);
         // Makes the result list have a constant size
         mResultList.setHasFixedSize(true);
         mResultList.setLayoutManager(new LinearLayoutManager(this));
 
+        Intent intent = getIntent();
+        String postID = intent.getExtras().getString("postID");
+        String potential_passengers_all = intent.getExtras().getString("potential_passengers");
+        String spotsLeft = intent.getExtras().getString("spots_left");
 
 
-        firebaseUserSearch("");
+
+        firebaseUserSearch(potential_passengers_all, postID, spotsLeft);
     }
 
 
     // This function does all the work when it comes to accessing the database and retrieving the relevant information
-    private void firebaseUserSearch(String searchText) {
+    private void firebaseUserSearch(String potential_passengers, String postid, String spots_left) {
 
 
         // The FirebaseRecyclerAdapter is from FirebaseUI, a third-party library. It accesses the Firebase database.
-        FirebaseRecyclerAdapter<SearchDriverPost, postViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<SearchDriverPost, postViewHolder>(
+        FirebaseRecyclerAdapter<User, postViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<User, postViewHolder>(
 
                 // The information from the Firebase database in stored in this class
-                SearchDriverPost.class,
+                User.class,
                 // This is how the post information is going to be displayed
-                R.layout.list_layout,
+                R.layout.user_list_layout,
                 // This is what puts the post information from the post class into the list_layout
                 postViewHolder.class,
                 // This loads all the posts from the Firebase database
                 mUserDatabase
         ) {
             @Override
-            protected void populateViewHolder(postViewHolder viewHolder, final SearchDriverPost model, int position) {
+            protected void populateViewHolder(postViewHolder viewHolder, final User model, int position) {
+
 
                 // Passes the post information to the postViewHolder viewHolder
-                viewHolder.setDetails(getApplicationContext(), model.getdeparting_area(),
-                        model.getdestination(), String.valueOf(model.getavailable_spots()), model.getdeparture_time(),
-                        model.getpotential_passengers());
+                viewHolder.setDetails(getApplicationContext(), model.getUid(), model.getUsername(), potential_passengers);
 
                 // When a post is clicked, move to another activity - one that contains more details on the post that was clicked
                 // Information is passed to that activity
@@ -79,17 +84,10 @@ public class RequestedPostsActivity extends AppCompatActivity{
 
                     @Override
                     public void onItemClick(View view, int position) {
-                        Intent intent = new Intent(getApplicationContext(), RequestedPostDetails.class);
-                        intent.putExtra("destination", model.getdestination());
-                        intent.putExtra("departing_area", model.getdeparting_area());
-                        intent.putExtra("available_spots", String.valueOf(model.getavailable_spots()));
-                        intent.putExtra("departure_time", model.getdeparture_time());
-                        intent.putExtra("description", model.getdescription());
-                        intent.putExtra("postID", model.getpost_id());
-                        intent.putExtra("name", model.getauthor_email());
-                        intent.putExtra("potential_passengers", model.getpotential_passengers());
-                        intent.putExtra("accepted_passengers", model.getaccepted_passengers());
-                        startActivity(intent);
+
+                        HitchDatabase AcceptIt = new HitchDatabase();
+                        AcceptIt.acceptPassengers(model.getUid(), postid, getBaseContext());
+
                     }
                 });
             }
@@ -106,8 +104,8 @@ public class RequestedPostsActivity extends AppCompatActivity{
         View mView;
 
         // Get the current user's UID
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        String uID = currentUser.getUid();
+        //FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+       // String uID = currentUser.getUid();
 
         private postViewHolder.ClickListener mClickListener;
 
@@ -137,14 +135,11 @@ public class RequestedPostsActivity extends AppCompatActivity{
 
         // This method is the one that does the work required to display all of the information retrieved
         // by the firebaseRecyclerAdapter
-        public void setDetails(Context ctx, String postFrom, String postTo, String postSeats, String postTime, String postRequested) {
+        public void setDetails(Context ctx, String uID, String username, String potential_passengers_all) {
 
             // Creates types of View object references and links them to every component of list_layout
-            ImageView post_profile = (ImageView) mView.findViewById(R.id.profile);
-            TextView post_from = (TextView) mView.findViewById(R.id.from);
-            TextView post_to = (TextView) mView.findViewById(R.id.to);
-            TextView post_time = (TextView) mView.findViewById(R.id.time);
-            TextView post_seats = (TextView) mView.findViewById(R.id.seats_left_num);
+            ImageView user_profile = (ImageView) mView.findViewById(R.id.profile);
+            TextView userName = (TextView) mView.findViewById(R.id.userName);
 
 
 
@@ -152,36 +147,27 @@ public class RequestedPostsActivity extends AppCompatActivity{
             //if (postProfile != null) {
                 // As long as the profile picture exists, display it
                 // If it doesn't exist, the default profile picture will be displayed
-              //  Glide.with(ctx).load(postProfile).into(post_profile);
+              //  Glide.with(ctx).load(postProfile).into(userprofile);
             //}
-            post_from.setText(postFrom);
-            post_to.setText(postTo);
-            post_time.setText(postTime);
-            post_seats.setText(postSeats);
+            userName.setText(username);
 
-            // If this is true, then the current user is on the list of accepted passengers
-            boolean isUserAccepted = false;
+            String [] potential_passengers_list = potential_passengers_all.split(Pattern.quote("|"));
 
-            String requested_passengers_all = postRequested;
+            boolean is_requested = false;
 
-            // If the list isn't empty
-            if (!(requested_passengers_all.equals(""))) {
+            for (int i = 0; i < potential_passengers_list.length; i++) {
+                String temp = potential_passengers_list[i];
 
-
-                String [] requested_passengers_list = requested_passengers_all.split(Pattern.quote("|"));
-
-                for (String requested_passenger : requested_passengers_list) {
-
-                    if (uID.equals(requested_passenger)) {
-                        isUserAccepted = true;
-                    }
+                if (uID.equals(temp)) {
+                    is_requested = true;
                 }
-
             }
-            if (!(isUserAccepted)) {
+
+            if (!is_requested) {
                 RelativeLayout listPart = (RelativeLayout) mView.findViewById(R.id.list_part);
                 listPart.getLayoutParams().height = 0;
             }
+
         }
 
     }

@@ -1,5 +1,7 @@
 package chub45.benson.hitch;
 
+import android.content.Context;
+import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -20,6 +22,7 @@ import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 
 public class HitchDatabase {
@@ -117,6 +120,7 @@ public class HitchDatabase {
             }
         });
 
+
         currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -135,76 +139,162 @@ public class HitchDatabase {
         });
     }
 
-    public void acceptPassengers(final String postID) {
+
+    public void removePassengerRequest(final String passengerUid, final String postID){
+        final DatabaseReference currentPostRef = postsRef.child(postID).child("potential_passengers");
+        //final DatabaseReference currentUserRef = usersRef.child(passengerUid).child("rideRequests");
+
+        currentPostRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String passengers = (String) dataSnapshot.getValue();
+
+                if (passengers.indexOf("|") > 0) {
+                    String[] potential_passengers_list = passengers.split(Pattern.quote("|"));
+
+                    String final_passengers = "";
+
+                    for (int i = 0; i < potential_passengers_list.length; i++) {
+                        String temp = potential_passengers_list[i];
+
+                        if (passengerUid.equals(temp) && i == 0) {
+                            if (potential_passengers_list.length < 2) {
+                            } else {
+                                final_passengers = potential_passengers_list[1] + "|";
+                                i = 1;
+                            }
+                        } else if (passengerUid.equals(temp)) {
+                        } else {
+                            final_passengers = final_passengers + potential_passengers_list[i] + "|";
+                        }
+
+
+                    }
+
+                    if (final_passengers.substring(final_passengers.length() - 1).equals("|") && final_passengers.length() > 0) {
+                        final_passengers = final_passengers.substring(0, final_passengers.length() - 1);
+                    }
+
+                    currentPostRef.setValue(final_passengers);
+                }
+
+
+
+                else {
+                    currentPostRef.setValue("");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("FAILURE", "Could not cancel request because: " + databaseError.getCode());
+            }
+        });
+
+
+        ///currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+           // @Override
+          //  public void onDataChange(DataSnapshot dataSnapshot) {
+           //     String rides = (String) dataSnapshot.getValue();
+           //     if(rides.isEmpty()){
+           //         currentUserRef.setValue(postID);
+           //     }
+           //     else if(!rides.isEmpty() && !rides.contains(postID)){
+           //         currentUserRef.setValue(rides + "|" + postID);
+           //     }
+           // }
+           // @Override
+           // public void onCancelled(DatabaseError databaseError) {
+            //    Log.d("FAILURE", "Could not add to request to user because: " + databaseError.getCode());
+           // }
+       // });
+    }
+
+    public void acceptPassengers(final String passengerUid, final String postID, Context context){
         final DatabaseReference currentPostRef = postsRef.child(postID);
         currentPostRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String requestedPassengers = (String) dataSnapshot.child("potential_passengers").getValue();
+                String potentialPassengers = (String) dataSnapshot.child("potential_passengers").getValue();
+                String acceptedPassengers = (String) dataSnapshot.child("accepted_passengers").getValue();
                 Integer availSpots = Integer.parseInt((String) dataSnapshot.child("available_spots").getValue());
 
-                if (!requestedPassengers.isEmpty()) {
-                    int j = 0;
-                    ArrayList<String> passengers = new ArrayList<>(10);
-                    String temp = "";
-                    for (int i = 0; i < requestedPassengers.length(); i++) {
-                        if (requestedPassengers.charAt(i) != '|') {
-                            temp += requestedPassengers.charAt(i);
-                        } else {
-                            passengers.add(j, temp);
-                            temp = "";
-                            j++;
-                        }
-                        if (i == requestedPassengers.length() - 1) {
-                            passengers.add(j, temp);
+
+                // If this is true, then the current user is on the list of accepted passengers
+                boolean isUserAccepted = false;
+
+                // If the list isn't empty
+                if (!(acceptedPassengers.equals(""))) {
+
+
+                    String [] accepted_passengers_list = acceptedPassengers.split(Pattern.quote("|"));
+
+                    for (String accepted_passenger : accepted_passengers_list) {
+
+                        if (passengerUid.equals(accepted_passenger)) {
+                            isUserAccepted = true;
                         }
                     }
-                    availSpots -= passengers.size();
-                    currentPostRef.child("accepted_passengers").setValue(requestedPassengers);
-                    currentPostRef.child("potential_passengers").setValue("");
-                    currentPostRef.child("available_spots").setValue(availSpots.toString());
 
-                    for (int k = 0; k < passengers.size(); k++) {
-                        final DatabaseReference currentUserRef = usersRef.child(passengers.get(k));
-                        currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                String currentRideRequests = (String) dataSnapshot.child("rideRequests").getValue();
-                                String currentActiveRides = (String) dataSnapshot.child("activeRides").getValue();
-
-                                String temp0 = "";
-                                String temp1 = "";
-                                for (int i = 0; i < currentRideRequests.length(); i++) {
-                                    if (currentRideRequests.contains(postID)) {
-                                        int index = currentRideRequests.indexOf(postID);
-                                        if (index == 0 && currentRideRequests.length() != postID.length()) {
-                                            temp1 = currentRideRequests.substring(postID.length() + 1);
-                                        } else if (index == currentRideRequests.length() - postID.length()) {
-                                            temp1 = currentRideRequests.substring(0, index);
-                                        } else {
-                                            temp0 = currentRideRequests.substring(0, index);
-                                            temp1 = currentRideRequests.substring(index + postID.length() + 1);
-                                        }
-                                    }
-                                }
-                                currentUserRef.child("rideRequests").setValue(temp0 + temp1);
-
-                                String temp2 = "";
-                                if (currentActiveRides.isEmpty()) {
-                                    temp2 = postID;
-                                } else {
-                                    temp2 = currentActiveRides + "|" + postID;
-                                }
-                                currentUserRef.child("activeRides").setValue(postID);
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Log.d("[Database Error]", "Could not accept passengers because: " + databaseError.getCode());
-                            }
-                        });
-                    }
                 }
+
+                if (!isUserAccepted && availSpots > 0) {
+                if (potentialPassengers.indexOf("|") > 0) {
+                    String[] potential_passengers_list = potentialPassengers.split(Pattern.quote("|"));
+
+                    String final_passengers = "";
+
+                    for (int i = 0; i < potential_passengers_list.length; i++) {
+                        String temp = potential_passengers_list[i];
+
+                        if (passengerUid.equals(temp) && i == 0) {
+                            if (potential_passengers_list.length < 2) {
+                            } else {
+                                final_passengers = potential_passengers_list[1] + "|";
+                                i = 1;
+                            }
+                        } else if (passengerUid.equals(temp)) {
+                        } else {
+                            final_passengers = final_passengers + potential_passengers_list[i] + "|";
+                        }
+
+
+                    }
+
+                    if (final_passengers.substring(final_passengers.length() - 1).equals("|") && final_passengers.length() > 0) {
+                        final_passengers = final_passengers.substring(0, final_passengers.length() - 1);
+                    }
+
+                    currentPostRef.child("potential_passengers").setValue(final_passengers);
+                } else {
+                    currentPostRef.child("potential_passengers").setValue("");
+                }
+
+
+                if (!acceptedPassengers.equals("")) {
+                    String final_accepted = acceptedPassengers + "|" + passengerUid;
+                    currentPostRef.child("accepted_passengers").setValue(final_accepted);
+                } else {
+                    currentPostRef.child("accepted_passengers").setValue(passengerUid);
+                }
+
+                int temp_spots = availSpots - 1;
+                String final_spots = "" + temp_spots;
+                currentPostRef.child("available_spots").setValue(final_spots);
+                Toast.makeText(context, "This passengers has been accepted! They will remain on the list until you refresh by backing out to the 'My Posts' menu.", Toast.LENGTH_LONG).show();
+            }
+
+            else if (availSpots <= 0) {
+                    Toast.makeText(context, "There are no more spots available on this ride. Please refresh by backing out to the 'My Posts' menu.", Toast.LENGTH_LONG).show();
+                }
+
+            else {
+                    Toast.makeText(context, "This passenger has already been accepted! They will remain on the list until you refresh by backing out to the 'My Posts' menu.", Toast.LENGTH_LONG).show();
+                }
+
+
+
             }
 
             @Override
@@ -234,6 +324,7 @@ public class HitchDatabase {
                 Log.d("[Database Error]", "Could not update post count: " + databaseError.getCode());
             }
         });
+
     }
 
     public DatabaseReference getRoot() {
