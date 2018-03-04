@@ -21,9 +21,9 @@ import javax.security.auth.login.LoginException;
 
 public class LogInActivity extends AppCompatActivity implements View.OnClickListener {
 
-    FirebaseAuth mAuth;
-    EditText emailText, passText;
-    ProgressBar progressBar;
+    private FirebaseAuth mAuth;
+    private EditText emailText, passText;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

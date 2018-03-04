@@ -23,7 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class EditProfileActivity extends AppCompatActivity implements View.OnClickListener{
 
-    EditText emailText, passText, fullNameText, usernameText, cityText, stateText;
+    EditText emailText, passText, fullNameText, usernameText, phoneNoText, cityText, stateText;
 
     final private HitchDatabase db = new HitchDatabase();
     FirebaseUser currentUser;
@@ -37,6 +37,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         passText = (EditText) findViewById(R.id.passText);
         fullNameText = (EditText) findViewById(R.id.fullNameText);
         usernameText = (EditText) findViewById(R.id.usernameText);
+        phoneNoText = (EditText) findViewById(R.id.phoneNoText);
         cityText = (EditText) findViewById(R.id.cityText);
         stateText = (EditText) findViewById(R.id.stateText);
 
@@ -52,6 +53,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         String password = passText.getText().toString().trim();
         String fullName = fullNameText.getText().toString().trim();
         String username = usernameText.getText().toString().trim();
+        String phoneNo = phoneNoText.getText().toString().trim();
         String city = cityText.getText().toString().trim();
         String state = stateText.getText().toString().trim();
 
@@ -64,6 +66,8 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
             userUpdates.put("fullName", fullName);
         if (username.length() > 0)
             userUpdates.put("username", username);
+        if (phoneNo.length() > 0)
+            userUpdates.put("phoneNo", phoneNo);
         if (city.length() > 0)
             userUpdates.put("city", city);
         if (state.length() > 0)

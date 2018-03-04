@@ -21,8 +21,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class SignUpActivity extends AppCompatActivity implements View.OnClickListener {
 
-    ProgressBar progressBar;
-    EditText emailText, passText, fullNameText, usernameText, cityText, stateText;
+    private ProgressBar progressBar;
+    private EditText emailText, passText, phoneNoText, fullNameText, usernameText, cityText, stateText;
 
     private FirebaseAuth mAuth;
 
@@ -37,6 +37,7 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
         passText = (EditText) findViewById(R.id.passText);
         fullNameText = (EditText) findViewById(R.id.fullNameText);
         usernameText = (EditText) findViewById(R.id.usernameText);
+        phoneNoText = (EditText) findViewById(R.id.phoneNoText);
         cityText = (EditText) findViewById(R.id.cityText);
         stateText = (EditText) findViewById(R.id.stateText);
 
@@ -90,7 +91,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     String fullName = fullNameText.getText().toString().trim();
                     String city = cityText.getText().toString().trim();
                     String state = stateText.getText().toString().trim();
-                    User user = new User(fbUser.getUid(), username, fullName, city, state);
+                    String phoneNo = phoneNoText.getText().toString().trim();
+                    User user = new User(fbUser.getUid(), "", username, phoneNo, fullName, city, state);
                     db.addUser(user);
 
                     Intent logInIntent = new Intent(getApplicationContext(), LogInActivity.class);
