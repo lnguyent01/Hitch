@@ -50,7 +50,7 @@ public class MyPostDetails extends AppCompatActivity {
         mSeatsLeftAndPrice.setText(seats_left_and_price);
 
         // Parsing the potential_passengers data
-        String potential_passengers_all = intent.getExtras().getString("potential_passengers");
+        final String potential_passengers_all = intent.getExtras().getString("potential_passengers");
 
         boolean potential_passengers_is_empty = false;
 
@@ -91,11 +91,16 @@ public class MyPostDetails extends AppCompatActivity {
 
                 else if ((!finalPotential_passengers_is_empty) && (!no_more_potential_passengers)) {
 
-                    HitchDatabase acceptThem = new HitchDatabase();
-                    acceptThem.acceptPassengers(postID);
+                    //HitchDatabase acceptThem = new HitchDatabase();
+                    //acceptThem.acceptPassengers(postID);
 
-                    Toast.makeText(getBaseContext(), "You have accepted these passengers!", Toast.LENGTH_SHORT).show();
-                    no_more_potential_passengers = true;
+                    //Toast.makeText(getBaseContext(), "You have accepted these passengers!", Toast.LENGTH_SHORT).show();
+                    //no_more_potential_passengers = true;
+                    Intent intent2 = new Intent(getApplicationContext(), AcceptMyPostsActivity.class);
+                    intent2.putExtra("postID", postID);
+                    intent2.putExtra("potential_passengers", potential_passengers_all);
+                    intent2.putExtra("spots_left", finalNum);
+                    startActivity(intent2);
 
 
                 }

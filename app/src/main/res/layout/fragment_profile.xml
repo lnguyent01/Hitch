@@ -80,6 +80,15 @@
                 android:layout_marginTop="20dp" />
 
             <TextView
+                android:id="@+id/phoneNoTV"
+                android:text="Phone:"
+                android:textSize="17dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp" />
+
+            <TextView
                 android:id="@+id/stateTV"
                 android:text="State:"
                 android:textSize="17dp"
