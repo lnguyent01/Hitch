@@ -57,6 +57,7 @@ public class HitchDatabase
     private HashMap<String,String> makeUserMap(User user){
         HashMap<String, String> userMap = new HashMap<String, String>();
         userMap.put("uid", user.getUid());
+        userMap.put("username", user.getUsername());
         userMap.put("profilePicUrl", user.getProfilePicUrl());
         userMap.put("fullName", user.getFullName());
         userMap.put("phoneNo", user.getPhoneNo());
