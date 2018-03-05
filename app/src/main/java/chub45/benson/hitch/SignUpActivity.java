@@ -92,9 +92,8 @@ public class SignUpActivity extends AppCompatActivity implements View.OnClickLis
                     String city = cityText.getText().toString().trim();
                     String state = stateText.getText().toString().trim();
                     String phoneNo = phoneNoText.getText().toString().trim();
-                    User user = new User(fbUser.getUid(), "", username, phoneNo, fullName, city, state);
+                    User user = new User(fbUser.getUid(), username, fullName, phoneNo, city, state);
                     db.addUser(user);
-
                     Intent logInIntent = new Intent(getApplicationContext(), LogInActivity.class);
                     startActivity(logInIntent);
                 }

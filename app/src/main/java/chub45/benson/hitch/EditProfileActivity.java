@@ -90,9 +90,4 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
         }
     }
-
-    public FirebaseUser getCurrentUser() {
-        return currentUser;
-    }
-
 }

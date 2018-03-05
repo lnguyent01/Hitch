@@ -17,9 +17,8 @@ public class User {
 
     public User() {}
 
-    public User(String uid, String profilePicUrl, String username, String fullName, String phoneNo, String city, String state){
+    public User(String uid, String username, String fullName, String phoneNo, String city, String state){
         this.uid = uid;
-        this.profilePicUrl = profilePicUrl;
         this.username = username;
         this.fullName = fullName;
         this.phoneNo = phoneNo;
@@ -27,6 +26,7 @@ public class User {
         this.state = state;
         this.rideRequests = "";
         this.activeRides = "";
+        this.profilePicUrl = "";
     }
 
     public String getUid() {

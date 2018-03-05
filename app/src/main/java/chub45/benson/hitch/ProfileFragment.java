@@ -3,7 +3,6 @@ package chub45.benson.hitch;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
+import android.support.v4.content.FileProvider;
 
 import android.util.Log;
 import android.graphics.Bitmap;
@@ -25,14 +25,16 @@ import android.graphics.BitmapFactory;
 import java.io.File;
 import java.io.InputStream;
 import java.io.FileNotFoundException;
-import java.nio.file.FileVisitResult;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Date;
+import java.io.IOException;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,11 +43,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.Query;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.UploadTask;
-
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
@@ -59,10 +59,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     final private HitchDatabase db = new HitchDatabase();
     private DatabaseReference dbRef;
 
-    private String userIud;
     private Uri imageUri;
     private String profileImageUrl;
+    private String profileImgFileName;
     private FirebaseAuth mAuth;
+    private String mCurrentPhotoPath;
 
     private OnFragmentInteractionListener mListener;
 
@@ -109,8 +110,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         usernameTV.setText("@"+ dataSnapshot.getValue(User.class).getUsername());
                         phoneNoTV.setText("Phone: " + dataSnapshot.getValue(User.class).getPhoneNo());
                         emailTV.setText("Email: " + fbUser.getEmail());
-                        if (imageUri != null )
-                            profilePicIV.setImageURI(imageUri);
+                        if (dataSnapshot.getValue(User.class).getProfilePicUrl() != "") {
+                            Glide.with(view)
+                                    .load(dataSnapshot.getValue(User.class).getProfilePicUrl())
+                                    .into(profilePicIV);
+                        }
                     }
                     else {
                         Log.wtf("mytag", "dataSnapshot does not exists");
@@ -144,7 +148,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private void chooseProfilePic() {
         //Displays dialog to choose pic from camera or gallery
-        final CharSequence[] items = {"Take Photo", "Choose from Library",
+        final CharSequence[] items = {"Choose from Library",
                 "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Add Photo!");
@@ -154,9 +158,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(DialogInterface dialog, int item) {
 
-                if (items[item].equals("Take Photo")) {
-                    cameraIntent();
-                } else if (items[item].equals("Choose from Library")) {
+                if (items[item].equals("Choose from Library")) {
                     galleryIntent();
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
@@ -168,39 +170,34 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private void galleryIntent() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-
-        // where do we want to find the data?
         File pictureDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         String pictureDirectoryPath = pictureDirectory.getPath();
-        // finally, get a URI representation
         Uri data = Uri.parse(pictureDirectoryPath);
-
-        // set the data and type.  Get all image types.
         photoPickerIntent.setDataAndType(data, "image/*");
-
-        // we will invoke this activity, and get something back from it.
         startActivityForResult(photoPickerIntent, SELECT_FILE);
     }
 
     private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        /*File file = new File(getActivity().getExternalCacheDir(),
+                String.valueOf(System.currentTimeMillis()) + ".jpg");
+        imageUri = Uri.fromFile(file);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+        */
+        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         startActivityForResult(intent, REQUEST_CAMERA);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == getActivity().RESULT_OK && data != null && data.getData() != null) {
+        if (resultCode == getActivity().RESULT_OK && data!= null) {
             // the address of the image on the SD Card.
             imageUri = data.getData();
-            Log.wtf("TAG", imageUri.toString());
             if (requestCode == SELECT_FILE) {
                 // declare a stream to read the image data from the SD Card.
                 InputStream inputStream;
-
-                // we are getting an input stream, based on the URI of the image.
                 try {
                     inputStream = getActivity().getContentResolver().openInputStream(imageUri);
-                    // get a bitmap from the stream.
                     Bitmap image = BitmapFactory.decodeStream(inputStream);
                     profilePicIV.setImageBitmap(image);
 
@@ -208,37 +205,100 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     e.printStackTrace();
                     Toast.makeText(getActivity(), "Unable to open image", Toast.LENGTH_LONG).show();
                 }
-
             }
             else if (requestCode == REQUEST_CAMERA) {
                 Bitmap image = (Bitmap) data.getExtras().get("data");
                 profilePicIV.setImageBitmap(image);
+                //imageUri = getImageUri(getContext(), image);
+                galleryAddPic();
             }
             uploadImagetoFirebase();
-
             //saveUserInformation();
         }
+        else {
+            Log.wtf("ERROR: ", "data is null");
+        }
+    }
 
+    private Uri getImageUri(Context inContext, Bitmap inImage)
+    {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    private File createImageFile() throws IOException {
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                "example",  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            if (photoFile != null) {
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                startActivityForResult(takePictureIntent, REQUEST_CAMERA);
+            }
+        }
+    }
+
+    private void galleryAddPic() {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        File f = new File(mCurrentPhotoPath);
+        Uri contentUri = Uri.fromFile(f);
+        mediaScanIntent.setData(contentUri);
+        getActivity().sendBroadcast(mediaScanIntent);
     }
 
     private void uploadImagetoFirebase() {
-        StorageReference profileImageRef = FirebaseStorage.getInstance().getReference("profilepics/" + imageUri.getLastPathSegment() + ".jpg");
+        profileImgFileName = imageUri.getLastPathSegment() + ".jpg";
+        StorageReference profileImageRef = FirebaseStorage.getInstance().getReference().child("profilepics/" + profileImgFileName);
         if (imageUri != null) {
             profileImageRef.putFile(imageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             profileImageUrl = taskSnapshot.getDownloadUrl().toString();
+                            saveUserInformation();
+                            Log.wtf("MSG: ", "File successfully uploaded to firebase");
                         }
                     });
         }
     }
 
     private void saveUserInformation() {
-        FirebaseUser fbUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         Map<String, Object> userUpdates = new HashMap<>();
         userUpdates.put("profilePicUrl", profileImageUrl);
-    }
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser.getUid());
+        if (profileImageUrl != null) {
+            dbRef.updateChildren(userUpdates)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.wtf("MSG: ", "SUCCESSFULLY ADDED TO DATABASE");
+                        }
+                    });
+        }
+        else {
+            Log.wtf("ERROR: ", "profileImageUrl is null");
+        }
+;    }
 
 
     @Override
