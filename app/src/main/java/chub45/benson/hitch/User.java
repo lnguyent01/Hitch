@@ -7,7 +7,9 @@ package chub45.benson.hitch;
 public class User {
     private String uid;
     private String username;
+    private String profilePicUrl;
     private String fullName;
+    private String phoneNo;
     private String city;
     private String state;
     private String rideRequests;
@@ -15,25 +17,31 @@ public class User {
 
     public User() {}
 
-    public User(String uid, String username, String fullName, String city, String state){
+    public User(String uid, String username, String fullName, String phoneNo, String city, String state){
         this.uid = uid;
         this.username = username;
         this.fullName = fullName;
+        this.phoneNo = phoneNo;
         this.city = city;
         this.state = state;
         this.rideRequests = "";
         this.activeRides = "";
+        this.profilePicUrl = "";
     }
 
     public String getUid() {
         return uid;
     }
 
+    public String getProfilePicUrl() { return profilePicUrl; }
+
     public String getUsername() { return username; }
 
     public String getFullName(){
         return fullName;
     }
+
+    public String getPhoneNo() { return phoneNo; }
 
     public String getCity() { return city; }
 
