@@ -6,6 +6,7 @@ package chub45.benson.hitch;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 
 //import java.sql.Driver;
@@ -15,13 +16,16 @@ import com.google.android.gms.location.places.GeoDataApi;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Driver;
 import java.util.Date;
 
 public class DriverPost implements Post
 {
-    private static int post_counter = 0;
-
     /**
      * The area the driver is leaving from in human readable format
      */
@@ -91,36 +95,6 @@ public class DriverPost implements Post
     public DriverPost() {}
 
     /**
-     * Creates a post with an empty description
-     * @param departing_area the departing_area
-     * @param destination the trip's destination
-     * @param departure_time the time the driver is leaving
-     * @param available_spots the number of available spots for passengers
-     * @param author_email the post's author's email
-     * @param author_profile_pic the post's author's profile picture
-     * @param author_uid the post's author's account UID
-     */
-    public DriverPost(String departing_area, String destination, String departure_area_id, String destination_id,
-                Date departure_time, int available_spots,
-                String author_email, Uri author_profile_pic, String author_uid)
-    {
-        this.departing_area = departing_area;
-        this.destination = destination;
-        this.departing_area_id = departure_area_id;
-        this.destination_id = destination_id;
-        this.departure_time = departure_time;
-        this.available_spots = available_spots;
-        this.author_email = author_email;
-        this.author_profile_pic = author_profile_pic;
-        this.author_uid = author_uid;
-        this.description = "";
-        this.post_id = post_counter;
-        this.potential_passengers = "";
-        this.accepted_passengers = "";
-        this.post_counter++;
-    }
-
-    /**
      * Creates a post with a non-empty description
      * @param departing_area the departing_area
      * @param destination the trip's destination
@@ -134,8 +108,9 @@ public class DriverPost implements Post
     public DriverPost(String departing_area, String destination, String departing_area_id, String destination_id,
                 Date departure_time, int available_spots,
                 String author_email, Uri author_profile_pic, String author_uid,
-                String description)
+                String description, int post_id)
     {
+        this.post_id = post_id;
         this.departing_area = departing_area;
         this.destination = destination;
         this.departing_area_id = departing_area_id;
@@ -146,10 +121,8 @@ public class DriverPost implements Post
         this.author_profile_pic = author_profile_pic;
         this.author_uid = author_uid;
         this.description = description;
-        this.post_id = post_counter;
         this.potential_passengers = "";
         this.accepted_passengers = "";
-        this.post_counter++;
     }
 
     /**
@@ -183,16 +156,7 @@ public class DriverPost implements Post
         this.author_profile_pic = new Uri.Builder().path("").build();
         this.author_uid = author_uid;
         this.description = description;
-/*<<<<<<< HEAD
-        HitchDatabase db = new HitchDatabase();
         this.post_id = post_id;
-=======*/
-        if (departing_area == "") {
-            this.post_id = post_id;
-        }
-        else {
-            this.post_id = post_counter;
-        }
         this.potential_passengers = potential_passengers;
         this.accepted_passengers = accepted_passengers;
     }
@@ -319,6 +283,8 @@ public class DriverPost implements Post
     public void set_description(String description) {
         this.description = description;
     }
+
+    public void set_post_id(int post_id) { this.post_id = post_id; }
 
     public void setpotential_passengers(String potential_passengers) { this.potential_passengers = potential_passengers; }
 
