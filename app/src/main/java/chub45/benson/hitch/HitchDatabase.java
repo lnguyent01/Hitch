@@ -1,25 +1,18 @@
 package chub45.benson.hitch;
 
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 
 public class HitchDatabase {
@@ -144,58 +137,26 @@ public class HitchDatabase {
                 Integer availSpots = Integer.parseInt((String) dataSnapshot.child("available_spots").getValue());
 
                 if (!requestedPassengers.isEmpty()) {
-                    int j = 0;
-                    ArrayList<String> passengers = new ArrayList<>(10);
-                    String temp = "";
-                    for (int i = 0; i < requestedPassengers.length(); i++) {
-                        if (requestedPassengers.charAt(i) != '|') {
-                            temp += requestedPassengers.charAt(i);
-                        } else {
-                            passengers.add(j, temp);
-                            temp = "";
-                            j++;
-                        }
-                        if (i == requestedPassengers.length() - 1) {
-                            passengers.add(j, temp);
-                        }
-                    }
-                    availSpots -= passengers.size();
+                    ArrayList<String> reqPassengersArray = parseListWithDelimiter(requestedPassengers);
+                    availSpots -= reqPassengersArray.size();
+
                     currentPostRef.child("accepted_passengers").setValue(requestedPassengers);
                     currentPostRef.child("potential_passengers").setValue("");
                     currentPostRef.child("available_spots").setValue(availSpots.toString());
 
-                    for (int k = 0; k < passengers.size(); k++) {
-                        final DatabaseReference currentUserRef = usersRef.child(passengers.get(k));
+                    for (int k = 0; k < reqPassengersArray.size(); k++) {
+                        final DatabaseReference currentUserRef = usersRef.child(reqPassengersArray.get(k));
                         currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 String currentRideRequests = (String) dataSnapshot.child("rideRequests").getValue();
                                 String currentActiveRides = (String) dataSnapshot.child("activeRides").getValue();
 
-                                String temp0 = "";
-                                String temp1 = "";
-                                for (int i = 0; i < currentRideRequests.length(); i++) {
-                                    if (currentRideRequests.contains(postID)) {
-                                        int index = currentRideRequests.indexOf(postID);
-                                        if (index == 0 && currentRideRequests.length() != postID.length()) {
-                                            temp1 = currentRideRequests.substring(postID.length() + 1);
-                                        } else if (index == currentRideRequests.length() - postID.length()) {
-                                            temp1 = currentRideRequests.substring(0, index);
-                                        } else {
-                                            temp0 = currentRideRequests.substring(0, index);
-                                            temp1 = currentRideRequests.substring(index + postID.length() + 1);
-                                        }
-                                    }
-                                }
-                                currentUserRef.child("rideRequests").setValue(temp0 + temp1);
+                                String temp = removeFromListWithDelimiter(currentRideRequests, postID);
+                                currentUserRef.child("rideRequests").setValue(temp);
 
-                                String temp2 = "";
-                                if (currentActiveRides.isEmpty()) {
-                                    temp2 = postID;
-                                } else {
-                                    temp2 = currentActiveRides + "|" + postID;
-                                }
-                                currentUserRef.child("activeRides").setValue(postID);
+                                String temp2 = addToListWithDelimiter(currentActiveRides, postID);
+                                currentUserRef.child("activeRides").setValue(temp2);
                             }
 
                             @Override
@@ -206,12 +167,59 @@ public class HitchDatabase {
                     }
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.d("[Database Error]", "Could not accept passengers because: " + databaseError.getCode());
             }
         });
+    }
+
+    private ArrayList<String> parseListWithDelimiter(String list){
+        int j = 0;
+        ArrayList<String> reqPassengersArray = new ArrayList<>(10);
+        String temp = "";
+        for (int i = 0; i < list.length(); i++) {
+            if (list.charAt(i) != '|') {
+                temp += list.charAt(i);
+            } else {
+                reqPassengersArray.add(j, temp);
+                temp = "";
+                j++;
+            }
+            if (i == list.length() - 1) {
+                reqPassengersArray.add(j, temp);
+            }
+        }
+        return reqPassengersArray;
+    }
+
+    private String removeFromListWithDelimiter(String list, String postID){
+        String temp0 = "";
+        String temp1 = "";
+        for (int i = 0; i < list.length(); i++) {
+            if (list.contains(postID)) {
+                int index = list.indexOf(postID);
+                if (index == 0 && list.length() != postID.length()) {
+                    temp1 = list.substring(postID.length() + 1);
+                } else if (index == list.length() - postID.length()) {
+                    temp1 = list.substring(0, index);
+                } else {
+                    temp0 = list.substring(0, index);
+                    temp1 = list.substring(index + postID.length() + 1);
+                }
+            }
+        }
+        return temp0 + temp1;
+    }
+
+    private String addToListWithDelimiter(String list, String ID){
+        String temp2 = "";
+        if (list.isEmpty()) {
+            temp2 = ID;
+        } else {
+            temp2 = list + "|" + ID;
+        }
+        return temp2;
     }
 
     public void updatePostCount() {
@@ -240,11 +248,64 @@ public class HitchDatabase {
         return rootRef;
     }
 
-    public void removeUser(String uid) {
+
+    /* working on code to delete a user from all posts when a user is deleted
+        right now the app is deleting the user, but crashing shortly after
+     */
+
+    public void deleteUser(String uid) {
+//        usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                String reqRides = dataSnapshot.child("rideRequests").getValue().toString();
+//                String actRides = dataSnapshot.child("activeRides").getValue().toString();
+//                ArrayList<String> reqRidesList = parseListWithDelimiter(reqRides);
+//                ArrayList<String> actRidesList = parseListWithDelimiter(actRides);
+//                removeUserFromPost(reqRidesList, actRidesList, uid);
+//            }
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Log.d("[Database Error]", "Database Error: " + databaseError.getCode());
+//            }
+//        });
         usersRef.child(uid).removeValue();
     }
 
-    public void removePost(String post_id) {
+    private void removeUserFromPost(ArrayList<String> reqRidesList, ArrayList<String> actRidesList, String uid){
+//        int i;
+//        for(i = 0; i < reqRidesList.size(); i++){
+//            postsRef.child(reqRidesList.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    String passengers = dataSnapshot.child("potential_passengers").getValue().toString();
+//                    String postID = dataSnapshot.child("post_id").getValue().toString();
+//                    String newList = removeFromListWithDelimiter(passengers, uid);
+//                    postsRef.child(postID).child("potential_passengers").setValue(newList);
+//                }
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//                    Log.d("[Database Error]", "Database Error: " + databaseError.getCode());
+//                }
+//            });
+//        }
+//        for(i = 0; i < actRidesList.size(); i++){
+//            postsRef.child(actRidesList.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(DataSnapshot dataSnapshot) {
+//                    String passengers = dataSnapshot.child("accepted_passengers").getValue().toString();
+//                    String postID = dataSnapshot.child("post_id").getValue().toString();
+//                    String newList = removeFromListWithDelimiter(passengers, uid);
+//                    postsRef.child(postID).child("accepted_passengers").setValue(newList);
+//                }
+//                @Override
+//                public void onCancelled(DatabaseError databaseError) {
+//                    Log.d("[Database Error]", "Database Error: " + databaseError.getCode());
+//                }
+//            });
+//        }
+    }
+
+    public void deletePost(String post_id) {
         postsRef.child(post_id).removeValue();
     }
 
