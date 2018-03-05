@@ -52,9 +52,8 @@ public class RequestedPostDetails extends AppCompatActivity {
         final String uID = currentUser.getUid();
 
         String num = intent.getExtras().getString("available_spots");
-        String price = "0";
-        String seats_left_and_price = num + " seats left at $" + price + " each";
-        mSeatsLeftAndPrice.setText(seats_left_and_price);
+        String seats_left = num + " seats left";
+        mSeatsLeftAndPrice.setText(seats_left);
 
         String potential_passengers_all = intent.getExtras().getString("potential_passengers");
         String [] potential_passengers_list = potential_passengers_all.split(Pattern.quote("|"));

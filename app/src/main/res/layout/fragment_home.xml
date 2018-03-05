@@ -52,13 +52,16 @@
     <Button
         android:id="@+id/rides_button"
         android:layout_width="88dp"
-        android:layout_height="48dp"
+        android:layout_height="43dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="364dp"
+        android:background="@color/colorPrimaryDark"
         android:text="Rides"
+        android:textColor="@color/colorPrimaryLight"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.289"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_bar_name" />
 

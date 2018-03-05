@@ -75,6 +75,9 @@
             android:name="chub45.benson.hitch.AcceptMyPostsActivity"
             android:label="Tap a Passenger to Accept Them" />
         <activity
+            android:name="chub45.benson.hitch.ViewMyPassengersActivity"
+            android:label="All the Passengers You've Accepted" />
+        <activity
             android:name=".AcceptedPostsActivity"
             android:label="Posts I&apos;ve Been Accepted To" />
         <activity
