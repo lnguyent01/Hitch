@@ -26,7 +26,7 @@
         android:layout_marginStart="16dp"
         android:layout_toEndOf="@+id/profile"
         android:layout_toRightOf="@+id/profile"
-        android:text="Hermes Costello"
+        android:text="No name available"
         android:textColor="@android:color/background_dark"
         android:textSize="24sp" />
 
@@ -65,7 +65,7 @@
         android:layout_alignLeft="@+id/profile"
         android:layout_alignStart="@+id/profile"
         android:layout_marginBottom="7dp"
-        android:text="Green Dolphin Street"
+        android:text="No departing area available"
         android:textColor="@android:color/background_dark"
         android:textSize="22sp" />
 
@@ -92,7 +92,7 @@
         android:layout_alignLeft="@+id/departingFrom"
         android:layout_alignStart="@+id/departingFrom"
         android:layout_marginBottom="7dp"
-        android:text="Kennedy Space Center"
+        android:text="No destination available"
         android:textColor="@android:color/background_dark"
         android:textSize="22sp" />
 
@@ -131,7 +131,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="14dp"
         android:fontFamily="sans-serif"
-        android:text="Leaving at 3:00 AM, February 29"
+        android:text="No departure time available"
+        android:textAlignment="center"
         android:textColor="@android:color/background_dark"
         android:textSize="22sp"
         android:textStyle="bold" />
@@ -143,7 +144,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="73dp"
-        android:text="8 seats left"
+        android:text="An unknown number of seats left"
         android:textColor="@android:color/background_dark"
         android:textSize="22sp" />
 

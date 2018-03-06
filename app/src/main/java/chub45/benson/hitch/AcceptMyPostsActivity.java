@@ -6,14 +6,21 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.regex.Pattern;
 
@@ -74,7 +81,8 @@ public class AcceptMyPostsActivity extends AppCompatActivity{
 
 
                 // Passes the post information to the postViewHolder viewHolder
-                viewHolder.setDetails(getApplicationContext(), model.getUid(), model.getUsername(), potential_passengers);
+                viewHolder.setDetails(getApplicationContext(), model.getUid(), model.getFullName(), model.getUsername(),
+                        model.getProfilePicUrl(), model.getPhoneNo(), potential_passengers);
 
                 // When a post is clicked, move to another activity - one that contains more details on the post that was clicked
                 // Information is passed to that activity
@@ -133,21 +141,37 @@ public class AcceptMyPostsActivity extends AppCompatActivity{
 
         // This method is the one that does the work required to display all of the information retrieved
         // by the firebaseRecyclerAdapter
-        public void setDetails(Context ctx, String uID, String username, String potential_passengers_all) {
+        public void setDetails(Context ctx, String uID, String name, String username, String profilePic, String PhoneNum, String potential_passengers_all) {
 
             // Creates types of View object references and links them to every component of list_layout
-            ImageView user_profile = (ImageView) mView.findViewById(R.id.profile);
+            ImageView user_profile = (ImageView) mView.findViewById(R.id.user_pic);
             TextView userName = (TextView) mView.findViewById(R.id.userName);
+            TextView phone_number = (TextView) mView.findViewById(R.id.phone_number);
 
 
+            // Displaying profile picture
+            // As long as the profile picture exists, display it
+            // If it doesn't exist, the default profile picture will be displayed
+            if (!profilePic.isEmpty()) {
+                Glide.with(ctx)
+                        .load(profilePic)
+                        .apply(new RequestOptions().placeholder(R.drawable.default_pic))
+                        .into(user_profile);
+            }
 
-            // Links the types of View object references to the information retrieved by firebaseRecyclerAdapter
-            //if (postProfile != null) {
-                // As long as the profile picture exists, display it
-                // If it doesn't exist, the default profile picture will be displayed
-              //  Glide.with(ctx).load(postProfile).into(userprofile);
-            //}
-            userName.setText(username);
+
+            // Displays full name if available
+            if (!name.isEmpty()) {
+                userName.setText(name);
+            }
+            // If full name is not available, displays username
+            else if (!username.isEmpty()) {
+                userName.setText(username);
+            }
+            // Displays phone number if available
+            if (!PhoneNum.isEmpty()) {
+                phone_number.setText(PhoneNum);
+            }
 
             String [] potential_passengers_list = potential_passengers_all.split(Pattern.quote("|"));
 

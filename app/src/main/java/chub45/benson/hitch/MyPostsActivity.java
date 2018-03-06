@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,12 +18,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class MyPostsActivity extends AppCompatActivity{
 
@@ -91,8 +97,8 @@ public class MyPostsActivity extends AppCompatActivity{
                         intent.putExtra("departure_time", model.getdeparture_time());
                         intent.putExtra("description", model.getdescription());
                         intent.putExtra("postID", model.getpost_id());
-                        intent.putExtra("name", model.getauthor_email());
-                        intent.putExtra("authorID", model.getauthor_uid());
+                        intent.putExtra("email", model.getauthor_email());
+                        intent.putExtra("uID", model.getauthor_uid());
                         intent.putExtra("potential_passengers", model.getpotential_passengers());
                         intent.putExtra("accepted_passengers", model.getaccepted_passengers());
                         startActivity(intent);
@@ -153,13 +159,35 @@ public class MyPostsActivity extends AppCompatActivity{
             TextView post_seats = (TextView) mView.findViewById(R.id.seats_left_num);
 
 
+            // Displaying profile picture
+            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+            Query query =  dbRef.child("users").child(postAuthor);
+
+            query.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        // As long as the profile picture exists, display it
+                        // If it doesn't exist, the default profile picture will be displayed
+                        if ((dataSnapshot.getValue(User.class).getProfilePicUrl() != "")) {
+                            Glide.with(ctx)
+                                    .load(dataSnapshot.getValue(User.class).getProfilePicUrl())
+                                    .apply(new RequestOptions().placeholder(R.drawable.default_pic))
+                                    .into(post_profile);
+                        }
+                    }
+                    else {
+                        Log.wtf("mytag", "dataSnapshot does not exists");
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.e("[Database Error]", databaseError.getMessage());
+                }
+            });
+
 
             // Links the types of View object references to the information retrieved by firebaseRecyclerAdapter
-            //if (postProfile != null) {
-                // As long as the profile picture exists, display it
-                // If it doesn't exist, the default profile picture will be displayed
-              //  Glide.with(ctx).load(postProfile).into(post_profile);
-            //}
             post_from.setText(postFrom);
             post_to.setText(postTo);
             post_time.setText(postTime);
