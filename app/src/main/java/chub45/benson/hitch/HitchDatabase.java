@@ -254,21 +254,24 @@ public class HitchDatabase {
      */
 
     public void deleteUser(String uid) {
-//        usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                String reqRides = dataSnapshot.child("rideRequests").getValue().toString();
-//                String actRides = dataSnapshot.child("activeRides").getValue().toString();
-//                ArrayList<String> reqRidesList = parseListWithDelimiter(reqRides);
-//                ArrayList<String> actRidesList = parseListWithDelimiter(actRides);
+        usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String reqRides = dataSnapshot.child("rideRequests").getValue().toString();
+                String actRides = dataSnapshot.child("activeRides").getValue().toString();
+                ArrayList<String> reqRidesList = parseListWithDelimiter(reqRides);
+                ArrayList<String> actRidesList = parseListWithDelimiter(actRides);
+                for(int i = 0; i < reqRidesList.size(); i++){
+                    Log.d("Matthew", "Index " + i + ": " + reqRidesList.get(i));
+                }
 //                removeUserFromPost(reqRidesList, actRidesList, uid);
-//            }
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                Log.d("[Database Error]", "Database Error: " + databaseError.getCode());
-//            }
-//        });
-        usersRef.child(uid).removeValue();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("[Database Error]", "Database Error: " + databaseError.getCode());
+            }
+        });
+       // usersRef.child(uid).removeValue();
     }
 
     private void removeUserFromPost(ArrayList<String> reqRidesList, ArrayList<String> actRidesList, String uid){
