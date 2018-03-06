@@ -34,6 +34,7 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -113,6 +114,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         if (dataSnapshot.getValue(User.class).getProfilePicUrl() != "") {
                             Glide.with(view)
                                     .load(dataSnapshot.getValue(User.class).getProfilePicUrl())
+                                    .apply(new RequestOptions().placeholder(R.drawable.default_pic))
                                     .into(profilePicIV);
                         }
                     }

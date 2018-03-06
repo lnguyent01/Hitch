@@ -6,7 +6,7 @@
     android:layout_height="100dp">
 
     <TextView
-        android:id="@+id/yourDriverIs2"
+        android:id="@+id/phone_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
@@ -35,7 +35,7 @@
         android:layout_marginStart="22dp"
         android:layout_marginTop="11dp"
         android:layout_toEndOf="@+id/user_pic"
-        android:text="Emporio Alnino"
+        android:text="No name available"
         android:textColor="@android:color/background_dark"
         android:textSize="24sp" />
 

@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -72,7 +74,8 @@ public class ViewMyPassengersActivity extends AppCompatActivity{
 
 
                 // Passes the user information to the postViewHolder viewHolder
-                viewHolder.setDetails(getApplicationContext(), model.getUid(), model.getUsername(), accepted_passengers);
+                viewHolder.setDetails(getApplicationContext(), model.getUid(), model.getFullName(), model.getUsername(),
+                        model.getProfilePicUrl(), model.getPhoneNo(), accepted_passengers);
 
 
                 viewHolder.setOnClickListener(new postViewHolder.ClickListener() {
@@ -123,21 +126,37 @@ public class ViewMyPassengersActivity extends AppCompatActivity{
 
         // This method is the one that does the work required to display all of the information retrieved
         // by the firebaseRecyclerAdapter
-        public void setDetails(Context ctx, String uID, String username, String accepted_passengers_all) {
+        public void setDetails(Context ctx, String uID, String name, String username, String profilePic, String PhoneNum, String accepted_passengers_all) {
 
             // Creates types of View object references and links them to every component of list_layout
-            ImageView user_profile = (ImageView) mView.findViewById(R.id.profile);
+            ImageView user_profile = (ImageView) mView.findViewById(R.id.user_pic);
             TextView userName = (TextView) mView.findViewById(R.id.userName);
+            TextView phone_number = (TextView) mView.findViewById(R.id.phone_number);
 
 
+            // Displaying profile picture
+            // As long as the profile picture exists, display it
+            // If it doesn't exist, the default profile picture will be displayed
+            if (!profilePic.isEmpty()) {
+                Glide.with(ctx)
+                        .load(profilePic)
+                        .apply(new RequestOptions().placeholder(R.drawable.default_pic))
+                        .into(user_profile);
+            }
 
-            // Links the types of View object references to the information retrieved by firebaseRecyclerAdapter
-            //if (postProfile != null) {
-                // As long as the profile picture exists, display it
-                // If it doesn't exist, the default profile picture will be displayed
-              //  Glide.with(ctx).load(postProfile).into(userprofile);
-            //}
-            userName.setText(username);
+
+            // Displays full name if available
+            if (!name.isEmpty()) {
+                userName.setText(name);
+            }
+            // If full name is not available, displays username
+            else if (!username.isEmpty()) {
+                userName.setText(username);
+            }
+            // Displays phone number if available
+            if (!PhoneNum.isEmpty()) {
+                phone_number.setText(PhoneNum);
+            }
 
             String [] potential_passengers_list = accepted_passengers_all.split(Pattern.quote("|"));
 
