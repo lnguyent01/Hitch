@@ -39,6 +39,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -126,11 +127,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
                 String destination = marker.getTitle();
                 Query query = db.getRoot().child("posts").orderByChild("destination").equalTo(destination);
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            collectPost((ArrayList<HashMap<String, String>>) dataSnapshot.getValue());
+                            GenericTypeIndicator<ArrayList<HashMap<String, String>>> t = new GenericTypeIndicator<ArrayList<HashMap<String, String>>>() {};
+//                            GenericTypeIndicator<HashMap<String, String>> t = new GenericTypeIndicator<HashMap<String, String>>() {};
+                            collectPost(dataSnapshot.getValue(t));
                         }
                     }
 
@@ -211,7 +214,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void collectPost(ArrayList<HashMap<String, String>> postmap) {
         String departing_area, destination, departure_time, departing_area_id, destination_id, num_spots, author_uid, author_email, description, s_id, potential_passengers, accepted_passengers;
         PostFactory factory = new DefaultPostFactory();
-        HashMap<String, String> post = postmap.get(0);
+        HashMap<String, String> post = postmap.get(postmap.size() - 1);
         Post tempPost;
         int available_spots, post_id;
         if (post != null) {

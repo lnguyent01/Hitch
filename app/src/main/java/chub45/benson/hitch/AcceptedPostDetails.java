@@ -3,11 +3,21 @@ package chub45.benson.hitch;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class AcceptedPostDetails extends AppCompatActivity {
 
@@ -30,10 +40,48 @@ public class AcceptedPostDetails extends AppCompatActivity {
         TextView mSeatsLeftAndPrice = (TextView) findViewById(R.id.SeatsLeftandPrice);
 
         Intent intent = getIntent();
+
+        // Displaying profile picture and name
+
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference();
+        Query query =  dbRef.child("users").child(intent.getExtras().getString("uID"));
+
+        query.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // As long as the profile picture exists, display it
+                    // If it doesn't exist, the default profile picture will be displayed
+                    if ((dataSnapshot.getValue(User.class).getProfilePicUrl() != "")) {
+                        Glide.with(getApplicationContext())
+                                .load(dataSnapshot.getValue(User.class).getProfilePicUrl())
+                                .apply(new RequestOptions().placeholder(R.drawable.default_pic))
+                                .into(mProfile);
+                    }
+
+                    // Display name if the user has one
+                    if ((!dataSnapshot.getValue(User.class).getFullName().isEmpty())) {
+                        mDriverName.setText(dataSnapshot.getValue(User.class).getFullName());
+                    }
+
+                    // If not, display their email address
+                    else {
+                        mDriverName.setText(intent.getExtras().getString("email"));
+                    }
+                }
+                else {
+                    Log.wtf("mytag", "dataSnapshot does not exists");
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("[Database Error]", databaseError.getMessage());
+            }
+        });
+
         mDepartingFrom.setText(intent.getExtras().getString("departing_area"));
         mGoingTo.setText(intent.getExtras().getString("destination"));
         mDescriptionText.setText(intent.getExtras().getString("description"));
-        mDriverName.setText(intent.getExtras().getString("name"));
 
         String TimeStatement = "Leaving at " + intent.getExtras().getString("departure_time");
         mDepartureTime.setText(TimeStatement);
@@ -42,9 +90,8 @@ public class AcceptedPostDetails extends AppCompatActivity {
         String postID = intent.getExtras().getString("postID");
 
         String num = intent.getExtras().getString("available_spots");
-        String price = "0";
-        String seats_left_and_price = num + " seats left at $" + price + " each";
-        mSeatsLeftAndPrice.setText(seats_left_and_price);
+        String seats_left = num + " seats left";
+        mSeatsLeftAndPrice.setText(seats_left);
 
 
     }
