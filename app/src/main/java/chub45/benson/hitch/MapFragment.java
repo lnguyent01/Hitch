@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
@@ -126,14 +127,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 //MapFragment.this.displayPostDetails(marker.getId());
 
                 String destination = marker.getTitle();
+                String description = marker.getSnippet();
                 Query query = db.getRoot().child("posts").orderByChild("destination").equalTo(destination);
                 query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            GenericTypeIndicator<ArrayList<HashMap<String, String>>> t = new GenericTypeIndicator<ArrayList<HashMap<String, String>>>() {};
-//                            GenericTypeIndicator<HashMap<String, String>> t = new GenericTypeIndicator<HashMap<String, String>>() {};
-                            collectPost(dataSnapshot.getValue(t));
+                            HashMap<String, String> post;
+                            GenericTypeIndicator<ArrayList<HashMap<String, String>>> arrayListGenericTypeIndicator = new GenericTypeIndicator<ArrayList<HashMap<String, String>>>() {};
+                            GenericTypeIndicator<HashMap<String, HashMap<String, String>>> hashMapGenericTypeIndicator = new GenericTypeIndicator<HashMap<String, HashMap<String, String>>>() {};
+
+                            try {
+                                HashMap<String, HashMap<String, String>> dataSnapshotValue = dataSnapshot.getValue(hashMapGenericTypeIndicator);
+                                String key = (((dataSnapshotValue.keySet()).toArray())[0]).toString();
+                                post = dataSnapshotValue.get(key);
+                            } catch (Exception e) {
+                                // for some reason getValue() returned ArrayList<HashMap<String, String>> instead of HashMap<String, HashMap<String, String>>
+                                ArrayList<HashMap<String, String>> dataSnapshotValue = dataSnapshot.getValue(arrayListGenericTypeIndicator);
+                                post = dataSnapshotValue.get(dataSnapshotValue.size() - 1);
+                            }
+                            collectPost(post);
                         }
                     }
 
@@ -142,7 +155,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         Log.e("[Database Error]", databaseError.getMessage());
                     }
                 });
-                db.addPost(triggerQuery);
+//                db.addPost(triggerQuery);
             }
         });
         // Add a marker in Isla Vista and move the camera
@@ -211,10 +224,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         db.addPost(triggerQuery);
     }
 
-    private void collectPost(ArrayList<HashMap<String, String>> postmap) {
+    private void collectPost(HashMap<String, String> postmap) {
         String departing_area, destination, departure_time, departing_area_id, destination_id, num_spots, author_uid, author_email, description, s_id, potential_passengers, accepted_passengers;
         PostFactory factory = new DefaultPostFactory();
-        HashMap<String, String> post = postmap.get(postmap.size() - 1);
+        HashMap<String, String> post = postmap;
         Post tempPost;
         int available_spots, post_id;
         if (post != null) {
