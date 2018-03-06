@@ -1,6 +1,12 @@
 package chub45.benson.hitch;
 
+import android.util.Log;
+
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,9 +19,9 @@ import java.util.Date;
 
 public class DefaultPostFactory implements PostFactory {
     public Post createPost(String departure_area, String destination, String departure_area_id, String destination_id, Date departure_time,
-                           int available_spots, FirebaseUser user, String description) {
+                           int available_spots, FirebaseUser user, String description, int post_id) {
         Post post = new DriverPost(departure_area, destination, departure_area_id, destination_id, departure_time, available_spots, user.getEmail(),
-                                   user.getPhotoUrl(), user.getUid(), description);
+                        user.getPhotoUrl(), user.getUid(), description, post_id);
         return post;
     }
 
