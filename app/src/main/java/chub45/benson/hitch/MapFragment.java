@@ -124,10 +124,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                //MapFragment.this.displayPostDetails(marker.getId());
-
                 String destination = marker.getTitle();
-                String description = marker.getSnippet();
                 Query query = db.getRoot().child("posts").orderByChild("destination").equalTo(destination);
                 query.addValueEventListener(new ValueEventListener() {
                     @Override
@@ -155,7 +152,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         Log.e("[Database Error]", databaseError.getMessage());
                     }
                 });
-//                db.addPost(triggerQuery);
             }
         });
         // Add a marker in Isla Vista and move the camera
@@ -221,7 +217,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Log.e("[Database Error]", databaseError.getMessage());
             }
         });
-        db.addPost(triggerQuery);
     }
 
     private void collectPost(HashMap<String, String> postmap) {
@@ -257,6 +252,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             intent.putExtra("name", tempPost.getauthor_email());
             intent.putExtra("potential_passengers", tempPost.getpotential_passengers());
             intent.putExtra("accepted_passengers", tempPost.getaccepted_passengers());
+            intent.putExtra("uID", tempPost.getauthor());
             startActivity(intent);
         }
     }
@@ -282,11 +278,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         int available_spots, post_id;
                         LatLng post_coordinates;
                         MarkerOptions markerOptions;
-                        Marker marker;
                         if ((places.getStatus().isSuccess()) && (places.getCount() > 0)) {
                             final Place myPlace = places.get(0);
                             post_coordinates = places.get(0).getLatLng();
-                            //MapFragment.this.setPost_location(myPlace);
                             departing_area = post.get("departing_area");
                             destination = post.get("destination");
                             departing_area_id = post.get("departing_area_id");
