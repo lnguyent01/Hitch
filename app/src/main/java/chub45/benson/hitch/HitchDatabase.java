@@ -288,6 +288,8 @@ public class HitchDatabase {
                 int temp_spots = availSpots - 1;
                 String final_spots = "" + temp_spots;
                 currentPostRef.child("available_spots").setValue(final_spots);
+
+                updateUser(passengerUid, postID);
                 Toast.makeText(context, "This passengers has been accepted! They will remain on the list until you refresh by backing out to the 'My Posts' menu.", Toast.LENGTH_LONG).show();
             }
 
@@ -302,6 +304,28 @@ public class HitchDatabase {
 
 
             }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("[Database Error]", "Could not accept passengers because: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void updateUser(String uid, String postID){
+        DatabaseReference currentUserRef = usersRef.child(uid);
+        currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String currentRideRequests = (String) dataSnapshot.child("rideRequests").getValue();
+                String currentActiveRides = (String) dataSnapshot.child("activeRides").getValue();
+
+                String temp = removeFromListWithDelimiter(currentRideRequests, postID);
+                currentUserRef.child("rideRequests").setValue(temp);
+
+                String temp2 = addToListWithDelimiter(currentActiveRides, postID);
+                currentUserRef.child("activeRides").setValue(temp2);
+            }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.d("[Database Error]", "Could not accept passengers because: " + databaseError.getCode());
@@ -387,7 +411,6 @@ public class HitchDatabase {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot data : dataSnapshot.getChildren()){
                     String postToDelete = data.child("post_id").getValue().toString();
-//                    Log.d("Matthew", "Post to delete: " + postToDelete);
                     deletePost(postToDelete);
                 }
             }
