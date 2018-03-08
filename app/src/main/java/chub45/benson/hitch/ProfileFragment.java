@@ -10,13 +10,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import android.content.DialogInterface;
-import android.provider.MediaStore;
 
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
-import android.support.v4.content.FileProvider;
 
 import android.util.Log;
 import android.graphics.Bitmap;
@@ -27,11 +25,6 @@ import java.io.InputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Date;
-import java.io.IOException;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.text.SimpleDateFormat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -50,21 +43,19 @@ import com.google.firebase.storage.UploadTask;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
-    private static final int REQUEST_CAMERA = 3;
     private static final int SELECT_FILE = 20;
 
     private ImageView profilePicIV;
 
     private TextView fullNameTV, usernameTV, emailTV, phoneNoTV, stateTV, cityTV;
 
-    final private HitchDatabase db = new HitchDatabase();
     private DatabaseReference dbRef;
+
+    FirebaseUser currentUser;
 
     private Uri imageUri;
     private String profileImageUrl;
     private String profileImgFileName;
-    private FirebaseAuth mAuth;
-    private String mCurrentPhotoPath;
 
     private OnFragmentInteractionListener mListener;
 
@@ -85,9 +76,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        dbRef = FirebaseDatabase.getInstance().getReference();
-        mAuth = FirebaseAuth.getInstance();
-
         profilePicIV = (ImageView)view.findViewById(R.id.profilePicIV);
         fullNameTV = (TextView)view.findViewById(R.id.fullNameTV);
         usernameTV = (TextView)view.findViewById(R.id.usernameTV);
@@ -97,10 +85,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         cityTV = (TextView)view.findViewById(R.id.cityTV);
         view.findViewById(R.id.editProfileBtn).setOnClickListener(this);
 
-        FirebaseUser fbUser = FirebaseAuth.getInstance().getCurrentUser();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        dbRef = FirebaseDatabase.getInstance().getReference().child("users");
 
-        if (fbUser != null) {
-            Query query =  dbRef.child("users").child(fbUser.getUid());
+        if (currentUser != null) {
+            Query query =  dbRef.child(currentUser.getUid());
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -110,7 +99,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         cityTV.setText("City: " + dataSnapshot.getValue(User.class).getCity());
                         usernameTV.setText("@"+ dataSnapshot.getValue(User.class).getUsername());
                         phoneNoTV.setText("Phone: " + dataSnapshot.getValue(User.class).getPhoneNo());
-                        emailTV.setText("Email: " + fbUser.getEmail());
+                        emailTV.setText("Email: " + currentUser.getEmail());
                         if (dataSnapshot.getValue(User.class).getProfilePicUrl() != "") {
                             Glide.with(view)
                                     .load(dataSnapshot.getValue(User.class).getProfilePicUrl())
@@ -179,17 +168,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         startActivityForResult(photoPickerIntent, SELECT_FILE);
     }
 
-    private void cameraIntent() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        /*File file = new File(getActivity().getExternalCacheDir(),
-                String.valueOf(System.currentTimeMillis()) + ".jpg");
-        imageUri = Uri.fromFile(file);
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        */
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivityForResult(intent, REQUEST_CAMERA);
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == getActivity().RESULT_OK && data!= null) {
@@ -208,63 +186,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     Toast.makeText(getActivity(), "Unable to open image", Toast.LENGTH_LONG).show();
                 }
             }
-            else if (requestCode == REQUEST_CAMERA) {
-                Bitmap image = (Bitmap) data.getExtras().get("data");
-                profilePicIV.setImageBitmap(image);
-                //imageUri = getImageUri(getContext(), image);
-                galleryAddPic();
-            }
             uploadImagetoFirebase();
-            //saveUserInformation();
         }
         else {
             Log.wtf("ERROR: ", "data is null");
         }
-    }
-
-    private Uri getImageUri(Context inContext, Bitmap inImage)
-    {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
-    }
-
-    private File createImageFile() throws IOException {
-        File storageDir = Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                "example",  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-        return image;
-    }
-
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            File photoFile = null;
-            try {
-                photoFile = createImageFile();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            if (photoFile != null) {
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
-                startActivityForResult(takePictureIntent, REQUEST_CAMERA);
-            }
-        }
-    }
-
-    private void galleryAddPic() {
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(mCurrentPhotoPath);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        getActivity().sendBroadcast(mediaScanIntent);
     }
 
     private void uploadImagetoFirebase() {
@@ -284,10 +210,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void saveUserInformation() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         Map<String, Object> userUpdates = new HashMap<>();
         userUpdates.put("profilePicUrl", profileImageUrl);
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser.getUid());
         if (profileImageUrl != null) {
             dbRef.updateChildren(userUpdates)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {

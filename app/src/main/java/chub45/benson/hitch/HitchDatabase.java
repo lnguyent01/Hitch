@@ -30,12 +30,17 @@ public class HitchDatabase {
     private DatabaseReference usersRef;
     private DatabaseReference postsRef;
     private DatabaseReference countRef;
+    private PostFactory factory;
+    private Post triggerQuery;
+    private int postCount;
 
     public HitchDatabase() {
         rootRef = FirebaseDatabase.getInstance().getReference();
         countRef = rootRef.child("postCount");
         usersRef = rootRef.child("users");
         postsRef = rootRef.child("posts");
+        factory = new DefaultPostFactory();
+        triggerQuery = factory.createPostFromDb("","", "", "","", 0, "","","", -1, "", "");
     }
 
     public void addUser(User user) {
@@ -84,7 +89,7 @@ public class HitchDatabase {
         });
         updatePostCount();
     }
-
+  
     public HashMap<String, String> makePostMap(Post post) {
         HashMap<String, String> postMap = new HashMap<>();
         postMap.put("departing_area", post.getdeparting_area());
@@ -334,6 +339,8 @@ public class HitchDatabase {
         return rootRef;
     }
 
+    public DatabaseReference getCountRef() { return countRef; }
+
     public void removeUser(String uid) {
         usersRef.child(uid).removeValue();
     }
@@ -341,27 +348,5 @@ public class HitchDatabase {
     public void removePost(String post_id) {
         postsRef.child(post_id).removeValue();
     }
-
-//    public int getnext_post_id() {
-//        DatabaseReference reference = this.getRoot().child("postCount");
-//        Query query = reference.orderByChild("post_id");
-//        query.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot postSnapshot: dataSnapshot.getChildren()) {
-//                    int key = Integer.parseInt(postSnapshot.getKey());
-//                    if (HitchDatabase.this.most_recent_post_id < key) {
-//                        HitchDatabase.this.most_recent_post_id = key;
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-//        return most_recent_post_id + 1;
-//    }
 
 }
