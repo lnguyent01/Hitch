@@ -361,7 +361,7 @@ public class HitchDatabase {
                 if (index == 0 && list.length() != postID.length()) {
                     temp1 = list.substring(postID.length() + 1);
                 } else if (index == list.length() - postID.length()) {
-                    temp1 = list.substring(0, index);
+                    temp1 = list.substring(0, index-1);
                 } else {
                     temp0 = list.substring(0, index);
                     temp1 = list.substring(index + postID.length() + 1);

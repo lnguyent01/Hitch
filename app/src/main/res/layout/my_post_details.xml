@@ -175,6 +175,13 @@
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/accept" />
 
+    <Button
+        android:id="@+id/DeletePostButton"
+        android:layout_width="120dp"
+        android:layout_height="35dp"
+        android:layout_above="@+id/DriverName"
+        android:layout_alignEnd="@+id/DepartureTime"
+        android:text="Delete Post" />
 
 
 </RelativeLayout>
