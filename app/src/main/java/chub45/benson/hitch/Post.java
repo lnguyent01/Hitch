@@ -46,7 +46,6 @@ public interface Post
     public void set_destination_id(String destination_id);
     public void set_departure_time(Date time);
     public void set_available_spots(int size);
-    public void set_post_id(int post_id);
     public void set_description(String description);
     public void setpotential_passengers(String potential_passengers);
     public void setaccepted_passengers(String accepted_passengers);

@@ -32,6 +32,13 @@ public class NavigationActivity extends AppCompatActivity{
                     mapFragmentTransaction.replace(R.id.content, mapFragment);
                     mapFragmentTransaction.commit();
                     return true;
+                //case R.id.navigation_posts:
+                 //   setTitle("Posts");
+                 //   PostsFragment postsFragment = new PostsFragment();
+                 //   android.support.v4.app.FragmentTransaction postsFragmentTransaction = getSupportFragmentManager().beginTransaction();
+                 //   postsFragmentTransaction.replace(R.id.content, postsFragment);
+                 //   postsFragmentTransaction.commit();
+                  //  return true;
                 case R.id.navigation_profile:
                     setTitle("Profile");
                     ProfileFragment profileFragment = new ProfileFragment();
