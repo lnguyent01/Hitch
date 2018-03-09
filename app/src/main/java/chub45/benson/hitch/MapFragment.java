@@ -208,7 +208,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    collectPosts((HashMap<String, HashMap<String, String>>) dataSnapshot.getValue());
+                    HashMap<String, String> post;
+                    GenericTypeIndicator<ArrayList<HashMap<String, String>>> arrayListGenericTypeIndicator = new GenericTypeIndicator<ArrayList<HashMap<String, String>>>() {};
+                    GenericTypeIndicator<HashMap<String, HashMap<String, String>>> hashMapGenericTypeIndicator = new GenericTypeIndicator<HashMap<String, HashMap<String, String>>>() {};
+
+                    try {
+                        HashMap<String, HashMap<String, String>> allPosts = dataSnapshot.getValue(hashMapGenericTypeIndicator);
+                        collectPosts(allPosts);
+                    } catch (Exception e) {
+                        // for some reason getValue() returned ArrayList<HashMap<String, String>> instead of HashMap<String, HashMap<String, String>>
+                        ArrayList<HashMap<String, String>> allPostsList = dataSnapshot.getValue(arrayListGenericTypeIndicator);
+                        collectPostsList(allPostsList);
+                    }
                 }
             }
 
@@ -261,6 +272,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         HashMap<String, String> post;
         for (int i = 0; i < all_posts.size(); i++) {
             post = all_posts.get(String.valueOf(i));
+            if ((post != null) && (!post.get("post_id").equals("-1")) && (post.get("destination_id") != null) && (!post.get("destination_id").equals(""))){
+                addMarkerandCreatePost(post.get("destination_id"), post);
+            }
+        }
+    }
+
+    private void collectPostsList(ArrayList<HashMap<String, String>> all_posts) {
+        HashMap<String, String> post;
+        for (int i = 0; i < all_posts.size(); i++) {
+            post = all_posts.get(i);
             if ((post != null) && (!post.get("post_id").equals("-1")) && (post.get("destination_id") != null) && (!post.get("destination_id").equals(""))){
                 addMarkerandCreatePost(post.get("destination_id"), post);
             }
