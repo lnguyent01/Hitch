@@ -89,18 +89,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         factory = new DefaultPostFactory();
         posts = new ArrayList<>();
         triggerQuery = factory.createPostFromDb("","", "", "","", 0, "","","", -1, "", "");
-//        mMapView = (MapView) rootView.findViewById(R.id.mapView);
-//        mMapView.onCreate(savedInstanceState);
-//
-//        mMapView.onResume();
-//
-//        try {
-//            MapsInitializer.initialize(getActivity().getApplicationContext());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        mMapView.getMapAsync(this);
+        mMapView = (MapView) rootView.findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+
+        mMapView.onResume();
+
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mMapView.getMapAsync(this);
 
         return rootView;
     }
@@ -152,8 +152,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 });
             }
         });
-        // Add a marker in Isla Vista and move the camera
-        LatLng isla_vista = new LatLng(34.41073, -119.86352);
         LatLng debug = new LatLng(34.3, -119.9);
         current_location = debug;
         try {
@@ -180,7 +178,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Log.e("Exception: %s", e.getMessage());
         }
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(isla_vista));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(current_location));
     }
 
     private boolean locationPermissionGranted() {
@@ -257,7 +255,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             intent.putExtra("available_spots", String.valueOf(tempPost.getavailable_spots()));
             intent.putExtra("departure_time", tempPost.getdeparture_time().toString());
             intent.putExtra("description", tempPost.getdescription());
-            intent.putExtra("postID", tempPost.get_post_id());
+            intent.putExtra("postID", String.valueOf(tempPost.get_post_id()));
             intent.putExtra("name", tempPost.getauthor_email());
             intent.putExtra("potential_passengers", tempPost.getpotential_passengers());
             intent.putExtra("accepted_passengers", tempPost.getaccepted_passengers());
