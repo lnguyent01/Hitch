@@ -213,7 +213,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         Map<String, Object> userUpdates = new HashMap<>();
         userUpdates.put("profilePicUrl", profileImageUrl);
         if (profileImageUrl != null) {
-            dbRef.updateChildren(userUpdates)
+            dbRef.child(currentUser.getUid()).updateChildren(userUpdates)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
