@@ -29,6 +29,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -52,6 +53,7 @@ import java.util.Set;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     MapView mMapView;
+    SupportMapFragment mMapFragment;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleApiClient mGoogleApiClient;
@@ -74,8 +76,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Location current_loc;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
         mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity().getApplicationContext()).addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API).build();
@@ -84,25 +89,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         factory = new DefaultPostFactory();
         posts = new ArrayList<>();
         triggerQuery = factory.createPostFromDb("","", "", "","", 0, "","","", -1, "", "");
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
-
-        mMapView = (MapView) rootView.findViewById(R.id.mapView);
-        mMapView.onCreate(savedInstanceState);
-
-        mMapView.onResume();
-
-        try {
-            MapsInitializer.initialize(getActivity().getApplicationContext());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        mMapView.getMapAsync(this);
+//        mMapView = (MapView) rootView.findViewById(R.id.mapView);
+//        mMapView.onCreate(savedInstanceState);
+//
+//        mMapView.onResume();
+//
+//        try {
+//            MapsInitializer.initialize(getActivity().getApplicationContext());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        mMapView.getMapAsync(this);
 
         return rootView;
     }
