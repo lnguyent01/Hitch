@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ public class MyPostDetails extends AppCompatActivity {
         ImageView mProfile = (ImageView) findViewById(R.id.profile);
         ImageButton mAcceptButton = (ImageButton) findViewById(R.id.AcceptButton);
         ImageButton mPassengersButton = (ImageButton) findViewById(R.id.PassengersButton);
+        Button mDeletePostButton = (Button) findViewById(R.id.DeletePostButton);
         TextView mDriverName = (TextView) findViewById(R.id.DriverName);
         TextView mDriverIs = (TextView) findViewById(R.id.yourDriverIs);
         TextView mFrom = (TextView) findViewById(R.id.From);
@@ -178,6 +180,15 @@ public class MyPostDetails extends AppCompatActivity {
                     Toast.makeText(getBaseContext(), "You haven't accepted any requests!", Toast.LENGTH_SHORT).show();
                 }
 
+            }
+        });
+
+        HitchDatabase db = new HitchDatabase();
+        mDeletePostButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db.deletePost(postID);
+                finish();
             }
         });
     }

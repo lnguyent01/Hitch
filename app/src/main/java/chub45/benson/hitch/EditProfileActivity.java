@@ -1,14 +1,17 @@
 package chub45.benson.hitch;
 
+import android.content.Context;
 import android.content.Intent;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
+import android.widget.Toast;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -27,6 +30,7 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
 
     final private HitchDatabase db = new HitchDatabase();
     FirebaseUser currentUser;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +46,11 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
         stateText = (EditText) findViewById(R.id.stateText);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        userID = currentUser.getUid();
 
         findViewById(R.id.finishBtn).setOnClickListener(this);
         findViewById(R.id.cancelBtn).setOnClickListener(this);
-
+        findViewById(R.id.DeleteAccountButton).setOnClickListener(this);
     }
 
     private void updateUserInfo() {
@@ -85,6 +90,18 @@ public class EditProfileActivity extends AppCompatActivity implements View.OnCli
                 finish();
                 break;
             case R.id.cancelBtn:
+                finish();
+                break;
+            case R.id.DeleteAccountButton:
+                db.deleteUser(currentUser.getUid());
+                currentUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(getBaseContext(), "You have successfully deleted your account.", Toast.LENGTH_LONG).show();
+                    }
+                });
+                Intent loginIntent = new Intent(getApplicationContext(), LogInActivity.class);
+                startActivity(loginIntent);
                 finish();
                 break;
 

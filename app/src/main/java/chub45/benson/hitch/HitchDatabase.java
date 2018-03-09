@@ -9,8 +9,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,7 +16,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -162,6 +159,7 @@ public class HitchDatabase {
 
                     String final_passengers = "";
 
+
                     for (int i = 0; i < potential_passengers_list.length; i++) {
                         String temp = potential_passengers_list[i];
 
@@ -290,6 +288,8 @@ public class HitchDatabase {
                 int temp_spots = availSpots - 1;
                 String final_spots = "" + temp_spots;
                 currentPostRef.child("available_spots").setValue(final_spots);
+
+                updateUser(passengerUid, postID);
                 Toast.makeText(context, "This passengers has been accepted! They will remain on the list until you refresh by backing out to the 'My Posts' menu.", Toast.LENGTH_LONG).show();
             }
 
@@ -304,12 +304,81 @@ public class HitchDatabase {
 
 
             }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("[Database Error]", "Could not accept passengers because: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void updateUser(String uid, String postID){
+        DatabaseReference currentUserRef = usersRef.child(uid);
+        currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String currentRideRequests = (String) dataSnapshot.child("rideRequests").getValue();
+                String currentActiveRides = (String) dataSnapshot.child("activeRides").getValue();
+
+                String temp = removeFromListWithDelimiter(currentRideRequests, postID);
+                currentUserRef.child("rideRequests").setValue(temp);
+
+                String temp2 = addToListWithDelimiter(currentActiveRides, postID);
+                currentUserRef.child("activeRides").setValue(temp2);
+            }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.d("[Database Error]", "Could not accept passengers because: " + databaseError.getCode());
             }
         });
+    }
+
+    private ArrayList<String> parseListWithDelimiter(String list){
+        int j = 0;
+        ArrayList<String> reqPassengersArray = new ArrayList<>(10);
+        String temp = "";
+        for (int i = 0; i < list.length(); i++) {
+            if (list.charAt(i) != '|') {
+                temp += list.charAt(i);
+            } else {
+                reqPassengersArray.add(j, temp);
+                temp = "";
+                j++;
+            }
+            if (i == list.length() - 1) {
+                reqPassengersArray.add(j, temp);
+            }
+        }
+        return reqPassengersArray;
+    }
+
+    private String removeFromListWithDelimiter(String list, String postID){
+        String temp0 = "";
+        String temp1 = "";
+        for (int i = 0; i < list.length(); i++) {
+            if (list.contains(postID)) {
+                int index = list.indexOf(postID);
+                if (index == 0 && list.length() != postID.length()) {
+                    temp1 = list.substring(postID.length() + 1);
+                } else if (index == list.length() - postID.length()) {
+                    temp1 = list.substring(0, index-1);
+                } else {
+                    temp0 = list.substring(0, index);
+                    temp1 = list.substring(index + postID.length() + 1);
+                }
+            }
+        }
+        return temp0 + temp1;
+    }
+
+    private String addToListWithDelimiter(String list, String ID){
+        String temp2 = "";
+        if (list.isEmpty()) {
+            temp2 = ID;
+        } else {
+            temp2 = list + "|" + ID;
+        }
+        return temp2;
     }
 
     public void updatePostCount() {
@@ -335,18 +404,129 @@ public class HitchDatabase {
 
     }
 
-    public DatabaseReference getRoot() {
-        return rootRef;
+    public void deleteUser(String uid) {
+        Query query = postsRef.orderByChild("author_uid").equalTo(uid);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for(DataSnapshot data : dataSnapshot.getChildren()){
+                    String postToDelete = data.child("post_id").getValue().toString();
+                    deletePost(postToDelete);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("[Database Error]", "Database Error: " + databaseError.getCode());
+            }
+        });
+
+        usersRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String reqRides = dataSnapshot.child("rideRequests").getValue().toString();
+                String actRides = dataSnapshot.child("activeRides").getValue().toString();
+                ArrayList<String> reqRidesList = parseListWithDelimiter(reqRides);
+                ArrayList<String> actRidesList = parseListWithDelimiter(actRides);
+                removeUserFromPost(reqRidesList, actRidesList, uid);
+                usersRef.child(uid).removeValue();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("[Database Error]", "Database Error: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void removeUserFromPost(ArrayList<String> reqRidesList, ArrayList<String> actRidesList, String uid) {
+        for (int i = 0; i < reqRidesList.size(); i++) {
+            postsRef.child(reqRidesList.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String passengers = dataSnapshot.child("potential_passengers").getValue().toString();
+                    String postID = dataSnapshot.child("post_id").getValue().toString();
+                    String newList = removeFromListWithDelimiter(passengers, uid);
+                    postsRef.child(postID).child("potential_passengers").setValue(newList);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d("[Database Error]", "Database Error: " + databaseError.getCode());
+                }
+            });
+        }
+        for (int i = 0; i < actRidesList.size(); i++) {
+            postsRef.child(actRidesList.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String passengers = dataSnapshot.child("accepted_passengers").getValue().toString();
+                    String postID = dataSnapshot.child("post_id").getValue().toString();
+                    String newList = removeFromListWithDelimiter(passengers, uid);
+                    postsRef.child(postID).child("accepted_passengers").setValue(newList);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d("[Database Error]", "Database Error: " + databaseError.getCode());
+                }
+            });
+        }
+    }
+
+    public void deletePost(String post_id) {
+        postsRef.child(post_id).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String potPass = dataSnapshot.child("potential_passengers").getValue().toString();
+                String accPass = dataSnapshot.child("accepted_passengers").getValue().toString();
+                ArrayList<String> potPassList = parseListWithDelimiter(potPass);
+                ArrayList<String> accPassList = parseListWithDelimiter(accPass);
+                removePostFromUser(potPassList, accPassList, post_id);
+                postsRef.child(post_id).removeValue();
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("[Database Error]", "Database Error: " + databaseError.getCode());
+            }
+        });
+    }
+
+    private void removePostFromUser(ArrayList<String> potPassList, ArrayList<String> accPassList, String post_id){
+        for (int i = 0; i < potPassList.size(); i++) {
+            usersRef.child(potPassList.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String rideReq = dataSnapshot.child("rideRequests").getValue().toString();
+                    String uid = dataSnapshot.child("uid").getValue().toString();
+                    String newList = removeFromListWithDelimiter(rideReq, post_id);
+                    usersRef.child(uid).child("rideRequests").setValue(newList);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d("[Database Error]", "Database Error: " + databaseError.getCode());
+                }
+            });
+        }
+        for (int i = 0; i < accPassList.size(); i++) {
+            usersRef.child(accPassList.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    String actRides = dataSnapshot.child("activeRides").getValue().toString();
+                    String uid = dataSnapshot.child("uid").getValue().toString();
+                    String newList = removeFromListWithDelimiter(actRides, post_id);
+                    usersRef.child(uid).child("activeRides").setValue(newList);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.d("[Database Error]", "Database Error: " + databaseError.getCode());
+                }
+            });
+        }
     }
 
     public DatabaseReference getCountRef() { return countRef; }
 
-    public void removeUser(String uid) {
-        usersRef.child(uid).removeValue();
-    }
-
-    public void removePost(String post_id) {
-        postsRef.child(post_id).removeValue();
-    }
+    public DatabaseReference getRoot() { return rootRef; }
 
 }
