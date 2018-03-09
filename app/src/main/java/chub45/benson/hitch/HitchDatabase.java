@@ -289,7 +289,7 @@ public class HitchDatabase {
                 String final_spots = "" + temp_spots;
                 currentPostRef.child("available_spots").setValue(final_spots);
 
-                updateUser(passengerUid, postID);
+                //updateUser(passengerUid, postID);
                 Toast.makeText(context, "This passengers has been accepted! They will remain on the list until you refresh by backing out to the 'My Posts' menu.", Toast.LENGTH_LONG).show();
             }
 
