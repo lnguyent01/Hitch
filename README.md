@@ -165,3 +165,23 @@ We are fully aware that these bugs impede testing. Please go to https://hitch-74
 6. Select "Finish", then the profile will be updated.
 7. If successful, the input should be displayed in the profile
 8. This can be verified by checking the Firebase database and verify the information is saved there
+
+# Steps to test Use Case 15: User cancels their request 
+1. Open the app
+2. Log in (Or create an account first, then log in)
+3. Click the "Rides" button
+4. Now, click the "Requested Rides" button
+5. If successful, all the Rides that you have requested will be visible, which may be none (you may need to request to join first (UC3))
+6. Click on a Ride post
+7. You will be able to see all the details of the Ride you selected
+8. Click the cancel
+9. If successful, the request to join the Ride will be canceled
+10. This can be verified by viewing the list of requests (as the original post creator)
+
+# Steps to test Use Case 16: Driver views accepted passengers
+
+# Steps to test Use Case 17: User changes profile picture 
+
+# Steps to test Use Case 18: Driver deletes post
+
+# Steps to test Use Case 19: User deletes account
