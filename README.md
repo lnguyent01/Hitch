@@ -214,8 +214,8 @@ We are fully aware that these bugs impede testing. Please go to https://hitch-74
 3. Click on “Profile” icon
 4. Click on “Edit Profile”
 5. Click on “Delete Account”
-6. If successful:
-   a. The user will be removed from the database
-   b. All of the user’s posts will be deleted
-   c. All of the user’s requested rides will be cancelled
+6. If successful:  
+   a. The user will be removed from the database  
+   b. All of the user’s posts will be deleted  
+   c. All of the user’s requested rides will be cancelled  
    d. User will be taken off the list of the rides they have been accepted to
