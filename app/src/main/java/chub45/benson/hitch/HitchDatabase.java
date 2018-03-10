@@ -289,7 +289,7 @@ public class HitchDatabase {
                 String final_spots = "" + temp_spots;
                 currentPostRef.child("available_spots").setValue(final_spots);
 
-                //updateUser(passengerUid, postID);
+                updateUser(passengerUid, postID);
                 //Toast.makeText(context, "This passengers has been accepted! They will remain on the list until you refresh by backing out to the 'My Posts' menu.", Toast.LENGTH_LONG).show();
             }
 
@@ -312,17 +312,31 @@ public class HitchDatabase {
     }
 
     private void updateUser(String uid, String postID){
+
+        Log.d("Matthew", "updateUser called");
+
         DatabaseReference currentUserRef = usersRef.child(uid);
         currentUserRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String currentRideRequests = (String) dataSnapshot.child("rideRequests").getValue();
+
+                Log.d("Matthew", "current ride requests: " + currentRideRequests);
+
                 String currentActiveRides = (String) dataSnapshot.child("activeRides").getValue();
 
+                Log.d("Matthew", "active ride requests: " + currentActiveRides);
+
                 String temp = removeFromListWithDelimiter(currentRideRequests, postID);
+
+                Log.d("Matthew", "remove from delimited list: " + temp);
+
                 currentUserRef.child("rideRequests").setValue(temp);
 
                 String temp2 = addToListWithDelimiter(currentActiveRides, postID);
+
+                Log.d("Matthew", "add to delimited list: " + temp2);
+
                 currentUserRef.child("activeRides").setValue(temp2);
             }
 
@@ -334,19 +348,23 @@ public class HitchDatabase {
     }
 
     private ArrayList<String> parseListWithDelimiter(String list){
+        Log.d("Matthew", "parse with delimiter method called");
         int j = 0;
         ArrayList<String> reqPassengersArray = new ArrayList<>(10);
         String temp = "";
         for (int i = 0; i < list.length(); i++) {
-            if (list.charAt(i) != '|') {
-                temp += list.charAt(i);
-            } else {
-                reqPassengersArray.add(j, temp);
-                temp = "";
-                j++;
-            }
             if (i == list.length() - 1) {
+                temp += list.charAt(i);
                 reqPassengersArray.add(j, temp);
+            }
+            else {
+                if (list.charAt(i) != '|') {
+                    temp += list.charAt(i);
+                } else {
+                    reqPassengersArray.add(j, temp);
+                    temp = "";
+                    j++;
+                }
             }
         }
         return reqPassengersArray;
@@ -358,7 +376,11 @@ public class HitchDatabase {
         for (int i = 0; i < list.length(); i++) {
             if (list.contains(postID)) {
                 int index = list.indexOf(postID);
-                if (index == 0 && list.length() != postID.length()) {
+                if(list.length() == postID.length()){
+                    temp0 = "";
+                    temp1 = "";
+                }
+                else if (index == 0 && list.length() != postID.length()) {
                     temp1 = list.substring(postID.length() + 1);
                 } else if (index == list.length() - postID.length()) {
                     temp1 = list.substring(0, index-1);
@@ -405,6 +427,7 @@ public class HitchDatabase {
     }
 
     public void deleteUser(String uid) {
+        Log.wtf("Matthew", "the delete user method has been called");
         Query query = postsRef.orderByChild("author_uid").equalTo(uid);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -424,9 +447,28 @@ public class HitchDatabase {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String reqRides = dataSnapshot.child("rideRequests").getValue().toString();
+
+                Log.d("Matthew", "the reqRides string: " + reqRides);
+
                 String actRides = dataSnapshot.child("activeRides").getValue().toString();
+
+                Log.d("Matthew", "the actRides string: " + actRides);
+
                 ArrayList<String> reqRidesList = parseListWithDelimiter(reqRides);
+
+                Log.d("Matthew", "reqRidesArray size :" + reqRidesList.size());
+
+                for(int i = 0; i < reqRidesList.size(); i++)
+                    Log.d("Matthew", "Loop 1: " + reqRidesList.get(i));
+
                 ArrayList<String> actRidesList = parseListWithDelimiter(actRides);
+
+                Log.d("Matthew", "actRidesArray size :" + actRidesList.size());
+
+                for(int i = 0; i < actRidesList.size(); i++)
+                    Log.d("Matthew","Loop 2: " + actRidesList.get(i));
+
+                Log.d("Matthew", "finished the loops");
                 removeUserFromPost(reqRidesList, actRidesList, uid);
                 usersRef.child(uid).removeValue();
             }
@@ -438,6 +480,7 @@ public class HitchDatabase {
     }
 
     private void removeUserFromPost(ArrayList<String> reqRidesList, ArrayList<String> actRidesList, String uid) {
+        Log.wtf("Matthew", "remove user from post has been called");
         for (int i = 0; i < reqRidesList.size(); i++) {
             postsRef.child(reqRidesList.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -445,6 +488,9 @@ public class HitchDatabase {
                     String passengers = dataSnapshot.child("potential_passengers").getValue().toString();
                     String postID = dataSnapshot.child("post_id").getValue().toString();
                     String newList = removeFromListWithDelimiter(passengers, uid);
+
+                    Log.d("Matthew", "this is the new pot_pass list: " + newList);
+
                     postsRef.child(postID).child("potential_passengers").setValue(newList);
                 }
 
@@ -455,13 +501,25 @@ public class HitchDatabase {
             });
         }
         for (int i = 0; i < actRidesList.size(); i++) {
+            Log.wtf("Matthew", "Accepted ride " + i + ": " + actRidesList.get(i));
             postsRef.child(actRidesList.get(i)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     String passengers = dataSnapshot.child("accepted_passengers").getValue().toString();
                     String postID = dataSnapshot.child("post_id").getValue().toString();
                     String newList = removeFromListWithDelimiter(passengers, uid);
+
+                    Log.wtf("Matthew", "the updated act_pass list: " + newList);
+
                     postsRef.child(postID).child("accepted_passengers").setValue(newList);
+
+                    String spots = dataSnapshot.child("available_spots").getValue().toString();
+                    Integer updatedSpots = Integer.parseInt(spots);
+                    updatedSpots++;
+
+                    Log.wtf("Matthew", "the updated spots:" + updatedSpots);
+
+                    postsRef.child(postID).child("available_spots").setValue(updatedSpots.toString());
                 }
 
                 @Override
