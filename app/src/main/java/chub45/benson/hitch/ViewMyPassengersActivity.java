@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -15,16 +14,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.regex.Pattern;
 
-public class AcceptMyPostsActivity extends AppCompatActivity{
+public class ViewMyPassengersActivity extends AppCompatActivity{
 
     // This is what displays all posts relevant to what the user searched
     private RecyclerView mResultList;
@@ -50,18 +45,16 @@ public class AcceptMyPostsActivity extends AppCompatActivity{
         mResultList.setLayoutManager(new LinearLayoutManager(this));
 
         Intent intent = getIntent();
-        String postID = intent.getExtras().getString("postID");
-        String potential_passengers_all = intent.getExtras().getString("potential_passengers");
-        String spotsLeft = intent.getExtras().getString("spots_left");
+        String accepted_passengers_all = intent.getExtras().getString("accepted_passengers");
 
 
 
-        firebaseUserSearch(potential_passengers_all, postID, spotsLeft);
+        firebaseUserSearch(accepted_passengers_all);
     }
 
 
     // This function does all the work when it comes to accessing the database and retrieving the relevant information
-    private void firebaseUserSearch(String potential_passengers, String postid, String spots_left) {
+    private void firebaseUserSearch(String accepted_passengers) {
 
 
         // The FirebaseRecyclerAdapter is from FirebaseUI, a third-party library. It accesses the Firebase database.
@@ -69,30 +62,26 @@ public class AcceptMyPostsActivity extends AppCompatActivity{
 
                 // The information from the Firebase database in stored in this class
                 User.class,
-                // This is how the post information is going to be displayed
+                // This is how the user information is going to be displayed
                 R.layout.user_list_layout,
-                // This is what puts the post information from the post class into the list_layout
+                // This is what puts the user information from the user class into the user_list_layout
                 postViewHolder.class,
-                // This loads all the posts from the Firebase database
+                // This loads all the users from the Firebase database
                 mUserDatabase
         ) {
             @Override
             protected void populateViewHolder(postViewHolder viewHolder, final User model, int position) {
 
 
-                // Passes the post information to the postViewHolder viewHolder
+                // Passes the user information to the postViewHolder viewHolder
                 viewHolder.setDetails(getApplicationContext(), model.getUid(), model.getFullName(), model.getUsername(),
-                        model.getProfilePicUrl(), model.getPhoneNo(), potential_passengers);
+                        model.getProfilePicUrl(), model.getPhoneNo(), accepted_passengers);
 
-                // When a post is clicked, move to another activity - one that contains more details on the post that was clicked
-                // Information is passed to that activity
+
                 viewHolder.setOnClickListener(new postViewHolder.ClickListener() {
 
                     @Override
                     public void onItemClick(View view, int position) {
-
-                        HitchDatabase AcceptIt = new HitchDatabase();
-                        AcceptIt.acceptPassengers(model.getUid(), postid, getBaseContext());
 
                     }
                 });
@@ -109,9 +98,6 @@ public class AcceptMyPostsActivity extends AppCompatActivity{
 
         View mView;
 
-        // Get the current user's UID
-        //FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-       // String uID = currentUser.getUid();
 
         private postViewHolder.ClickListener mClickListener;
 
@@ -120,8 +106,7 @@ public class AcceptMyPostsActivity extends AppCompatActivity{
             public void onItemClick(View view, int position);
         }
 
-        // This method, when used, allows whatever used it to do something when this post is clicked
-        // firebaseRecyclerAdapter uses this method to move to another activity when clicked
+        // This method, when used, allows whatever used it to do something when this user is clicked
         public void setOnClickListener(postViewHolder.ClickListener clickListener){
             mClickListener = clickListener;
         }
@@ -130,7 +115,7 @@ public class AcceptMyPostsActivity extends AppCompatActivity{
 
             mView = itemView;
 
-            // When a post is clicked, the program will know exactly which post was clicked
+            // When a user is clicked, the program will know exactly which user was clicked
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -141,7 +126,7 @@ public class AcceptMyPostsActivity extends AppCompatActivity{
 
         // This method is the one that does the work required to display all of the information retrieved
         // by the firebaseRecyclerAdapter
-        public void setDetails(Context ctx, String uID, String name, String username, String profilePic, String PhoneNum, String potential_passengers_all) {
+        public void setDetails(Context ctx, String uID, String name, String username, String profilePic, String PhoneNum, String accepted_passengers_all) {
 
             // Creates types of View object references and links them to every component of list_layout
             ImageView user_profile = (ImageView) mView.findViewById(R.id.user_pic);
@@ -173,19 +158,19 @@ public class AcceptMyPostsActivity extends AppCompatActivity{
                 phone_number.setText(PhoneNum);
             }
 
-            String [] potential_passengers_list = potential_passengers_all.split(Pattern.quote("|"));
+            String [] potential_passengers_list = accepted_passengers_all.split(Pattern.quote("|"));
 
-            boolean is_requested = false;
+            boolean is_accepted = false;
 
             for (int i = 0; i < potential_passengers_list.length; i++) {
                 String temp = potential_passengers_list[i];
 
                 if (uID.equals(temp)) {
-                    is_requested = true;
+                    is_accepted = true;
                 }
             }
 
-            if (!is_requested) {
+            if (!is_accepted) {
                 RelativeLayout listPart = (RelativeLayout) mView.findViewById(R.id.list_part);
                 listPart.getLayoutParams().height = 0;
             }

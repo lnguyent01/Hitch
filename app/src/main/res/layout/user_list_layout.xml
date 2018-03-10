@@ -5,6 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="100dp">
 
+    <TextView
+        android:id="@+id/phone_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_alignStart="@+id/userName"
+        android:layout_below="@+id/userName"
+        android:text="No phone number available"
+        android:textSize="16sp" />
+
     <ImageView
         android:id="@+id/user_pic"
         android:layout_width="80dp"
@@ -21,12 +31,11 @@
         android:id="@+id/userName"
         android:layout_width="230dp"
         android:layout_height="33dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="22dp"
+        android:layout_alignTop="@+id/user_pic"
         android:layout_marginStart="22dp"
+        android:layout_marginTop="11dp"
         android:layout_toEndOf="@+id/user_pic"
-        android:layout_toRightOf="@+id/user_pic"
-        android:text="Emporio Alnino"
+        android:text="No name available"
         android:textColor="@android:color/background_dark"
         android:textSize="24sp" />
 

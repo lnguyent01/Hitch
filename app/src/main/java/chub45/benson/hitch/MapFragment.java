@@ -29,6 +29,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -39,6 +40,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
@@ -46,10 +48,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
     MapView mMapView;
+    SupportMapFragment mMapFragment;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationClient;
     private GoogleApiClient mGoogleApiClient;
@@ -72,8 +76,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private Location current_loc;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
         mGoogleApiClient = new GoogleApiClient.Builder(this.getActivity().getApplicationContext()).addApi(Places.GEO_DATA_API)
                 .addApi(Places.PLACE_DETECTION_API).build();
@@ -82,13 +89,6 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         factory = new DefaultPostFactory();
         posts = new ArrayList<>();
         triggerQuery = factory.createPostFromDb("","", "", "","", 0, "","","", -1, "", "");
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
-
         mMapView = (MapView) rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
 
@@ -122,15 +122,26 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                //MapFragment.this.displayPostDetails(marker.getId());
-
                 String destination = marker.getTitle();
                 Query query = db.getRoot().child("posts").orderByChild("destination").equalTo(destination);
-                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                query.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
-                            collectPost((ArrayList<HashMap<String, String>>) dataSnapshot.getValue());
+                            HashMap<String, String> post;
+                            GenericTypeIndicator<ArrayList<HashMap<String, String>>> arrayListGenericTypeIndicator = new GenericTypeIndicator<ArrayList<HashMap<String, String>>>() {};
+                            GenericTypeIndicator<HashMap<String, HashMap<String, String>>> hashMapGenericTypeIndicator = new GenericTypeIndicator<HashMap<String, HashMap<String, String>>>() {};
+
+                            try {
+                                HashMap<String, HashMap<String, String>> dataSnapshotValue = dataSnapshot.getValue(hashMapGenericTypeIndicator);
+                                String key = (((dataSnapshotValue.keySet()).toArray())[0]).toString();
+                                post = dataSnapshotValue.get(key);
+                            } catch (Exception e) {
+                                // for some reason getValue() returned ArrayList<HashMap<String, String>> instead of HashMap<String, HashMap<String, String>>
+                                ArrayList<HashMap<String, String>> dataSnapshotValue = dataSnapshot.getValue(arrayListGenericTypeIndicator);
+                                post = dataSnapshotValue.get(dataSnapshotValue.size() - 1);
+                            }
+                            collectPost(post);
                         }
                     }
 
@@ -139,11 +150,8 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         Log.e("[Database Error]", databaseError.getMessage());
                     }
                 });
-                db.addPost(triggerQuery);
             }
         });
-        // Add a marker in Isla Vista and move the camera
-        LatLng isla_vista = new LatLng(34.41073, -119.86352);
         LatLng debug = new LatLng(34.3, -119.9);
         current_location = debug;
         try {
@@ -170,7 +178,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             Log.e("Exception: %s", e.getMessage());
         }
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(isla_vista));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(current_location));
     }
 
     private boolean locationPermissionGranted() {
@@ -196,7 +204,18 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    collectPosts((HashMap<String, HashMap<String, String>>) dataSnapshot.getValue());
+                    HashMap<String, String> post;
+                    GenericTypeIndicator<ArrayList<HashMap<String, String>>> arrayListGenericTypeIndicator = new GenericTypeIndicator<ArrayList<HashMap<String, String>>>() {};
+                    GenericTypeIndicator<HashMap<String, HashMap<String, String>>> hashMapGenericTypeIndicator = new GenericTypeIndicator<HashMap<String, HashMap<String, String>>>() {};
+
+                    try {
+                        HashMap<String, HashMap<String, String>> allPosts = dataSnapshot.getValue(hashMapGenericTypeIndicator);
+                        collectPosts(allPosts);
+                    } catch (Exception e) {
+                        // for some reason getValue() returned ArrayList<HashMap<String, String>> instead of HashMap<String, HashMap<String, String>>
+                        ArrayList<HashMap<String, String>> allPostsList = dataSnapshot.getValue(arrayListGenericTypeIndicator);
+                        collectPostsList(allPostsList);
+                    }
                 }
             }
 
@@ -205,13 +224,12 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                 Log.e("[Database Error]", databaseError.getMessage());
             }
         });
-        db.addPost(triggerQuery);
     }
 
-    private void collectPost(ArrayList<HashMap<String, String>> postmap) {
+    private void collectPost(HashMap<String, String> postmap) {
         String departing_area, destination, departure_time, departing_area_id, destination_id, num_spots, author_uid, author_email, description, s_id, potential_passengers, accepted_passengers;
         PostFactory factory = new DefaultPostFactory();
-        HashMap<String, String> post = postmap.get(0);
+        HashMap<String, String> post = postmap;
         Post tempPost;
         int available_spots, post_id;
         if (post != null) {
@@ -237,10 +255,11 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             intent.putExtra("available_spots", String.valueOf(tempPost.getavailable_spots()));
             intent.putExtra("departure_time", tempPost.getdeparture_time().toString());
             intent.putExtra("description", tempPost.getdescription());
-            intent.putExtra("postID", tempPost.get_post_id());
+            intent.putExtra("postID", String.valueOf(tempPost.get_post_id()));
             intent.putExtra("name", tempPost.getauthor_email());
             intent.putExtra("potential_passengers", tempPost.getpotential_passengers());
             intent.putExtra("accepted_passengers", tempPost.getaccepted_passengers());
+            intent.putExtra("uID", tempPost.getauthor());
             startActivity(intent);
         }
     }
@@ -249,6 +268,16 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         HashMap<String, String> post;
         for (int i = 0; i < all_posts.size(); i++) {
             post = all_posts.get(String.valueOf(i));
+            if ((post != null) && (!post.get("post_id").equals("-1")) && (post.get("destination_id") != null) && (!post.get("destination_id").equals(""))){
+                addMarkerandCreatePost(post.get("destination_id"), post);
+            }
+        }
+    }
+
+    private void collectPostsList(ArrayList<HashMap<String, String>> all_posts) {
+        HashMap<String, String> post;
+        for (int i = 0; i < all_posts.size(); i++) {
+            post = all_posts.get(i);
             if ((post != null) && (!post.get("post_id").equals("-1")) && (post.get("destination_id") != null) && (!post.get("destination_id").equals(""))){
                 addMarkerandCreatePost(post.get("destination_id"), post);
             }
@@ -266,11 +295,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                         int available_spots, post_id;
                         LatLng post_coordinates;
                         MarkerOptions markerOptions;
-                        Marker marker;
                         if ((places.getStatus().isSuccess()) && (places.getCount() > 0)) {
                             final Place myPlace = places.get(0);
                             post_coordinates = places.get(0).getLatLng();
-                            //MapFragment.this.setPost_location(myPlace);
                             departing_area = post.get("departing_area");
                             destination = post.get("destination");
                             departing_area_id = post.get("departing_area_id");

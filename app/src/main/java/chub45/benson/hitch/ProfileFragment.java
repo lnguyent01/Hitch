@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,6 +52,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private DatabaseReference dbRef;
     private FirebaseUser fbUser;
 
+    FirebaseUser currentUser;
+
     private Uri imageUri;
     private String profileImageUrl;
     private String profileImgFileName;
@@ -74,7 +77,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        dbRef = FirebaseDatabase.getInstance().getReference();
 
         profilePicIV = (ImageView)view.findViewById(R.id.profilePicIV);
         fullNameTV = (TextView)view.findViewById(R.id.fullNameTV);
@@ -85,10 +87,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         cityTV = (TextView)view.findViewById(R.id.cityTV);
         view.findViewById(R.id.editProfileBtn).setOnClickListener(this);
 
-        fbUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (fbUser != null) {
-            Query query =  dbRef.child("users").child(fbUser.getUid());
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        dbRef = FirebaseDatabase.getInstance().getReference().child("users");
+
+
+        if (currentUser != null) {
+            Query query =  dbRef.child(currentUser.getUid());
             query.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -98,10 +103,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         cityTV.setText("City: " + dataSnapshot.getValue(User.class).getCity());
                         usernameTV.setText("@"+ dataSnapshot.getValue(User.class).getUsername());
                         phoneNoTV.setText("Phone: " + dataSnapshot.getValue(User.class).getPhoneNo());
-                        emailTV.setText("Email: " + fbUser.getEmail());
+                        emailTV.setText("Email: " + currentUser.getEmail());
                         if (dataSnapshot.getValue(User.class).getProfilePicUrl() != "") {
                             Glide.with(view)
                                     .load(dataSnapshot.getValue(User.class).getProfilePicUrl())
+                                    .apply(new RequestOptions().placeholder(R.drawable.default_pic))
                                     .into(profilePicIV);
                         }
                     }
@@ -208,12 +214,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void saveUserInformation() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         Map<String, Object> userUpdates = new HashMap<>();
         userUpdates.put("profilePicUrl", profileImageUrl);
-        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference().child("users").child(currentUser.getUid());
         if (profileImageUrl != null) {
-            dbRef.updateChildren(userUpdates)
+            dbRef.child(currentUser.getUid()).updateChildren(userUpdates)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
