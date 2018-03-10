@@ -165,3 +165,57 @@ We are fully aware that these bugs impede testing. Please go to https://hitch-74
 6. Select "Finish", then the profile will be updated.
 7. If successful, the input should be displayed in the profile
 8. This can be verified by checking the Firebase database and verify the information is saved there
+
+# Steps to test Use Case 15: User cancels their request 
+1. Open the app
+2. Log in (Or create an account first, then log in)
+3. Click the "Rides" button
+4. Now, click the "Requested Rides" button
+5. If successful, all the Rides that you have requested will be visible, which may be none (you may need to request to join first (UC3))
+6. Click on a Ride post
+7. You will be able to see all the details of the Ride you selected
+8. Click the cancel
+9. If successful, the request to join the Ride will be canceled
+10. This can be verified by viewing the list of requests (as the original post creator)
+
+# Steps to test Use Case 16: Driver views accepted passengers
+1. Open the app
+2. Log in (Or create an account first, then log in)
+3. Click the "Rides" button
+4. Now, click the "My Posts" button
+5. If successful, all the Rides that you created will be visible, which may be none (you may need to make a post first (UC2))
+6. Click on a Ride post
+7. You will be able to see all the details of the Ride you selected
+8. Click the "Accepted Passengers" button
+9. If successful, a list of all the accepted passengers will be displayed
+
+# Steps to test Use Case 17: User changes profile picture
+1. Open the app
+2. Log in (Or create an account first, then log in)
+3. Click on the profile icon in the bottom of the navigation bar (last icon)
+4. User clicks on the profile picture icon
+5. User chooses icon to set as their new profile picture
+6. System stores information
+7. System updates user’s profile with the new information
+8. The updated information can be verified by checking the database in Firebase, checking that the updated information matches with the information displayed in the user’s profile
+
+# Steps to test Use Case 18: Driver deletes post
+1. Open the app
+2. Log in (Or create an account first, then log in)
+3. Click the "Rides" button
+4. Now, click the "My Posts" button
+5. Click the specific post to be deleted
+6. Click the delete post button
+7. If successful, the post will be removed from the Firebase database
+
+# Steps to test Use Case 19: User deletes account
+1. Open the app
+2. Log in (Or create an account first, then log in)
+3. Click on “Profile” icon
+4. Click on “Edit Profile”
+5. Click on “Delete Account”
+6. If successful:  
+   a. The user will be removed from the database  
+   b. All of the user’s posts will be deleted  
+   c. All of the user’s requested rides will be cancelled  
+   d. User will be taken off the list of the rides they have been accepted to

@@ -50,6 +50,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private TextView fullNameTV, usernameTV, emailTV, phoneNoTV, stateTV, cityTV;
 
     private DatabaseReference dbRef;
+    private FirebaseUser fbUser;
 
     FirebaseUser currentUser;
 
@@ -76,6 +77,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
+
         profilePicIV = (ImageView)view.findViewById(R.id.profilePicIV);
         fullNameTV = (TextView)view.findViewById(R.id.fullNameTV);
         usernameTV = (TextView)view.findViewById(R.id.usernameTV);
@@ -85,8 +87,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         cityTV = (TextView)view.findViewById(R.id.cityTV);
         view.findViewById(R.id.editProfileBtn).setOnClickListener(this);
 
+
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         dbRef = FirebaseDatabase.getInstance().getReference().child("users");
+
 
         if (currentUser != null) {
             Query query =  dbRef.child(currentUser.getUid());
