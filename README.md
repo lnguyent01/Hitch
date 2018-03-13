@@ -113,7 +113,7 @@ We are fully aware that these bugs impede testing. Please go to https://hitch-74
 4. Now, click the "My Posts" button
 5. If successful, all the Rides that you created will be visible, which may be none (you may need to make a post first (UC2))
 6. Click on a Ride post
-7. If successful, you will be able to see all the details of the Ride you selected: the driver’s name, their profile picture, where the driver is departing from, when they are leaving, where the driver is going to, the Ride’s description, how many seats are available, and a button to “Accept Requests”
+7. If successful, you will be able to see all the details of the Ride you selected: the driver’s name, their profile picture, where the driver is departing from, when they are leaving, where the driver is going to, the Ride’s description, how many seats are available, a button to “Accept Requests”, and a button to view "Accepted Passengers"
 
 # Steps to test Use Case UC10: Driver accepts Passenger(s) to their Ride
 1. Open the app
@@ -124,10 +124,13 @@ We are fully aware that these bugs impede testing. Please go to https://hitch-74
 6. Click on a Ride post
 7. You will be able to see all the details of the Ride you selected
 8. Click the "Accept Requests" button
-9. Log in to an account that was accepted to the Ride, by you, just now
-10. Click the "Rides" button
-11. Now, click the "Accepted Rides" button
-12. If successful, the Ride you clicked the "Accept Requests" button on will be visible
+9. You will see a list of all the people who have requested to join your Ride
+10. Click on a person to accept them (they will not disappear from the list until you have backed out to the “My Posts” menu)
+11. Back out to the “My Posts” menu
+12. Click on the same Ride post you were just viewing
+13. Click the “Accepted Passengers” button
+14. If successful, the person you just accepted will be visible (if you log in to the account that was accepted, this Ride will also be visible in their “Accepted Rides” section under the “Rides” section accessible by clicking the “Rides” button on the homepage)
+
 
 # Steps to test Use Case UC11: User searches for Rides
 1. Open the app
