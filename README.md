@@ -26,16 +26,13 @@
 23. Click on the Hitch app
 24. App should start
 
-# List of known bugs
-1. Logging in takes a random amount of time, from fast to a minute or two
-2. Posts have IDs, as a way of finding a specific post. When you add a post, it alwasy has an ID of 0, so new posts overwrite each other
-3. Accepting requests deletes everyone from the potential_passengers field, decremonts spots, but does not move people to the accepted_passengers field
-4. The map is inconsistent
+# List of known issues
+(These are not bugs in the code. Rather, they are uncontrollable issues that arise as a result of some outside force)
+1. Logging in and signing up take a longer amount of time the worse the internet connection is
+2. The map may not work unless you have a powerful enough computer (in terms of RAM, mostly) and have enabled graphics acceleration in the options menu of your Android Virtual Device. Also, make sure "Location Services" are enabled on your Android Virtual Device.
 
-# How to test even with bugs
-We are fully aware that these bugs impede testing. Please go to https://hitch-7466c.firebaseio.com/, to the database section. Invitations to join this Firebase project have been sent to chandanaupadhyaya@ucsb.edu and jcai00@ucsb.edu.
-
-1. To get around Bug 3, find the relevant account's uid, in the "Authentication" section on the left sidebar. Copy it, then paste it into the "accepted_passengers" field on any post. Now, you should be able to successfully test UC4 and UC5.
+# Access to the Firebase Database
+In our Draft Project, there was a link to our Firebase Database (https://hitch-7466c.firebaseio.com/). Invitations to join this Firebase project were sent to chandanaupadhyaya@ucsb.edu and jcai00@ucsb.edu. However, this is no longer neccessary. All use cases can be successfully tested without manipulating Firebase data directly. In fact, manipulating data directly in the Firebase Database may cause bugs. Please do not do so unless a new bug that impedes testing is discovered.
 
 # Steps to test Use Case UC1: User makes a new account
 1. Open the app
@@ -194,7 +191,7 @@ We are fully aware that these bugs impede testing. Please go to https://hitch-74
 2. Log in (Or create an account first, then log in)
 3. Click on the profile icon in the bottom of the navigation bar (last icon)
 4. User clicks on the profile picture icon
-5. User chooses icon to set as their new profile picture
+5. User chooses icon to set as their new profile picture (If you have no pictures available, take one with the "Camera" app)
 6. If successful, when viewing you profile, the picture you chose will be visible, replacing the default profile picture
 
 # Steps to test Use Case UC18: Driver deletes post
@@ -214,6 +211,6 @@ We are fully aware that these bugs impede testing. Please go to https://hitch-74
 5. Click on the “Delete Account”, at the very bottom
 6. If successful:  
    a. The user will be removed from the database  
-   b. All of the user’s posts will be deleted (UC18)
-   c. All of the user’s requests to join Rides will be cancelled (UC15)
+   b. All of the user’s posts will be deleted (UC18)  
+   c. All of the user’s requests to join Rides will be cancelled (UC15)  
    d. User will be removed from the list of accepted passengers of any Ride that they have been accepted to, and that Ride gains an available spot
